@@ -1,0 +1,23 @@
+{
+  "name": "mmgc_backend",
+  "version": "1.0.0",
+  "description": "mmgc backend by koa2 + typescript + mongodb",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ADKcode <790532173@qq.com>",
+  "license": "MIT",
+  "dependencies": {
+    "koa": "^2.13.4",
+    "koa-router": "^12.0.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.40.1",
+    "@typescript-eslint/parser": "^5.40.1",
+    "eslint": "^8.26.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.5.1",
+    "typescript": "^4.4.4"
+  }
+}
