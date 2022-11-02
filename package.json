@@ -1,23 +1,39 @@
 {
-  "name": "mmgc_backend",
-  "version": "1.0.0",
-  "description": "mmgc backend by koa2 + typescript + mongodb",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "ADKcode <790532173@qq.com>",
-  "license": "MIT",
-  "dependencies": {
-    "koa": "^2.13.4",
-    "koa-router": "^12.0.0"
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.40.1",
-    "@typescript-eslint/parser": "^5.40.1",
-    "eslint": "^8.26.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "prettier": "^2.5.1",
-    "typescript": "^4.4.4"
-  }
+	"name": "mmgc_backend",
+	"version": "1.0.0",
+	"description": "mmgc backend by koa2 + typescript + mongodb",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"build": "tsc",
+		"lint": "eslint ./",
+		"dev": "cross-env NODE_ENV=dev MODE=dev nodemon --watch src/**/* -e ts --delay 500ms --exec ts-node src/index.ts --files"
+	},
+	"author": "ADKcode <790532173@qq.com>",
+	"license": "MIT",
+	"dependencies": {
+		"body-parser": "^1.20.1",
+		"dotenv": "^16.0.3",
+		"koa": "^2.13.4",
+		"koa-body": "^6.0.1",
+		"koa-bodyparser": "^4.3.0",
+		"koa-router": "^12.0.0",
+		"mongoose": "^6.7.0"
+	},
+	"devDependencies": {
+		"@babel/plugin-proposal-decorators": "^7.20.0",
+		"@types/koa": "^2.13.5",
+		"@types/koa-bodyparser": "^4.3.9",
+		"@types/koa-router": "^7.4.4",
+		"@typescript-eslint/eslint-plugin": "^5.40.1",
+		"@typescript-eslint/parser": "^5.40.1",
+		"cross-env": "^7.0.3",
+		"eslint": "^8.26.0",
+		"eslint-plugin-prettier": "^4.2.1",
+		"nodemon": "^2.0.20",
+		"prettier": "^2.5.1",
+		"ts-node": "^10.9.1",
+		"tsconfig-paths": "^4.1.0",
+		"typescript": "^4.4.4"
+	}
 }

@@ -1,17 +1,34 @@
 {
-  "compilerOptions": {
-    "target": "es2016",
-    "module": "commonjs",
-    "allowJs": true,
-    "checkJs": true,
-    "declaration": true,
-    "inlineSourceMap": true,
-    "inlineSources": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "skipLibCheck": true
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+	"ts-node": {
+		"files": true,
+		"compilerOptions": {
+			"paths": {
+				"~/*": ["*"],
+				"@/*": ["src/*"]
+			}
+		}
+	},
+	"compilerOptions": {
+		"target": "es2016",
+		"module": "commonjs",
+		"allowJs": true,
+		"checkJs": true,
+		"declaration": true,
+		"inlineSourceMap": true,
+		"inlineSources": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"skipLibCheck": true,
+		"outDir": "./dist",
+		"baseUrl": "src",
+		"experimentalDecorators": true,
+		"paths": {
+			"~/*": ["*"],
+			"@/*": ["src/*"]
+		},
+		"types": ["types"]
+	},
+	"include": ["src/**/*.ts", "src/**/*"],
+	"exclude": ["node_modules"]
 }

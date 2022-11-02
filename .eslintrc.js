@@ -12,10 +12,11 @@ module.exports = {
 	plugins: ['@typescript-eslint/eslint-plugin', 'prettier'],
 	rules: {
 		'no-undef': 'off',
-		'no-console': 'warn',
+		'no-console': 'off',
 		'no-debugger': 'warn',
-		'@typescript-eslint/no-explicit-any': 'warn',
+		'@typescript-eslint/no-explicit-any': 'off',
 		'no-mutating-props': 'off',
+		'@typescript-eslint/ban-types': 'off',
 		'prettier/prettier': [
 			'error',
 			{
