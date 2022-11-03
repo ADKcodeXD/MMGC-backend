@@ -1,5 +1,5 @@
 import KoaRouter from 'koa-router'
-import config from '../config/config.default'
+import config from '~/config/config.default'
 
 const router = new KoaRouter()
 

@@ -1,6 +1,6 @@
 import { controllers } from './decorator'
 
-export * from '../../controller/index'
+export * from '~/controller/index'
 
 export default (app: any, router: any) => {
 	controllers.forEach((item: any) => {

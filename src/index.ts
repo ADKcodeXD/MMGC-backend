@@ -4,12 +4,12 @@ import router from './router/router'
 import initRoutes from './common/decorator/index'
 import koabody from './middleware/KoaBody'
 import BodyParser from 'koa-bodyparser'
+import mongoware from './middleware/Mongoose'
+import { Error, ErrorHandle } from '~/middleware/KoaJsonError'
 
 const app = new Koa()
 
-app.use(koabody)
-
-app.use(BodyParser())
+app.use(koabody).use(mongoware).use(BodyParser()).use(Error).use(ErrorHandle)
 
 initRoutes(app, router)
 
