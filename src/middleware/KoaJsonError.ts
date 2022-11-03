@@ -1,0 +1,17 @@
+import { Context } from 'koa'
+import KoaError from 'koa-json-error'
+import Result from '~/vo/result'
+
+export const Error = KoaError({
+	format: (err: any) => {
+		return Result.fail(err.status, err.message, err.statck)
+	}
+})
+
+export const ErrorHandle = async (ctx: Context, next: Function) => {
+	try {
+		await next()
+	} catch (error: any) {
+		ctx.throw(error)
+	}
+}
