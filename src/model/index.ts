@@ -1,3 +1,6 @@
-const a = 1
+import mongoose from 'mongoose'
+import { activity } from './schema'
 
-export default a
+const Activity = mongoose.model('Activity', activity)
+
+export { Activity }
