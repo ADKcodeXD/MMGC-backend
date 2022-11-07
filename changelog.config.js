@@ -1,21 +1,16 @@
 module.exports = {
 	disableEmoji: false,
-	format: '{type}{scope}:{emoji} {subject}',
-	list: ['test', 'feat', 'fix', 'chore', 'docs', 'refactor', 'style', 'ci', 'perf', 'add'],
+	format: '{type}{scope}: {emoji} {subject}',
+	list: ['test', 'feat', 'fix', 'config', 'docs', 'refactor', 'style', 'perf', 'add'],
 	maxMessageLength: 64,
 	minMessageLength: 3,
 	questions: ['type', 'scope', 'subject', 'body', 'breaking', 'issues', 'lerna'],
 	scopes: [],
 	types: {
-		chore: {
+		config: {
 			description: '配置修改',
 			emoji: '🎯',
-			value: 'chore'
-		},
-		ci: {
-			description: 'CICD配置',
-			emoji: '🎡',
-			value: 'ci'
+			value: 'config'
 		},
 		docs: {
 			description: '文档更新',

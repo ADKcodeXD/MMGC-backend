@@ -6,10 +6,11 @@ import koabody from './middleware/KoaBody'
 import BodyParser from 'koa-bodyparser'
 import mongoware from './middleware/Mongoose'
 import { Error, ErrorHandle } from '~/middleware/KoaJsonError'
+import logger from 'koa-logger'
 
 const app = new Koa()
 
-app.use(koabody).use(mongoware).use(BodyParser()).use(Error).use(ErrorHandle)
+app.use(koabody).use(logger()).use(mongoware).use(BodyParser()).use(Error).use(ErrorHandle)
 
 initRoutes(app, router)
 
