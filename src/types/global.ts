@@ -6,9 +6,16 @@ declare global {
 	interface ControllerRouter {
 		url: string
 		method: string
+		handler: Function
+		name?: string
 		middleware?: any
-		handler?: () => void | any
 		constructor?: Function | any
+	}
+
+	interface ParamsMeta {
+		name: string
+		index: number
+		fn: Function
 	}
 }
 export {}
