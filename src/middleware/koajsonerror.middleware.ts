@@ -4,7 +4,7 @@ import Result from '~/common/result'
 
 export const Error = KoaError({
 	format: (err: any) => {
-		return Result.fail(err.status, err.message, err.statck)
+		return Result.fail(err.status, err.message, null)
 	}
 })
 
