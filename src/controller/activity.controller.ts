@@ -10,10 +10,7 @@ import { copyProperties } from '~/common/utils'
 export default class ActivityController {
 	@PostMapping('/saveActivity')
 	async save(@Ctx() ctx: Context, @Body() activityParam: ActivityParams) {
-		const newActivity: ActivityModel = {
-			activityId: 0,
-			activityName: { cn: 'a' }
-		}
+		const newActivity: ActivityModel = {}
 		copyProperties(activityParam, newActivity)
 		newActivity['createTime'] = new Date()
 		const testModel = new Activity(newActivity)

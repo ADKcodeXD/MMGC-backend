@@ -15,12 +15,12 @@ declare module 'Activity' {
 		/**
 		 * 活动主id，活动的id 根据此id进行各种操作
 		 */
-		activityId: number
+		activityId?: number
 		/**
 		 * 活动专属logo
 		 */
 		activityLogo?: string
-		activityName: I18N
+		activityName?: I18N
 		/**
 		 * 创建时间 Date类型
 		 */
