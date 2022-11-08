@@ -20,7 +20,7 @@ export const Controller = (path = '') => {
  * @param param0 ControllerRouter 对象
  * @returns
  */
-export const RequestMapping = ({ url = '', method = '', middleware = [] }) => {
+export const RequestMapping = ({ url = '', method = '', middleware = [] as Array<any> }) => {
 	return function (target: any, name: string) {
 		let path = ''
 		// 判断有没有定义url
@@ -43,24 +43,24 @@ export const RequestMapping = ({ url = '', method = '', middleware = [] }) => {
 	}
 }
 
-export const GetMapping = (url = '') => {
-	return RequestMapping({ url: url, method: REQUEST_METHOD.GET })
+export const GetMapping = (url = '', middleware: any[] = []) => {
+	return RequestMapping({ url: url, method: REQUEST_METHOD.GET, middleware: middleware })
 }
 
-export const PostMapping = (url = '') => {
-	return RequestMapping({ url: url, method: REQUEST_METHOD.POST })
+export const PostMapping = (url = '', middleware: any[] = []) => {
+	return RequestMapping({ url: url, method: REQUEST_METHOD.POST, middleware: middleware })
 }
 
-export const PutMapping = (url = '') => {
-	return RequestMapping({ url: url, method: REQUEST_METHOD.PUT })
+export const PutMapping = (url = '', middleware: any[] = []) => {
+	return RequestMapping({ url: url, method: REQUEST_METHOD.PUT, middleware: middleware })
 }
 
-export const DeleteMapping = (url = '') => {
-	return RequestMapping({ url: url, method: REQUEST_METHOD.DELETE })
+export const DeleteMapping = (url = '', middleware: any[] = []) => {
+	return RequestMapping({ url: url, method: REQUEST_METHOD.DELETE, middleware: middleware })
 }
 
-export const PatchMapping = (url = '') => {
-	return RequestMapping({ url: url, method: REQUEST_METHOD.PATCH })
+export const PatchMapping = (url = '', middleware: any[] = []) => {
+	return RequestMapping({ url: url, method: REQUEST_METHOD.PATCH, middleware: middleware })
 }
 
 /**

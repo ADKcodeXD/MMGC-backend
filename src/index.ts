@@ -2,10 +2,10 @@ import Koa from 'koa'
 import config from './config/config.default'
 import router from './router/router'
 import initRoutes from './common/decorator/index'
-import koabody from './middleware/KoaBody'
+import koabody from './middleware/koabody.middleware'
 import BodyParser from 'koa-bodyparser'
-import mongoware from './middleware/Mongoose'
-import { Error, ErrorHandle } from '~/middleware/KoaJsonError'
+import mongoware from './middleware/mongoose.middleware'
+import { Error, ErrorHandle } from '~/middleware/koajsonerror.middleware'
 import logger from 'koa-logger'
 
 const app = new Koa()
