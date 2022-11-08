@@ -1,7 +1,7 @@
 import { RESULT_CODE, RESULT_MSG } from '~/types/enum'
 import { Context } from 'koa'
 import { Controller, Ctx, GetMapping, Query } from '~/common/decorator/decorator'
-import Result from '~/vo/result'
+import Result from '~/common/result'
 
 @Controller('/user')
 export default class UserController {

@@ -1,6 +1,6 @@
 import { Context } from 'koa'
 import KoaError from 'koa-json-error'
-import Result from '~/vo/result'
+import Result from '~/common/result'
 
 export const Error = KoaError({
 	format: (err: any) => {
