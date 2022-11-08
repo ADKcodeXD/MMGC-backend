@@ -37,15 +37,15 @@ declare global {
 		/**
 		 * 评委id列表
 		 */
-		judges?: string[] | null
+		judges?: number[] | null
 		/**
 		 * 主办人用户id
 		 */
-		organizer?: null | string
+		organizer?: null | number
 		/**
 		 * 翻译人员
 		 */
-		translator?: string[] | null
+		translator?: number[] | null
 	}
 
 	interface Sns {
