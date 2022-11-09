@@ -1,6 +1,8 @@
 import mongoose from 'mongoose'
-import { activitySchema } from './schema'
+import { activitySchema, memberSchema } from './schema'
 
 const Activity = mongoose.model('Activity', activitySchema)
 
-export { Activity }
+const Member = mongoose.model('Member', memberSchema)
+
+export { Activity, Member }
