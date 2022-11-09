@@ -94,3 +94,11 @@ export const Ctx = () => {
 export const Query = (arg: string) => {
 	return Inject((ctx: Context) => ctx.query[arg])
 }
+
+export const QueryAll = () => {
+	return Inject((ctx: Context) => ctx.query)
+}
+
+export const ParamAll = () => {
+	return Inject((ctx: Context) => ctx.params)
+}

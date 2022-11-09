@@ -7,13 +7,13 @@ export const Validtor = (paramType: RequestParamType, validateRef: any) => {
 			if (validateRef(ctx.request.body)) {
 				await next()
 			} else {
-				throw new Error(validateRef.errors[0].message)
+				throw new Error(`${validateRef.errors[0].instancePath} ${validateRef.errors[0].message}`)
 			}
 		} else {
 			if (validateRef(ctx[paramType])) {
 				await next()
 			} else {
-				throw new Error(validateRef.errors[0].message)
+				throw new Error(`${validateRef.errors[0].instancePath} ${validateRef.errors[0].message}`)
 			}
 		}
 	}

@@ -16,7 +16,8 @@ export default (app: any, router: any) => {
 				.filter(i => i.name === item.name)
 				.sort((a, b) => a.index - b.index)
 				.map(i => i.fn(ctx))
-			await item.handler(...args, ctx)
+			const res = await item.handler(...args, ctx)
+			ctx.body = res
 		})
 	})
 	app.use(router.routes()).use(router.allowedMethods()) // 路由装箱
