@@ -83,9 +83,9 @@ declare module 'Member' {
 		memberId: number
 		memberName: string
 		username: string
-		avatar?: null | string
-		desc?: null | string
-		gender?: number | null
-		snsSite?: Sns | null
+		avatar: null | string
+		desc: null | string
+		gender: number | null
+		snsSite: Sns | null
 	}
 }

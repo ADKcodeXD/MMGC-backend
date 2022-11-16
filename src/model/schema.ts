@@ -45,3 +45,11 @@ export const memberSchema = new mongoose.Schema<MemberModel>(
 	},
 	{ collection: 'members' }
 )
+
+export const incrementSchema = new mongoose.Schema<IncrementType>(
+	{
+		coll: String,
+		currentValue: Number
+	},
+	{ collection: 'increment' }
+)
