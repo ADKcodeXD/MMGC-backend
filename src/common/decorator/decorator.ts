@@ -1,5 +1,6 @@
 import { Context } from 'koa'
 import { REQUEST_METHOD } from '~/types/enum'
+import 'reflect-metadata'
 
 export const controllers: Array<ControllerRouter> = []
 export const params: Array<ParamsMeta> = []
@@ -29,13 +30,13 @@ export const RequestMapping = ({ url = '', method = '', middleware = [] as Array
 		} else {
 			path = url // 自己定义的url
 		}
-
 		const item: ControllerRouter = {
 			url: path,
 			method: method || REQUEST_METHOD.GET,
 			middleware: middleware,
 			handler: target[name],
 			constructor: target.constructor,
+			instance: target.constructor.getInstance(),
 			name: name
 		}
 
