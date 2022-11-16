@@ -9,7 +9,7 @@ module.exports = {
 	types: {
 		config: {
 			description: '配置修改',
-			emoji: '🎯',
+			emoji: '🔧',
 			value: 'config'
 		},
 		docs: {
@@ -49,7 +49,7 @@ module.exports = {
 		},
 		style: {
 			description: '代码规范 代码格式修改 ',
-			emoji: '💄',
+			emoji: '✨',
 			value: 'style'
 		},
 		test: {
@@ -61,10 +61,9 @@ module.exports = {
 			type: "Select the type of change that you're committing:",
 			customScope: 'Select the scope this component affects:',
 			subject: 'Write a short, imperative mood description of the change:\n',
-			body: 'Provide a longer description of the change:\n ',
-			breaking: 'List any breaking changes:\n',
-			footer: 'Issues this commit closes, e.g #123:',
-			confirmCommit: 'The packages that this commit has affected\n'
+			body: '提供一个长描述来说明你更改了什么:\n ',
+			footer: '关联issue e.g #123:',
+			confirmCommit: '是否有相关联的包会被影响\n'
 		}
 	}
 }
