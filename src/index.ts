@@ -3,14 +3,13 @@ import config from './config/config.default'
 import router from './router/router'
 import initRoutes from './common/decorator/index'
 import koabody from './middleware/koabody.middleware'
-import BodyParser from 'koa-bodyparser'
 import mongoware from './middleware/mongoose.middleware'
 import { Error, ErrorHandle } from '~/middleware/koajsonerror.middleware'
 import logger from 'koa-logger'
 
 const app = new Koa()
 
-app.use(koabody).use(logger()).use(mongoware).use(BodyParser()).use(Error).use(ErrorHandle)
+app.use(koabody).use(logger()).use(mongoware).use(Error).use(ErrorHandle)
 
 initRoutes(app, router)
 
