@@ -1,6 +1,7 @@
 import { ActivityParams } from 'Activity'
 import Ajv, { JSONSchemaType } from 'ajv'
 import ajvErrors from 'ajv-errors'
+import { MemberParams } from 'Member'
 const ajv = new Ajv({ allErrors: true })
 ajvErrors(ajv)
 const activityParamsSchema: JSONSchemaType<ActivityParams> = {
@@ -29,7 +30,7 @@ const activityParamsSchema: JSONSchemaType<ActivityParams> = {
 		days: { type: 'integer', nullable: true },
 		startTime: { type: 'string', nullable: true },
 		endTime: { type: 'string', nullable: true },
-		sponsorId: { type: 'integer', nullable: true },
+		sponsorId: { type: 'array', nullable: true, items: { type: 'number' } },
 		staff: {
 			type: 'object',
 			nullable: true,
@@ -45,6 +46,41 @@ const activityParamsSchema: JSONSchemaType<ActivityParams> = {
 	additionalProperties: false
 }
 
+const memberParamsScheme: JSONSchemaType<MemberParams> = {
+	type: 'object',
+	definitions: {
+		snsSite: {
+			$id: '#snsSite',
+			type: 'object',
+			nullable: true,
+			properties: {
+				bilibili: { type: 'string', nullable: true },
+				youtube: { type: 'string', nullable: true },
+				personalWebsite: { type: 'string', nullable: true },
+				niconico: { type: 'string', nullable: true },
+				twitter: { type: 'string', nullable: true }
+			},
+			required: [],
+			additionalProperties: false
+		}
+	},
+	properties: {
+		username: { type: 'string' },
+		password: { type: 'string' },
+		memberName: { type: 'string' },
+		email: { type: 'string' },
+		verifyCode: { type: 'string' },
+		avatar: { type: 'string', nullable: true },
+		snsSite: { $ref: '#snsSite' },
+		desc: { type: 'string', nullable: true },
+		gender: { type: 'integer', nullable: true }
+	},
+	required: ['username', 'password', 'memberName', 'email', 'verifyCode'],
+	additionalProperties: false
+}
+
 const activityParamsValidate = ajv.compile<ActivityParams>(activityParamsSchema)
 
-export { activityParamsValidate }
+const memberParamsValidate = ajv.compile<MemberParams>(memberParamsScheme)
+
+export { activityParamsValidate, memberParamsValidate }
