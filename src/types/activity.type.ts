@@ -3,15 +3,15 @@ declare module 'Activity' {
 		/**
 		 * 活动官网页的背景图 不设置就是默认背景
 		 */
-		activityBackgroundImg?: string
+		activityBackgroundImg: string | null
 		/**
 		 * 活动cm 视频链接 可以拥有好几个CM
 		 */
-		activityCM?: string[]
+		activityCM: string[] | null
 		/**
 		 * 活动封面图
 		 */
-		activityCover?: string
+		activityCover: string | null
 		/**
 		 * 活动主id，活动的id 根据此id进行各种操作
 		 */
@@ -24,36 +24,37 @@ declare module 'Activity' {
 		/**
 		 * 创建时间 Date类型
 		 */
-		createTime: string | Date
-		days?: number
+		createTime: string | Date | number
+		days: number
 		/**
 		 * 富文本的多语言简介
 		 */
-		desc?: I18N
-		endTime?: string | Date
-		movieNums?: number
+		desc: I18N | null
+		endTime: string | Date | null
+		movieNums: number | null
 		/**
 		 * 赞助商id  可以有多个赞助商
 		 */
-		sponsorId?: number[]
-		staff?: Staff
-		startTime?: string
+		sponsorId: number[] | null
+		staff: Staff | null
+		startTime: string | null
 	}
 
 	interface ActivityVo {
-		activityBackgroundImg?: string
-		activityCM?: string[]
-		activityCover?: string
+		activityBackgroundImg: string | null
+		activityCM: string[] | null
+		activityLogo: string | null
+		activityCover: string
 		activityId: number
-		activityLogo?: string
 		activityName: I18N
-		createTime?: string
-		days?: number
-		desc?: I18N
-		endTime?: string
-		movieNums?: number
-		staff?: Staff
-		startTime?: string
+		createTime: string
+		days: number | null
+		desc: I18N | null
+		endTime: string | null
+		movieNums: number | null
+		staff: Staff | null
+		startTime: string | null
+		sponsorListVo: Array<any> | null
 	}
 
 	interface ActivityParams {
@@ -87,7 +88,7 @@ declare module 'Activity' {
 		/**
 		 * 搜索获取赞助商id
 		 */
-		sponsorId?: null | number
+		sponsorId?: null | number[]
 		staff?: null | Staff
 		startTime?: null | string
 	}
