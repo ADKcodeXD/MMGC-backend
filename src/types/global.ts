@@ -1,24 +1,25 @@
 declare global {
-	interface NormalObject {
+	type NormalObject = {
 		[key: string]: any
 	}
 
-	interface ControllerRouter {
+	type ControllerRouter = {
 		url: string
 		method: string
 		handler: Function
 		name?: string
 		middleware?: any
 		constructor?: Function | any
+		instance?: any
 	}
 
-	interface ParamsMeta {
+	type ParamsMeta = {
 		name: string
 		index: number
 		fn: Function
 	}
 
-	interface I18N {
+	type I18N = {
 		/**
 		 * 中文名
 		 */
@@ -33,7 +34,7 @@ declare global {
 		jp?: null | string
 	}
 
-	interface Staff {
+	type Staff = {
 		/**
 		 * 评委id列表
 		 */
@@ -48,7 +49,13 @@ declare global {
 		translator?: number[] | null
 	}
 
-	interface Sns {
+	type StaffVo = {
+		judges?: number[] | null
+		organizer?: null | number
+		translator?: number[] | null
+	}
+
+	type Sns = {
 		bilibili?: string
 		/**
 		 * niconico网站
@@ -68,14 +75,14 @@ declare global {
 		youtube?: string
 	}
 
-	interface DownloadLink {
+	type DownloadLink = {
 		baidu?: string
 		google?: string
 		onedrive?: string
 		other?: string
 	}
 
-	interface LoginVo {
+	type LoginVo = {
 		/**
 		 * 是否收藏
 		 */
@@ -90,10 +97,31 @@ declare global {
 		isPoll: boolean
 	}
 
-	interface Result<T> {
+	type ResResult<T> = {
 		code: number
 		msg: string
 		data: T
+	}
+
+	type PageResult<T> = {
+		result: T[]
+		total: number
+		page: number
+	}
+
+	interface PageParams {
+		page?: number | null
+		pageSize?: number | null
+		id?: number | null // 搜索id
+		keyword?: string | null // 搜索关键词
+		createTime?: Date | number | string | null
+		sortRule?: string | null // 相关字段
+		orderRule?: '' | 'reverse' | null // 不填默认正序
+	}
+
+	interface IncrementType {
+		coll: string
+		currentValue: number
 	}
 }
 export {}
