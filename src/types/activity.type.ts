@@ -52,7 +52,7 @@ declare module 'Activity' {
 		desc: I18N | null
 		endTime: string | null
 		movieNums: number | null
-		staff: Staff | null
+		staff: StaffVo | null
 		startTime: string | null
 		sponsorListVo: Array<any> | null
 	}

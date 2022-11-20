@@ -51,7 +51,7 @@ declare module 'Member' {
 		/**
 		 * 邮箱验证码 需要接入邮件服务
 		 */
-		verifyCode: string
+		verifyCode: number
 		/**
 		 * 中文名，昵称 姓名
 		 */

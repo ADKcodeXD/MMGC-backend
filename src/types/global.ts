@@ -1,3 +1,5 @@
+import { MemberVo } from 'Member'
+
 declare global {
 	type NormalObject = {
 		[key: string]: any
@@ -50,9 +52,9 @@ declare global {
 	}
 
 	type StaffVo = {
-		judges?: number[] | null
-		organizer?: null | number
-		translator?: number[] | null
+		judges?: MemberVo[] | null
+		organizer?: null | MemberVo
+		translator?: MemberVo[] | null
 	}
 
 	type Sns = {
