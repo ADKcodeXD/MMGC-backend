@@ -15,6 +15,7 @@
 		"ajv": "^8.11.0",
 		"ajv-errors": "^3.0.0",
 		"body-parser": "^1.20.1",
+		"cos-nodejs-sdk-v5": "^2.11.15",
 		"dotenv": "^16.0.3",
 		"koa": "^2.13.4",
 		"koa-body": "^6.0.1",
@@ -23,7 +24,9 @@
 		"koa-router": "^12.0.0",
 		"moment": "^2.29.4",
 		"mongoose": "^6.7.0",
-		"reflect-metadata": "^0.1.13"
+		"nodemailer": "^6.8.0",
+		"reflect-metadata": "^0.1.13",
+		"uuid": "^9.0.0"
 	},
 	"devDependencies": {
 		"@babel/plugin-proposal-decorators": "^7.20.0",
@@ -32,6 +35,8 @@
 		"@types/koa-json-error": "^3.1.4",
 		"@types/koa-logger": "^3.1.2",
 		"@types/koa-router": "^7.4.4",
+		"@types/nodemailer": "^6.4.6",
+		"@types/uuid": "^8.3.4",
 		"@typescript-eslint/eslint-plugin": "^5.40.1",
 		"@typescript-eslint/parser": "^5.40.1",
 		"cross-env": "^7.0.3",
