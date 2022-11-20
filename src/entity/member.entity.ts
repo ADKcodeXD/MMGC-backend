@@ -26,7 +26,7 @@ export class MemberVoEntity implements MemberVo {
 
 export class MemberParamsEntity implements MemberParams {
 	username = ''
-	verifyCode = ''
+	verifyCode = 0
 	memberName = ''
 	password = ''
 	email = ''

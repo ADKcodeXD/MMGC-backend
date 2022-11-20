@@ -35,7 +35,7 @@ export class ActivityVoEntity implements ActivityVo {
 	endTime: string | null = null
 	movieNums: number | null = null
 	sponsorId: number[] | null = null
-	staff: Staff | null = null
+	staff: StaffVo | null = null
 	startTime: string | null = null
 }
 
