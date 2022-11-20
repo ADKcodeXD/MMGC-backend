@@ -17,6 +17,27 @@ export const Controller = (path = '') => {
 }
 
 /**
+ * 用于单例模式 使得该类拥有getInstance方法
+ * @param singletonName
+ * @returns
+ */
+export const Singleton = () => {
+	return function classDecorator(constructor: any) {
+		return class S extends constructor {
+			static singleton = new this()
+			static getInstance() {
+				if (this.singleton) {
+					return this.singleton
+				} else {
+					this.singleton = new this()
+					return this.singleton
+				}
+			}
+		}
+	}
+}
+
+/**
  * 用于方法上的注解
  * @param param0 ControllerRouter 对象
  * @returns
