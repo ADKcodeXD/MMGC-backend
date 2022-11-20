@@ -43,10 +43,10 @@ const activityParamsSchema: JSONSchemaType<ActivityParams> = {
 		}
 	},
 	required: ['activityId', 'activityName', 'activityLogo', 'activityCover', 'desc'],
-	additionalProperties: false
+	additionalProperties: true
 }
 
-const memberParamsScheme: JSONSchemaType<MemberParams> = {
+const memberParamsSchema: JSONSchemaType<MemberParams> = {
 	type: 'object',
 	definitions: {
 		snsSite: {
@@ -69,18 +69,18 @@ const memberParamsScheme: JSONSchemaType<MemberParams> = {
 		password: { type: 'string' },
 		memberName: { type: 'string' },
 		email: { type: 'string' },
-		verifyCode: { type: 'string' },
+		verifyCode: { type: 'number' },
 		avatar: { type: 'string', nullable: true },
 		snsSite: { $ref: '#snsSite' },
 		desc: { type: 'string', nullable: true },
 		gender: { type: 'integer', nullable: true }
 	},
 	required: ['username', 'password', 'memberName', 'email', 'verifyCode'],
-	additionalProperties: false
+	additionalProperties: true
 }
 
 const activityParamsValidate = ajv.compile<ActivityParams>(activityParamsSchema)
 
-const memberParamsValidate = ajv.compile<MemberParams>(memberParamsScheme)
+const memberParamsValidate = ajv.compile<MemberParams>(memberParamsSchema)
 
 export { activityParamsValidate, memberParamsValidate }

@@ -38,7 +38,7 @@ export const memberSchema = new mongoose.Schema<MemberModel>(
 		email: String,
 		createTime: { type: Number, default: Date.now() },
 		avatar: { type: String, default: null },
-		snsSite: { type: Map, default: null },
+		snsSite: { type: Object, default: null },
 		desc: { type: String, default: '' },
 		gender: { type: Number, default: 1 },
 		role: { type: String, default: 'GUEST' }
