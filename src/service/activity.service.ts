@@ -1,4 +1,3 @@
-import { params } from './../common/decorator/decorator'
 import { ActivityModel, ActivityVo } from 'Activity'
 import { copyProperties } from '~/common/utils'
 import { formatTime } from '~/common/utils/moment'
@@ -6,17 +5,16 @@ import { Activity } from '~/model'
 import { ActivityVoEntity } from '~/entity/activity.entity'
 import BaseService from './base.service'
 import { PageParamsEntity } from '~/entity/global'
+import { Singleton } from '~/common/decorator/decorator'
 
+@Singleton()
 export default class ActivityService extends BaseService {
-	activityModel = Activity
-	static singletonInstance: ActivityService = new ActivityService()
-
 	static getInstance() {
-		if (!ActivityService.singletonInstance) {
-			ActivityService.singletonInstance = new ActivityService()
-		}
-		return ActivityService.singletonInstance
+		console.log('dont have Singleton')
+		return new this()
 	}
+
+	activityModel = Activity
 
 	async findActivityByActivityId(activityId: number) {
 		const activityModel: ActivityModel = <ActivityModel>await this.activityModel.findOne({ activityId: activityId })
@@ -29,6 +27,7 @@ export default class ActivityService extends BaseService {
 	async findActivityList(pageParams: PageParams): Promise<PageResult<ActivityVo>> {
 		const params = new PageParamsEntity()
 		copyProperties(pageParams, params)
+		params.page = parseInt(params.page.toString()) // 发现可能是字符串类型
 		let _filter = {}
 		if (params.keyword) {
 			const reg = new RegExp(params.keyword, 'i')
@@ -45,7 +44,6 @@ export default class ActivityService extends BaseService {
 				]
 			}
 		}
-		console.log(_filter)
 		let count = 0
 		count = await this.activityModel.count(_filter)
 		if ((params.page - 1) * params.pageSize > count) {

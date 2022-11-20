@@ -14,7 +14,7 @@ export default class ActivityController {
 	static singletonInstance: ActivityController = new ActivityController()
 	static getInstance() {
 		if (!ActivityController.singletonInstance) {
-			ActivityController.singletonInstance = new ActivityController()
+			ActivityController.singletonInstance = new this()
 		}
 		return ActivityController.singletonInstance
 	}
