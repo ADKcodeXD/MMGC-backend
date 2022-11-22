@@ -21,7 +21,7 @@ export const copyProperties = <T>(sourceObj: NormalObject, targetObj: NormalObje
  * @returns 随机数
  */
 export const randomNum = (min: number, max: number): number => {
-	return Math.floor(Math.random() * max) + min
+	return Math.floor(Math.random() * max - min) + min
 }
 
 /**
@@ -32,8 +32,8 @@ export const randomNum = (min: number, max: number): number => {
  */
 export const aesEncrypt = (data: string, key: Buffer) => {
 	// Defininf iv
-	const iv = Buffer.alloc(32, 0)
-	const cipher = crypto.createCipheriv('aes-256-gcm', key, iv)
+	const iv = Buffer.alloc(16, 0)
+	const cipher = crypto.createCipheriv('aes-128-cbc', key, iv)
 	let crypted = cipher.update(data, 'utf8', 'hex')
 	crypted += cipher.final('hex')
 	return crypted
@@ -47,8 +47,8 @@ export const aesEncrypt = (data: string, key: Buffer) => {
  * @returns
  */
 export const aesDecrypt = (encrypted: string, key: Buffer) => {
-	const iv = Buffer.alloc(32, 0)
-	const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv)
+	const iv = Buffer.alloc(16, 0)
+	const decipher = crypto.createDecipheriv('aes-128-cbc', key, iv)
 	let decrypted = decipher.update(encrypted, 'hex', 'utf8')
 	decrypted += decipher.final('utf8')
 	return decrypted
