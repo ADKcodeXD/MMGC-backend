@@ -5,11 +5,11 @@ export class MemberModelEntity implements MemberModel {
 	createTime = Date.now()
 	desc: string | null = null
 	email: string | null = null
-	gender: number | null = null
+	gender = 1
 	memberId = NaN
 	memberName = ''
 	password = ''
-	role: string | null = null
+	role = 'GUEST'
 	snsSite: Sns | null = null
 	username = ''
 }
@@ -18,6 +18,7 @@ export class MemberVoEntity implements MemberVo {
 	memberId = 0
 	memberName = ''
 	username = ''
+	role: string | null = null
 	avatar: string | null = null
 	desc: string | null = null
 	gender: number | null = null
