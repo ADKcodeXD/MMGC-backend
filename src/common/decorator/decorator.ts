@@ -18,7 +18,6 @@ export const Controller = (path = '') => {
 
 /**
  * 用于单例模式 使得该类拥有getInstance方法
- * @param singletonName
  * @returns
  */
 export const Singleton = () => {
@@ -123,4 +122,8 @@ export const QueryAll = () => {
 
 export const ParamAll = () => {
 	return Inject((ctx: Context) => ctx.params)
+}
+
+export const User = () => {
+	return Inject((ctx: Context) => ctx.state.user)
 }
