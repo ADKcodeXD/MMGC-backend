@@ -87,5 +87,8 @@ declare module 'Member' {
 		desc: null | string
 		gender: number | null
 		snsSite: Sns | null
+		role: string | null
+		email: string | null
+		createTime: string | null | Date | number
 	}
 }

@@ -1,10 +1,10 @@
 import { RESULT_CODE, RESULT_MSG } from '~/types/enum'
 import Result from '~/common/result'
-import { Body, Controller, GetMapping, PostMapping, User } from '~/common/decorator/decorator'
+import { Body, Controller, DeleteMapping, GetMapping, Headers, PostMapping, PutMapping, QueryAll, User } from '~/common/decorator/decorator'
 import { aesDecrypt, copyProperties } from '~/common/utils'
 import { Validtor } from '~/middleware/ajv.middleware'
 import { memberParamsValidate } from '~/common/validate/validate'
-import { MemberModel, MemberParams } from 'Member'
+import { MemberModel, MemberParams, MemberVo } from 'Member'
 import MemberService from '~/service/member.service'
 import { MemberParamsEntity } from '~/entity/member.entity'
 import { EmailUtil } from '~/common/utils/emailutil'
@@ -53,7 +53,7 @@ export default class MemberController {
 			const key = crypto.scryptSync(config.AES_PASSWORD || '', config.AES_SALT || '', 16)
 			const decryptData = aesDecrypt(user.password, key)
 			if (decryptData === loginParams.password) {
-				const userVo = this.memberService.copyToVo(user)
+				const userVo = this.memberService.copyToVo(user, true)
 				return Result.success(
 					RESULT_CODE.SUCCESS,
 					RESULT_MSG.SUCCESS,
@@ -67,6 +67,54 @@ export default class MemberController {
 
 	@GetMapping('/getMyInfo')
 	async getMyInfo(@User() user: MemberModel) {
-		return this.memberService.copyToVo(user)
+		return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, this.memberService.copyToVo(user))
+	}
+
+	/**
+	 * 这个为公用的函数 不涉及角色
+	 * @param pageParams 分页参数
+	 * @returns
+	 */
+	@GetMapping('/getUserList')
+	async getUserList(@QueryAll() pageParams: PageParams) {
+		const res = await this.memberService.findMemberList(pageParams, false)
+		return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, res)
+	}
+
+	/**
+	 * 这个为全量获取 包括角色
+	 * @param pageParams 分页参数
+	 * @returns
+	 */
+	@GetMapping('/getUserListAll')
+	async getUserListAll(@QueryAll() pageParams: PageParams) {
+		const res = await this.memberService.findMemberList(pageParams, true)
+		return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, res)
+	}
+
+	@DeleteMapping('/batchDelete')
+	async deleteUserBatch(@Body() memberIds: Array<number>) {
+		const res = await this.memberService.batchDelete(memberIds)
+		return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, res)
+	}
+
+	@PutMapping('/updateMember')
+	async updateUser(@Body() memberParams: MemberVo) {
+		const res = await this.memberService.updateUser(memberParams)
+		if (res) {
+			return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, res)
+		} else {
+			return Result.fail(RESULT_CODE.USER_NOTFOUND, RESULT_MSG.USER_NOTFOUND, null)
+		}
+	}
+
+	@PostMapping('/addMember')
+	async addMember(@Body() memberParams: MemberVo) {
+		const res = await this.memberService.addMember(memberParams)
+		if (res) {
+			return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, res)
+		} else {
+			return Result.fail(RESULT_CODE.USER_NOTFOUND, RESULT_MSG.USER_NOTFOUND, null)
+		}
 	}
 }

@@ -23,6 +23,8 @@ export class MemberVoEntity implements MemberVo {
 	desc: string | null = null
 	gender: number | null = null
 	snsSite: Sns | null = null
+	email = ''
+	createTime = Date.now()
 }
 
 export class MemberParamsEntity implements MemberParams {

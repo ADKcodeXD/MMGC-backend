@@ -1,12 +1,13 @@
 import { MemberVo, MemberModel } from 'Member'
 import { Singleton } from '~/common/decorator/decorator'
-import { aesEncrypt, copyProperties } from '~/common/utils'
+import { aesEncrypt, copyProperties, pageQuery } from '~/common/utils'
 import { MemberModelEntity, MemberParamsEntity, MemberVoEntity } from '~/entity/member.entity'
 import { Member } from '~/model'
 import BaseService from './base.service'
 import crypto from 'node:crypto'
 import config from '~/config/config.default'
 import IncrementService from './increment.service'
+import { formatTime } from '~/common/utils/moment'
 
 @Singleton()
 export default class MemberService extends BaseService {
@@ -60,6 +61,28 @@ export default class MemberService extends BaseService {
 		return memberModel
 	}
 
+	/**
+	 * 默认会过滤掉memberVo里的role
+	 * @param pageParams
+	 * @param needRole 假设需要role 则传true
+	 * @returns
+	 */
+	async findMemberList(pageParams: PageParams, needRole = false) {
+		let filter = {}
+		if (pageParams.keyword) {
+			const reg = new RegExp(pageParams.keyword, 'i')
+			filter = {
+				$or: [{ memberName: { $regex: reg } }]
+			}
+		}
+		const res = await pageQuery(pageParams, this.memberModel, filter)
+		return {
+			result: this.copyToVoList(res.result, needRole),
+			page: res.page,
+			total: res.total
+		}
+	}
+
 	async save(memberParams: MemberParamsEntity) {
 		const model = new MemberModelEntity()
 		model.memberId = await this.incrementService.incrementId('members')
@@ -72,12 +95,41 @@ export default class MemberService extends BaseService {
 
 		const memDoc = new this.memberModel(model)
 		const newMember = await memDoc.save()
-		return this.copyToVo(newMember)
+		return this.copyToVo(newMember, true)
 	}
 
-	copyToVo(memberModel: MemberModel) {
+	async batchDelete(memberIds: Array<number>) {
+		await this.memberModel.remove({ memberId: { $in: memberIds } })
+		return true
+	}
+
+	async updateUser(memberParams: MemberVo) {
+		if (!memberParams.memberId) {
+			return false
+		}
+		const member = new MemberVoEntity()
+		copyProperties(memberParams, member)
+		await this.memberModel.updateOne({ memberId: member.memberId }, member)
+		return true
+	}
+
+	async addMember(memberParams: MemberVo) {
+		const newMember = new MemberModelEntity()
+		copyProperties(memberParams, newMember)
+		newMember.memberId = await this.incrementService.incrementId('members')
+		const res = await this.memberModel.create(newMember)
+		return this.copyToVo(res, true)
+	}
+
+	copyToVo(memberModel: MemberModel, needDetail = true) {
 		const memberVo: MemberVo = new MemberVoEntity()
 		copyProperties(memberModel, memberVo)
+		if (!needDetail) {
+			memberVo.role = null
+			memberVo.email = null
+			memberVo.createTime = null
+		}
+		memberVo.createTime = formatTime(memberVo.createTime || '')
 		return memberVo
 	}
 }
