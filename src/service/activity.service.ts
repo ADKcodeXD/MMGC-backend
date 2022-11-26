@@ -1,5 +1,5 @@
 import { ActivityModel, ActivityVo } from 'Activity'
-import { copyProperties } from '~/common/utils'
+import { copyProperties, pageQuery } from '~/common/utils'
 import { formatTime } from '~/common/utils/moment'
 import { Activity } from '~/model'
 import { ActivityVoEntity } from '~/entity/activity.entity'
@@ -25,13 +25,9 @@ export default class ActivityService extends BaseService {
 	}
 
 	async findActivityList(pageParams: PageParams): Promise<PageResult<ActivityVo>> {
-		const params = new PageParamsEntity()
-		copyProperties(pageParams, params)
-		params.page = parseInt(params.page.toString()) // 发现可能是字符串类型
 		let _filter = {}
-		if (params.keyword) {
-			const reg = new RegExp(params.keyword, 'i')
-			console.log(reg.test('黄金鸡-2022'))
+		if (pageParams.keyword) {
+			const reg = new RegExp(pageParams.keyword, 'i')
 			_filter = {
 				$or: [
 					// 多字段同时匹配
@@ -44,32 +40,11 @@ export default class ActivityService extends BaseService {
 				]
 			}
 		}
-		let count = 0
-		count = await this.activityModel.count(_filter)
-		if ((params.page - 1) * params.pageSize > count) {
-			return {
-				result: [],
-				total: count,
-				page: params.page
-			}
-		}
-		const orderRule = params.orderRule ? 1 : -1
-		let sort = {}
-		if (params.sortRule) {
-			sort = { [params.sortRule]: orderRule }
-		} else {
-			sort = { createTime: orderRule }
-		}
-		const res = await this.activityModel
-			.find(_filter)
-			.sort(sort)
-			.skip((params.page - 1) * params.pageSize)
-			.limit(params.pageSize)
-		const result = this.copyToVoList(res)
+		const res = await pageQuery(pageParams, this.activityModel, _filter)
 		return {
-			result: result,
-			total: count,
-			page: params.page
+			result: this.copyToVoList(res.result),
+			page: res.page,
+			total: res.total
 		}
 	}
 
