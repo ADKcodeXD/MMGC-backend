@@ -1,4 +1,6 @@
+import { Model } from 'mongoose'
 import crypto from 'node:crypto'
+import { PageParamsEntity } from '~/entity/global'
 
 /**
  * 复制对象属性 但是是浅复制 会copy引用 假设sourceObj中没有的键值对 不会复制到targetObj 且targetObj严格匹配sourceObj所拥有的的key且复制
@@ -52,4 +54,43 @@ export const aesDecrypt = (encrypted: string, key: Buffer) => {
 	let decrypted = decipher.update(encrypted, 'hex', 'utf8')
 	decrypted += decipher.final('utf8')
 	return decrypted
+}
+
+/**
+ * 分页封装函数 只需要将pageParams传入 以及相对应的模型传入即可
+ * @param pageParams pageParams
+ * @param model 对应的mongoose模型对象
+ * @param filter 过滤条件
+ * @returns 一个PageRes<T> 里面有着result result 装载着列表数据 你可以使用copyToVoList将其转换
+ */
+export const pageQuery = async <T>(pageParams: PageParams, model: Model<T>, filter = {}): Promise<PageResult<T>> => {
+	const params = new PageParamsEntity()
+	copyProperties(pageParams, params)
+	params.page = parseInt(params.page.toString()) // 发现可能是字符串类型
+	let count = 0
+	count = await model.count(filter)
+	if ((params.page - 1) * params.pageSize > count) {
+		return {
+			result: [],
+			total: count,
+			page: params.page
+		}
+	}
+	const orderRule = params.orderRule ? 1 : -1
+	let sort = {}
+	if (params.sortRule) {
+		sort = { [params.sortRule]: orderRule }
+	} else {
+		sort = { createTime: orderRule }
+	}
+	const res = await model
+		.find(filter)
+		.sort(sort)
+		.skip((params.page - 1) * params.pageSize)
+		.limit(params.pageSize)
+	return {
+		result: res,
+		total: count,
+		page: params.page
+	}
 }

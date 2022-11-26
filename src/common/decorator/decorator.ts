@@ -127,3 +127,7 @@ export const ParamAll = () => {
 export const User = () => {
 	return Inject((ctx: Context) => ctx.state.user)
 }
+
+export const Headers = (arg: string) => {
+	return Inject((ctx: Context) => ctx.headers[arg])
+}
