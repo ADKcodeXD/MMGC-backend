@@ -29,3 +29,16 @@ export const enum RESULT_MSG {
 	VERIFY_ERROR = '验证码错误', // 验证码错误
 	USER_PASSWORD_WRONG = '用户名错误或密码错误' // 用户名错误或密码错误
 }
+
+export const enum ROLE {
+	/** 全局管理员 */
+	ADMIN = 'ADMIN',
+	/** 子管理员 */
+	SUBADMIN = 'SUBADMIN',
+	/** 访客 */
+	GUEST = 'GUEST',
+	/** 组内成员 */
+	GROUPMEMBER = 'GROUPMEMBER',
+	/** 贡献者 */
+	COMMITTER = 'COMMITTER'
+}

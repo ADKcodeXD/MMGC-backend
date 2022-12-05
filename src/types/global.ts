@@ -115,10 +115,13 @@ declare global {
 		page?: number | null
 		pageSize?: number | null
 		id?: number | null // 搜索id
-		keyword?: string | null // 搜索关键词
+		/** 搜索关键词 */
+		keyword?: string | null
 		createTime?: Date | number | string | null
-		sortRule?: string | null // 相关字段
-		orderRule?: '' | 'reverse' | null // 不填默认正序
+		/** 相关字段 */
+		sortRule?: string | null
+		/** 不填默认正序 */
+		orderRule?: '' | 'reverse' | null
 	}
 
 	interface IncrementType {
