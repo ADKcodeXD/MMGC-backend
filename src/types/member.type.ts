@@ -85,10 +85,11 @@ declare module 'Member' {
 		username: string
 		avatar: null | string
 		desc: null | string
-		gender: number | null
+		gender: number | null | string
 		snsSite: Sns | null
 		role: string | null
 		email: string | null
-		createTime: string | null | Date | number
+		createTime?: string | null | number
+		password?: string
 	}
 }

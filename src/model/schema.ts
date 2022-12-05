@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import { ActivityModel } from 'Activity'
 import { MemberModel } from 'Member'
+import { MovieModel } from 'Movie'
 export const activitySchema = new mongoose.Schema<ActivityModel>(
 	{
 		activityBackgroundImg: { type: String, default: null },
@@ -44,6 +45,44 @@ export const memberSchema = new mongoose.Schema<MemberModel>(
 		role: { type: String, default: 'GUEST' }
 	},
 	{ collection: 'members' }
+)
+
+export const movieSchema = new mongoose.Schema<MovieModel>(
+	{
+		movieId: Number,
+		movieCover: String,
+		movieName: {
+			cn: String,
+			jp: { type: String, default: null },
+			en: { type: String, default: null }
+		},
+		movieDesc: {
+			cn: String,
+			jp: { type: String, default: null },
+			en: { type: String, default: null }
+		},
+		movieLink: {
+			cn: String,
+			jp: { type: String, default: null },
+			en: { type: String, default: null }
+		},
+		createTime: { type: Number, default: Date.now() },
+		moviePlaylink: { type: Object, default: null },
+		uploader: { type: Number, default: null },
+		movieDownloadLink: { type: Object, default: null },
+		authorId: { type: Number, default: null },
+		authorName: { type: String, default: null },
+		realPublishTime: { type: Date, default: null },
+		expectPlayTime: { type: Date, default: null },
+		activityId: { type: Number, default: null },
+		day: { type: Number, default: null },
+		isOrigin: { type: Number, default: 0 },
+		likeNums: { type: Number, default: 0 },
+		viewNums: { type: Number, default: 0 },
+		commentNums: { type: Number, default: 0 },
+		pollNums: { type: Number, default: 0 }
+	},
+	{ collection: 'movies' }
 )
 
 export const incrementSchema = new mongoose.Schema<IncrementType>(

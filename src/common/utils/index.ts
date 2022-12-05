@@ -23,7 +23,7 @@ export const copyProperties = <T>(sourceObj: NormalObject, targetObj: NormalObje
  * @returns 随机数
  */
 export const randomNum = (min: number, max: number): number => {
-	return Math.floor(Math.random() * max - min) + min
+	return Math.floor(Math.random() * (max - min)) + min
 }
 
 /**
