@@ -24,7 +24,7 @@ export class MemberVoEntity implements MemberVo {
 	gender: number | null = null
 	snsSite: Sns | null = null
 	email = ''
-	createTime = Date.now()
+	createTime?: number | null = null
 }
 
 export class MemberParamsEntity implements MemberParams {

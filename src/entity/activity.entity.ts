@@ -1,6 +1,6 @@
 import { ActivityModel, ActivityParams, ActivityVo } from 'Activity'
 
-export class ActivityModelEntity implements ActivityModel {
+export class ActivityModelEntity implements Required<ActivityModel> {
 	activityBackgroundImg: string | null = null
 	activityCM: string[] | null = null
 	activityCover = ''
@@ -15,11 +15,11 @@ export class ActivityModelEntity implements ActivityModel {
 	endTime: string | Date | null = null
 	movieNums: number | null = null
 	sponsorId: number[] | null = null
-	staff: Staff | null = null
+	staff: Map<any, any> | null = null
 	startTime: string | null = null
 }
 
-export class ActivityVoEntity implements ActivityVo {
+export class ActivityVoEntity implements Required<ActivityVo> {
 	sponsorListVo: any[] | null = null
 	activityBackgroundImg: string | null = null
 	activityCM: string[] | null = null
@@ -39,7 +39,7 @@ export class ActivityVoEntity implements ActivityVo {
 	startTime: string | null = null
 }
 
-export class ActivityParamsEntity implements ActivityParams {
+export class ActivityParamsEntity implements Required<ActivityParams> {
 	activityBackgroundImg: string | null = null
 	activityCM: string[] | null = null
 	activityCover = ''
