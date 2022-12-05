@@ -1,11 +1,11 @@
-import { ActivityModel, ActivityVo } from 'Activity'
+import { ActivityModel, ActivityUpdateParams, ActivityVo } from 'Activity'
 import { copyProperties, pageQuery } from '~/common/utils'
 import { formatTime } from '~/common/utils/moment'
 import { Activity } from '~/model'
 import { ActivityVoEntity } from '~/entity/activity.entity'
 import BaseService from './base.service'
-import { PageParamsEntity } from '~/entity/global'
 import { Singleton } from '~/common/decorator/decorator'
+import MemberService from './member.service'
 
 @Singleton()
 export default class ActivityService extends BaseService {
@@ -15,6 +15,8 @@ export default class ActivityService extends BaseService {
 	}
 
 	activityModel = Activity
+
+	memberService = MemberService.getInstance()
 
 	async findActivityByActivityId(activityId: number) {
 		const activityModel: ActivityModel = <ActivityModel>await this.activityModel.findOne({ activityId: activityId })
@@ -42,13 +44,13 @@ export default class ActivityService extends BaseService {
 		}
 		const res = await pageQuery(pageParams, this.activityModel, _filter)
 		return {
-			result: this.copyToVoList(res.result),
+			result: await this.copyToVoList(res.result),
 			page: res.page,
 			total: res.total
 		}
 	}
 
-	async updateByActivityId(updateActivity: ActivityModel) {
+	async updateByActivityId(updateActivity: ActivityUpdateParams) {
 		const res = <ActivityModel | null>await this.activityModel.findOneAndUpdate({ activityId: updateActivity.activityId }, updateActivity)
 		if (res) return res.activityId
 		return res
@@ -59,12 +61,25 @@ export default class ActivityService extends BaseService {
 		return res
 	}
 
-	copyToVo(activityModel: ActivityModel): ActivityVo {
+	async copyToVo(activityModel: ActivityModel): Promise<ActivityVo> {
 		const activityVo: ActivityVo = new ActivityVoEntity()
 		copyProperties(activityModel, activityVo)
 		activityVo.createTime = formatTime(activityVo.createTime)
 		activityVo.endTime = activityVo.endTime ? formatTime(activityVo.endTime) : null
 		activityVo.startTime = activityVo.startTime ? formatTime(activityVo.startTime) : null
+		activityVo.staff = {}
+
+		if (activityModel.staff) {
+			if (activityModel.staff.has('organizer')) {
+				activityVo.staff.organizer = await this.memberService.findMemberVoByMemberId(activityModel.staff.get('organizer'))
+			}
+			if (activityModel.staff.has('judges') && Array.isArray(activityModel.staff.get('judges'))) {
+				activityVo.staff.judges = await this.memberService.findMemberVoListByMemberIds(activityModel.staff.get('judges'))
+			}
+			if (activityModel.staff.has('translator') && Array.isArray(activityModel.staff.get('translator'))) {
+				activityVo.staff.translator = await this.memberService.findMemberVoListByMemberIds(activityModel.staff.get('translator'))
+			}
+		}
 		return activityVo
 	}
 }

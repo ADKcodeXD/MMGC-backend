@@ -18,10 +18,18 @@ export default class MemberService extends BaseService {
 		return new this()
 	}
 
-	async findMemberVoByMemberId(memberId: number) {
+	async findMemberVoByMemberId(memberId: number, needDetail = false) {
 		const memberModel = await this.memberModel.findOne({ memberId: memberId })
 		if (memberModel) {
-			return this.copyToVo(memberModel)
+			return this.copyToVo(memberModel, needDetail)
+		}
+		return null
+	}
+
+	async findMemberVoListByMemberIds(memberIds: number[], needDetail = false) {
+		const memberList = await this.memberModel.find({ memberId: { $in: memberIds } })
+		if (memberList) {
+			return this.copyToVoList(memberList, needDetail)
 		}
 		return null
 	}
@@ -77,7 +85,7 @@ export default class MemberService extends BaseService {
 		}
 		const res = await pageQuery(pageParams, this.memberModel, filter)
 		return {
-			result: this.copyToVoList(res.result, needRole),
+			result: await this.copyToVoList(res.result, needRole),
 			page: res.page,
 			total: res.total
 		}
@@ -99,7 +107,7 @@ export default class MemberService extends BaseService {
 	}
 
 	async batchDelete(memberIds: Array<number>) {
-		await this.memberModel.remove({ memberId: { $in: memberIds } })
+		await this.memberModel.deleteMany({ memberId: { $in: memberIds } })
 		return true
 	}
 
@@ -107,15 +115,24 @@ export default class MemberService extends BaseService {
 		if (!memberParams.memberId) {
 			return false
 		}
-		const member = new MemberVoEntity()
-		copyProperties(memberParams, member)
-		await this.memberModel.updateOne({ memberId: member.memberId }, member)
+		const res = await this.findMemberByUsername(memberParams.username)
+		if (res && res?.memberId !== memberParams.memberId) {
+			return false
+		}
+		delete memberParams.createTime
+		await this.memberModel.updateOne({ memberId: memberParams.memberId }, memberParams)
 		return true
 	}
 
 	async addMember(memberParams: MemberVo) {
 		const newMember = new MemberModelEntity()
+
 		copyProperties(memberParams, newMember)
+
+		const key = crypto.scryptSync(config.AES_PASSWORD || '', config.AES_SALT || '', 16)
+		const password = aesEncrypt(newMember.password, key)
+		newMember.password = password
+
 		newMember.memberId = await this.incrementService.incrementId('members')
 		const res = await this.memberModel.create(newMember)
 		return this.copyToVo(res, true)
