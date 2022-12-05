@@ -1,9 +1,9 @@
 import { RESULT_CODE, RESULT_MSG } from '~/types/enum'
 import Result from '~/common/result'
-import { Body, Controller, DeleteMapping, GetMapping, Headers, PostMapping, PutMapping, QueryAll, User } from '~/common/decorator/decorator'
+import { Body, Controller, DeleteMapping, GetMapping, Param, PostMapping, PutMapping, QueryAll, User } from '~/common/decorator/decorator'
 import { aesDecrypt, copyProperties } from '~/common/utils'
 import { Validtor } from '~/middleware/ajv.middleware'
-import { memberParamsValidate } from '~/common/validate/validate'
+import { memberParamsValidate, memberUpdateParamsValidate } from '~/common/validate/validate'
 import { MemberModel, MemberParams, MemberVo } from 'Member'
 import MemberService from '~/service/member.service'
 import { MemberParamsEntity } from '~/entity/member.entity'
@@ -98,9 +98,22 @@ export default class MemberController {
 		return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, res)
 	}
 
-	@PutMapping('/updateMember')
+	@PutMapping('/updateMember', [Validtor('body', memberUpdateParamsValidate)])
 	async updateUser(@Body() memberParams: MemberVo) {
 		const res = await this.memberService.updateUser(memberParams)
+		if (res) {
+			return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, res)
+		} else {
+			return Result.fail(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
+		}
+	}
+
+	@PostMapping('/addMember')
+	async addMember(@Body() memberParams: MemberVo) {
+		if (await this.memberService.findMemberVoByUsername(memberParams.username)) {
+			return Result.fail(RESULT_CODE.DATA_REPEAT, RESULT_MSG.DATA_REPEAT, null)
+		}
+		const res = await this.memberService.addMember(memberParams)
 		if (res) {
 			return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, res)
 		} else {
@@ -108,9 +121,9 @@ export default class MemberController {
 		}
 	}
 
-	@PostMapping('/addMember')
-	async addMember(@Body() memberParams: MemberVo) {
-		const res = await this.memberService.addMember(memberParams)
+	@GetMapping('/getUserDetail/:memberId')
+	async getUserDetail(@Param('memberId') memberId: number) {
+		const res = await this.memberService.findMemberVoByMemberId(memberId, true)
 		if (res) {
 			return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, res)
 		} else {

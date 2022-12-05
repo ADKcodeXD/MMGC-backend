@@ -2,10 +2,10 @@ import { Body, Controller, DeleteMapping, GetMapping, Param, PostMapping, PutMap
 import { RESULT_CODE, RESULT_MSG } from '~/types/enum'
 import Result from '~/common/result'
 import { Activity } from '~/model/index'
-import { ActivityModel, ActivityParams, ActivityVo } from 'Activity'
+import { ActivityModel, ActivityParams, ActivityUpdateParams, ActivityVo } from 'Activity'
 import { copyProperties } from '~/common/utils'
 import { Validtor } from '~/middleware/ajv.middleware'
-import { activityParamsValidate } from '~/common/validate/validate'
+import { activityParamsValidate, activityUpdateParamsSchemaValidate } from '~/common/validate/validate'
 import ActivityService from '~/service/activity.service'
 import { ActivityModelEntity } from '~/entity/activity.entity'
 
@@ -43,19 +43,17 @@ export default class ActivityController {
 		return Result.fail<null>(RESULT_CODE.DATA_NOTFOUND, RESULT_MSG.DATA_NOTFOUND, null)
 	}
 
-	@PutMapping('/updateActivity', [Validtor('body', activityParamsValidate)])
-	async updateActivity(@Body() activityParam: ActivityParams) {
-		if (!activityParam.activityId) {
+	@PutMapping('/updateActivity', [Validtor('body', activityUpdateParamsSchemaValidate)])
+	async updateActivity(@Body() activityParams: ActivityUpdateParams) {
+		if (!activityParams.activityId) {
 			return Result.fail<null>(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
 		}
-		const res = await this.activityService.findActivityByActivityId(activityParam.activityId)
+		const res = await this.activityService.findActivityByActivityId(activityParams.activityId)
 		if (!res) {
 			return Result.fail<null>(RESULT_CODE.DATA_NOTFOUND, RESULT_MSG.DATA_NOTFOUND, null)
 		}
-		const updateParams: ActivityModel = new ActivityModelEntity()
-
-		copyProperties(activityParam, updateParams)
-		const updateRes = await this.activityService.updateByActivityId(updateParams)
+		delete activityParams.createTime
+		const updateRes = await this.activityService.updateByActivityId(activityParams)
 
 		if (updateRes) return Result.success<number>(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, updateRes)
 		return Result.fail<null>(RESULT_CODE.DATA_NOTFOUND, RESULT_MSG.DATA_NOTFOUND, null)
