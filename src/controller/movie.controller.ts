@@ -1,7 +1,11 @@
 import { RESULT_CODE, RESULT_MSG } from '~/types/enum'
-import { Body, Controller, GetMapping, PostMapping, Query } from '~/common/decorator/decorator'
-import Result from '~/common/result'
+import { Body, Controller, PostMapping, User } from '~/common/decorator/decorator'
 import { MovieParams } from 'Movie'
+import { MemberVo } from 'Member'
+import Result from '~/common/result'
+import MovieService from '~/service/movie.service'
+import { Validtor } from '~/middleware/ajv.middleware'
+import { movieParamsValidate } from '~/common/validate/validate'
 
 @Controller('/movie')
 export default class MovieController {
@@ -13,13 +17,13 @@ export default class MovieController {
 		return MovieController.singletonInstance
 	}
 
-	@PostMapping('/save')
-	async save(@Body() movieParams: MovieParams) {
-		return Result.fail(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
-	}
+	movieService = MovieService.getInstance()
 
-	@PostMapping('/verify')
-	async verifyCode(@Body() body: { email: string; code: number }) {
-		return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, null)
+	@PostMapping('/save', [Validtor('body', movieParamsValidate)])
+	async save(@Body() movieParams: MovieParams, @User() userInfo: MemberVo) {
+		if (!userInfo || !userInfo.memberId) {
+			return Result.fail(RESULT_CODE.USER_NOTFOUND, RESULT_MSG.USER_NOTFOUND, null)
+		}
+		return this.movieService.save(movieParams, userInfo.memberId)
 	}
 }

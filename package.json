@@ -7,7 +7,8 @@
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"build": "tsc",
 		"lint": "eslint ./",
-		"dev": "cross-env NODE_ENV=dev MODE=dev nodemon --watch src/**/* -e ts --delay 500ms --exec ts-node -r tsconfig-paths/register src/index.ts --files"
+		"dev": "cross-env NODE_ENV=dev MODE=dev nodemon --watch src/**/* -e ts --delay 500ms --exec ts-node -r tsconfig-paths/register src/index.ts --files",
+		"dev:prod": "cross-env NODE_ENV=prod MODE=prod nodemon --watch src/**/* -e ts --delay 500ms --exec ts-node -r tsconfig-paths/register src/index.ts --files"
 	},
 	"author": "ADKcode <790532173@qq.com>",
 	"license": "MIT",

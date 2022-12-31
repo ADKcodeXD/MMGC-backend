@@ -6,11 +6,11 @@ declare module 'Movie' {
 		/**
 		 * 关联活动id 如果不存在则为非活动作品
 		 */
-		activityId: null | string
+		activityId: null | number
 		/**
 		 * 作者id 可以关联本站拥有的用户 如果不存在可以输入作者名
 		 */
-		authorId: null | string
+		authorId: null | number
 		/**
 		 * 如果不存在id 则优先使用这个
 		 */
