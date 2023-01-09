@@ -6,6 +6,7 @@ import { ActivityVoEntity } from '~/entity/activity.entity'
 import BaseService from './base.service'
 import { Singleton } from '~/common/decorator/decorator'
 import MemberService from './member.service'
+import { MemberVo } from 'Member'
 
 @Singleton()
 export default class ActivityService extends BaseService {
@@ -18,7 +19,7 @@ export default class ActivityService extends BaseService {
 
 	memberService = MemberService.getInstance()
 
-	async findActivityByActivityId(activityId: number) {
+	async findActivityVoByActivityId(activityId: number) {
 		const activityModel: ActivityModel = <ActivityModel>await this.activityModel.findOne({ activityId: activityId })
 		if (activityModel) {
 			return this.copyToVo(activityModel)
@@ -74,10 +75,12 @@ export default class ActivityService extends BaseService {
 				activityVo.staff.organizer = await this.memberService.findMemberVoByMemberId(activityModel.staff.get('organizer'))
 			}
 			if (activityModel.staff.has('judges') && Array.isArray(activityModel.staff.get('judges'))) {
-				activityVo.staff.judges = await this.memberService.findMemberVoListByMemberIds(activityModel.staff.get('judges'))
+				activityVo.staff.judges = (await this.memberService.findMemberVoListByMemberIds(activityModel.staff.get('judges'))) as MemberVo[]
 			}
 			if (activityModel.staff.has('translator') && Array.isArray(activityModel.staff.get('translator'))) {
-				activityVo.staff.translator = await this.memberService.findMemberVoListByMemberIds(activityModel.staff.get('translator'))
+				activityVo.staff.translator = (await this.memberService.findMemberVoListByMemberIds(
+					activityModel.staff.get('translator')
+				)) as MemberVo[]
 			}
 		}
 		return activityVo

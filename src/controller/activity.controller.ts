@@ -22,7 +22,7 @@ export default class ActivityController {
 
 	@PostMapping('/saveActivity', [Validtor('body', activityParamsValidate)])
 	async saveActivity(@Body() activityParam: ActivityParams) {
-		const res = await this.activityService.findActivityByActivityId(activityParam.activityId)
+		const res = await this.activityService.findActivityVoByActivityId(activityParam.activityId)
 		if (res) {
 			return Result.fail<null>(RESULT_CODE.DATA_REPEAT, RESULT_MSG.DATA_REPEAT, null)
 		}
@@ -38,7 +38,7 @@ export default class ActivityController {
 		if (!activityId) {
 			return Result.fail<null>(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
 		}
-		const res = await this.activityService.findActivityByActivityId(activityId)
+		const res = await this.activityService.findActivityVoByActivityId(activityId)
 		if (res) return Result.success<ActivityVo>(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, res)
 		return Result.fail<null>(RESULT_CODE.DATA_NOTFOUND, RESULT_MSG.DATA_NOTFOUND, null)
 	}
@@ -48,7 +48,7 @@ export default class ActivityController {
 		if (!activityParams.activityId) {
 			return Result.fail<null>(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
 		}
-		const res = await this.activityService.findActivityByActivityId(activityParams.activityId)
+		const res = await this.activityService.findActivityVoByActivityId(activityParams.activityId)
 		if (!res) {
 			return Result.fail<null>(RESULT_CODE.DATA_NOTFOUND, RESULT_MSG.DATA_NOTFOUND, null)
 		}
@@ -64,7 +64,7 @@ export default class ActivityController {
 		if (!activityId) {
 			return Result.fail<null>(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
 		}
-		const res = await this.activityService.findActivityByActivityId(activityId)
+		const res = await this.activityService.findActivityVoByActivityId(activityId)
 		if (!res) {
 			return Result.fail<null>(RESULT_CODE.DATA_NOTFOUND, RESULT_MSG.DATA_NOTFOUND, null)
 		}

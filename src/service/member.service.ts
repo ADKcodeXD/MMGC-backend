@@ -36,7 +36,7 @@ export default class MemberService extends BaseService {
 
 	async findMemberByMemberId(memberId: number) {
 		const memberModel = await this.memberModel.findOne({ memberId: memberId })
-		return memberModel
+		return memberModel || null
 	}
 
 	async findMemberVoByUsername(username: string) {

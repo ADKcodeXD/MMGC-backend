@@ -1,7 +1,7 @@
 export default abstract class BaseService {
 	abstract copyToVo(modelParams: any, ...args: any[]): any
 
-	async copyToVoList(modelList: Array<any>, ...args: any[]): Promise<any[]> {
+	async copyToVoList<T, V>(modelList: Array<T>, ...args: any[]): Promise<V[]> {
 		const itemList: any[] = []
 		for await (const item of modelList) {
 			const res = await this.copyToVo(item, ...args)
