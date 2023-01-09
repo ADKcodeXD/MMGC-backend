@@ -128,5 +128,16 @@ declare global {
 		coll: string
 		currentValue: number
 	}
+
+	export interface MoviePageParams extends PageParams {
+		/** 活动id */
+		activityId?: number
+		/** 活动天数 */
+		day?: number
+		/** 0代表未公开 1代表公开 */
+		isPublic?: number
+		/** 上传者id */
+		uploader?: number
+	}
 }
 export {}

@@ -1,4 +1,6 @@
-import { MovieModel, MovieParams } from 'Movie'
+import { ActivityVo } from 'Activity'
+import { MemberVo } from 'Member'
+import { MovieModel, MovieParams, MovieVo } from 'Movie'
 
 export class MovieParamsEntity implements MovieParams {
 	movieCover = ''
@@ -49,4 +51,33 @@ export class MovieModelEntity implements MovieModel {
 	activityId = null
 	day = null
 	isOrigin = 1
+}
+
+export class MovieVoEntity implements MovieVo {
+	movieLink: Sns | null = null
+	activityVo: ActivityVo | null = null
+	loginVo: LoginVo | null = null
+	uploader: MemberVo | null = null
+	author: MemberVo | null = null
+	movieCover = ''
+	likeNums = 0
+	movieId = 0
+	pollNums = 0
+	viewNums = 0
+	movieName: I18N = {
+		cn: ''
+	}
+	movieDesc: I18N = {
+		cn: ''
+	}
+	moviePlaylink: I18N = {
+		cn: ''
+	}
+	movieDownloadLink: DownloadLink | null = null
+	realPublishTime: string | null = null
+	expectPlayTime: string | null = ''
+	day = 0
+	createTime: string | null = null
+	isOrigin = 1
+	commentNums = 1
 }

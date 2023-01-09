@@ -113,7 +113,7 @@ declare module 'Movie' {
 		/**
 		 * 上传者信息
 		 */
-		uploader: MemberVo
+		uploader: MemberVo | null
 		/**
 		 * 实际原作者信息
 		 */
