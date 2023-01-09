@@ -7,8 +7,8 @@
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"build": "tsc",
 		"lint": "eslint ./",
-		"dev": "cross-env NODE_ENV=dev MODE=dev nodemon --watch src/**/* -e ts --delay 500ms --exec ts-node -r tsconfig-paths/register src/index.ts --files",
-		"dev:prod": "cross-env NODE_ENV=prod MODE=prod nodemon --watch src/**/* -e ts --delay 500ms --exec ts-node -r tsconfig-paths/register src/index.ts --files"
+		"dev": "cross-env NODE_ENV=dev MODE=dev nodemon --watch src -e ts --delay 500ms --exec ts-node -r tsconfig-paths/register src/index.ts --files",
+		"dev:prod": "cross-env NODE_ENV=prod MODE=prod nodemon --watch src -e ts --delay 500ms --exec ts-node -r tsconfig-paths/register src/index.ts --files"
 	},
 	"author": "ADKcode <790532173@qq.com>",
 	"license": "MIT",
@@ -18,7 +18,7 @@
 		"body-parser": "^1.20.1",
 		"cos-nodejs-sdk-v5": "^2.11.15",
 		"dotenv": "^16.0.3",
-		"jsonwebtoken": "^8.5.1",
+		"jsonwebtoken": "^9.0.0",
 		"koa": "^2.13.4",
 		"koa-body": "^6.0.1",
 		"koa-json-error": "^3.1.2",
