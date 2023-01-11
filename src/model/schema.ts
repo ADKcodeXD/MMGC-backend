@@ -62,9 +62,11 @@ export const movieSchema = new mongoose.Schema<MovieModel>(
 			en: { type: String, default: null }
 		},
 		movieLink: {
-			cn: String,
-			jp: { type: String, default: null },
-			en: { type: String, default: null }
+			bilibili: { type: String, default: null },
+			youtube: { type: String, default: null },
+			niconico: { type: String, default: null },
+			personalWebsite: { type: String, default: null },
+			twitter: { type: String, default: null }
 		},
 		createTime: { type: Number, default: Date.now() },
 		moviePlaylink: { type: Object, default: null },

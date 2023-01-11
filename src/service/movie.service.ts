@@ -9,6 +9,7 @@ import { copyProperties, pageQuery } from '~/common/utils'
 import Result from '~/common/result'
 import MemberService from './member.service'
 import ActivityService from './activity.service'
+import { formatTime } from '~/common/utils/moment'
 
 @Singleton()
 export default class MovieService extends BaseService {
@@ -27,6 +28,7 @@ export default class MovieService extends BaseService {
 		model.movieId = await this.incrementService.incrementId('movies')
 		model.uploader = memberId
 		model.createTime = Date.now()
+
 		const res = await new Movie(model).save()
 		if (res) {
 			return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, res)
@@ -104,7 +106,7 @@ export default class MovieService extends BaseService {
 		const res = await pageQuery(movieParams, this.movieModel, _filter)
 
 		return {
-			result: await this.copyToVoList(res.result),
+			result: await this.copyToVoList(res.result, false),
 			page: res.page,
 			total: res.total
 		}
@@ -120,6 +122,9 @@ export default class MovieService extends BaseService {
 		}
 		if (movieModel.authorId) vo.author = await this.memberService.findMemberVoByMemberId(movieModel.authorId)
 		vo.uploader = await this.memberService.findMemberVoByMemberId(movieModel.uploader)
-		return movieModel
+		vo.createTime = formatTime(movieModel.createTime)
+		vo.expectPlayTime = formatTime(movieModel.expectPlayTime)
+		vo.realPublishTime = formatTime(movieModel.realPublishTime)
+		return vo
 	}
 }
