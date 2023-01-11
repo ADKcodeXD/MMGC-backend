@@ -146,7 +146,7 @@ export default class MemberService extends BaseService {
 			memberVo.email = null
 			memberVo.createTime = null
 		}
-		memberVo.createTime = formatTime(memberVo.createTime || '')
+		memberVo.createTime = formatTime(memberModel.createTime)
 		return memberVo
 	}
 }
