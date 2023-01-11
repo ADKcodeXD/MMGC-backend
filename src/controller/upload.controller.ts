@@ -35,11 +35,11 @@ export default class UploadController {
 	@PostMapping('/uploadVideo')
 	async uploadVideo(@Ctx() ctx: Context) {
 		const file = ctx.request.files?.file as any
-		console.log(file)
 		if (file.size > 150 * 1024 * 1024) {
 			return Result.fail(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
 		}
 		const path = file.filepath as string
+
 		if (!fs.existsSync(path)) {
 			return Result.fail(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
 		}
