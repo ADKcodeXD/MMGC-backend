@@ -41,7 +41,8 @@ export class CosUtil {
 		}
 		CosUtil.isUploading = true
 		const reg = /(mp4)$/
-		const ext = fileName.split('.')[1] || ''
+		const split = fileName.split('.')
+		const ext = split[split.length - 1] || ''
 		if (!reg.test(ext)) {
 			return null
 		}
