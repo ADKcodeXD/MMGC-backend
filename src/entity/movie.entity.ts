@@ -54,6 +54,9 @@ export class MovieModelEntity implements MovieModel {
 }
 
 export class MovieVoEntity implements MovieVo {
+	authorName: string | null = null
+	isPublic: boolean | null = false
+	isActivityMovie: boolean | null = false
 	movieLink: Sns | null = null
 	activityVo: ActivityVo | null = null
 	loginVo: LoginVo | null = null
@@ -75,7 +78,6 @@ export class MovieVoEntity implements MovieVo {
 	}
 	movieDownloadLink: DownloadLink | null = null
 	realPublishTime: string | null = null
-	expectPlayTime: string | null = ''
 	day = 0
 	createTime: string | null = null
 	isOrigin = 1

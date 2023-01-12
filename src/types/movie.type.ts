@@ -101,7 +101,7 @@ declare module 'Movie' {
 			>
 		>
 
-	interface MovieVo extends Required<Omit<MovieModel, 'activityId' | 'authorId' | 'authorName' | 'uploader'>> {
+	interface MovieVo extends Required<Omit<MovieModel, 'activityId' | 'authorId' | 'uploader' | 'expectPlayTime'>> {
 		/**
 		 * 活动VO类型
 		 */
@@ -118,5 +118,13 @@ declare module 'Movie' {
 		 * 实际原作者信息
 		 */
 		author: MemberVo | null
+		/**
+		 * 是否为原创作品
+		 */
+		isActivityMovie: boolean | null
+		/**
+		 * 是否为已公开作品
+		 */
+		isPublic: boolean | null
 	}
 }

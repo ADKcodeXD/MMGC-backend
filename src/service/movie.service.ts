@@ -59,7 +59,7 @@ export default class MovieService extends BaseService {
 	}
 
 	async getMovieDetail(movieId: number) {
-		const model = await this.movieModel.findOne({ movieId: movieId, expectPlayTime: { $lt: Date.now() } })
+		const model = await this.movieModel.findOne({ movieId: movieId, expectPlayTime: { $lt: new Date() } })
 		if (model) {
 			return this.copyToVo(model)
 		}
@@ -78,17 +78,20 @@ export default class MovieService extends BaseService {
 			_filter = {
 				$or: [
 					// 多字段同时匹配
-					{ movieName: { $regex: reg } },
+					{ 'movieName.cn': { $regex: reg } },
+					{ 'movieName.en': { $regex: reg } },
+					{ 'movieName.jp': { $regex: reg } },
 					{ authorName: { $regex: reg } },
-					{ movieDesc: { $regex: reg } }
+					{ 'movieDesc.cn': { $regex: reg } },
+					{ 'movieDesc.en': { $regex: reg } },
+					{ 'movieDesc.jp': { $regex: reg } }
 				]
 			}
 		}
 
-		if (movieParams.isPublic === 0) {
-			_filter.expectPlayTime = { $gt: Date.now() }
-		} else {
-			_filter.expectPlayTime = { $lt: Date.now() }
+		if (movieParams.isPublic) {
+			movieParams.isPublic = parseInt(movieParams.isPublic as any)
+			_filter.expectPlayTime = movieParams.isPublic === 0 ? { $gt: new Date() } : { $lt: new Date() }
 		}
 
 		if (movieParams.uploader) {
@@ -117,13 +120,24 @@ export default class MovieService extends BaseService {
 		copyProperties(movieModel, vo)
 		if (needActivityVo && movieModel.activityId) {
 			vo.activityVo = await this.activityService.findActivityVoByActivityId(movieModel.activityId)
+			vo.isActivityMovie = true
 		} else {
 			vo.activityVo = null
+			vo.isActivityMovie = movieModel.activityId ? true : false
 		}
 		if (movieModel.authorId) vo.author = await this.memberService.findMemberVoByMemberId(movieModel.authorId)
+		if (movieModel.expectPlayTime) {
+			const time = parseInt(formatTime(movieModel.expectPlayTime, 'x'))
+			if (time > Date.now()) {
+				vo.isPublic = false
+			} else {
+				vo.isPublic = true
+			}
+		} else {
+			vo.isPublic = true
+		}
 		vo.uploader = await this.memberService.findMemberVoByMemberId(movieModel.uploader)
 		vo.createTime = formatTime(movieModel.createTime)
-		vo.expectPlayTime = formatTime(movieModel.expectPlayTime)
 		vo.realPublishTime = formatTime(movieModel.realPublishTime)
 		return vo
 	}
