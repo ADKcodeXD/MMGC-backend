@@ -15,7 +15,7 @@ export default class IncrementService {
 	 * @param collection 集合的名字
 	 */
 	async incrementId(collection: string): Promise<number> {
-		const res = <IncrementType>await this.increment.findOne({ coll: 'members' })
+		const res = <IncrementType>await this.increment.findOne({ coll: collection })
 		let id = 0
 		if (!res) {
 			await new this.increment({ coll: collection, currentValue: 100 }).save()
