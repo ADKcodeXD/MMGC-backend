@@ -149,10 +149,10 @@ const memberUpdateParamsSchema: JSONSchemaType<MemberVo> = {
 		avatar: { type: 'string', nullable: true },
 		snsSite: { $ref: '#snsSite' },
 		desc: { type: 'string', nullable: true },
-		gender: { type: ['number', 'string'], nullable: true },
+		gender: { type: 'number', nullable: true },
 		role: { type: 'string', nullable: true },
 		memberId: { type: 'integer', nullable: true },
-		createTime: { type: ['string', 'number'], nullable: true }
+		createTime: { type: 'string', nullable: true }
 	},
 	required: ['username', 'memberId'],
 	additionalProperties: false
