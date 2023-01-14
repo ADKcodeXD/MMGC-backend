@@ -25,7 +25,7 @@ export default class MovieService extends BaseService {
 	async save(movieParams: MovieParams, memberId: number) {
 		const model = new MovieModelEntity()
 		copyProperties(movieParams, model)
-		model.movieId = await this.incrementService.incrementId('movies')
+		model.movieId = await this.incrementService.incrementId('movies', { model: Movie, key: 'movieId' })
 		model.uploader = memberId
 		model.createTime = Date.now()
 
@@ -136,9 +136,9 @@ export default class MovieService extends BaseService {
 		} else {
 			vo.isPublic = true
 		}
+		if (vo.realPublishTime) vo.realPublishTime = formatTime(movieModel.realPublishTime)
 		vo.uploader = await this.memberService.findMemberVoByMemberId(movieModel.uploader)
 		vo.createTime = formatTime(movieModel.createTime)
-		vo.realPublishTime = formatTime(movieModel.realPublishTime)
 		return vo
 	}
 }

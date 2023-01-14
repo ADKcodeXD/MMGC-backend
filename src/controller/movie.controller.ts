@@ -48,7 +48,7 @@ export default class MovieController {
 		if (!movieId) {
 			return Result.fail(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
 		}
-		this.movieService.getMovieDetail(movieId)
+		this.movieService.deleteMovie(movieId)
 		return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, null)
 	}
 
