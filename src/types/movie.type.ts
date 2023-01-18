@@ -101,6 +101,9 @@ declare module 'Movie' {
 			>
 		>
 
+	interface MovieUpdateParams extends MovieParams {
+		movieId: number
+	}
 	interface MovieVo extends Required<Omit<MovieModel, 'activityId' | 'authorId' | 'uploader' | 'expectPlayTime'>> {
 		/**
 		 * 活动VO类型

@@ -3,7 +3,7 @@ import { Singleton } from '~/common/decorator/decorator'
 import { Movie } from '~/model'
 import BaseService from './base.service'
 import IncrementService from './increment.service'
-import { MovieModel, MovieParams, MovieVo } from 'Movie'
+import { MovieModel, MovieParams, MovieUpdateParams, MovieVo } from 'Movie'
 import { MovieModelEntity, MovieVoEntity } from '~/entity/movie.entity'
 import { copyProperties, pageQuery } from '~/common/utils'
 import Result from '~/common/result'
@@ -58,8 +58,15 @@ export default class MovieService extends BaseService {
 		}
 	}
 
-	async getMovieDetail(movieId: number) {
-		const model = await this.movieModel.findOne({ movieId: movieId, expectPlayTime: { $lt: new Date() } })
+	async getMovieDetail(movieId: number, isAll?: boolean) {
+		const _filter: any = {
+			movieId: movieId
+		}
+		if (!isAll) {
+			_filter.expectPlayTime = { $lt: new Date() }
+		}
+
+		const model = await this.movieModel.findOne(_filter)
 		if (model) {
 			return this.copyToVo(model)
 		}
@@ -113,6 +120,19 @@ export default class MovieService extends BaseService {
 			page: res.page,
 			total: res.total
 		}
+	}
+
+	async updateMovie(movieParams: MovieUpdateParams) {
+		// 保证拥有
+		const movie = await this.movieModel.findOne({ movieId: movieParams.movieId })
+		if (movie) {
+			const flag = await this.movieModel.updateOne({ movieId: movieParams.movieId }, movieParams)
+			if (flag) {
+				return true
+			}
+			return false
+		}
+		return false
 	}
 
 	async copyToVo(movieModel: MovieModel, needActivityVo = true) {
