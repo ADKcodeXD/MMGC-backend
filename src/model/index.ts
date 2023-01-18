@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import { activitySchema, memberSchema, incrementSchema, movieSchema } from './schema'
+import { activitySchema, memberSchema, incrementSchema, movieSchema, configSchema } from './schema'
 
 const Activity = mongoose.model('Activity', activitySchema)
 
@@ -9,4 +9,6 @@ const Increment = mongoose.model('Increment', incrementSchema)
 
 const Movie = mongoose.model('Movie', movieSchema)
 
-export { Activity, Member, Increment, Movie }
+const Config = mongoose.model('Config', configSchema)
+
+export { Activity, Member, Increment, Movie, Config }

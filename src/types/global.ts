@@ -139,5 +139,13 @@ declare global {
 		/** 上传者id */
 		uploader?: number
 	}
+
+	export interface MMGCSysConfig {
+		currentActivityId?: number
+		skin?: string
+		isVideoPlay?: boolean
+		otherSettings?: string
+		configType?: number
+	}
 }
 export {}

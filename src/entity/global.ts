@@ -7,3 +7,11 @@ export class PageParamsEntity implements PageParams {
 	sortRule: string | null = null
 	orderRule: '' | 'reverse' | null = null
 }
+
+export class MMGCSysConfigEntity implements MMGCSysConfig {
+	currentActivityId = 0
+	skin = ''
+	isVideoPlay = true
+	otherSettings = ''
+	configType = 1
+}

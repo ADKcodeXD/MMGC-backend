@@ -83,9 +83,5 @@ declare module 'Activity' {
 		 * 必填 更新需要携带活动id
 		 */
 		activityId: number
-		/**
-		 * 可能会携带该参数 请勿提交
-		 */
-		createTime?: number | null | string
 	}
 }

@@ -94,3 +94,14 @@ export const incrementSchema = new mongoose.Schema<IncrementType>(
 	},
 	{ collection: 'increment' }
 )
+
+export const configSchema = new mongoose.Schema<MMGCSysConfig>(
+	{
+		currentActivityId: Number,
+		skin: String,
+		isVideoPlay: Boolean,
+		otherSettings: String,
+		configType: String
+	},
+	{ collection: 'configs' }
+)
