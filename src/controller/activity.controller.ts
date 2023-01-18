@@ -52,7 +52,6 @@ export default class ActivityController {
 		if (!res) {
 			return Result.fail<null>(RESULT_CODE.DATA_NOTFOUND, RESULT_MSG.DATA_NOTFOUND, null)
 		}
-		delete activityParams.createTime
 		const updateRes = await this.activityService.updateByActivityId(activityParams)
 
 		if (updateRes) return Result.success<number>(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, updateRes)
