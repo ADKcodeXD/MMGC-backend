@@ -14,6 +14,18 @@ export const activityParamsSchema: JSONSchemaType<ActivityParams> = {
 			},
 			required: ['cn'],
 			additionalProperties: false
+		},
+		i18nNullable: {
+			$id: '#i18nNull',
+			type: 'object',
+			nullable: true,
+			properties: {
+				cn: { type: 'string', nullable: true },
+				jp: { type: 'string', nullable: true },
+				en: { type: 'string', nullable: true }
+			},
+			required: [],
+			additionalProperties: false
 		}
 	},
 	properties: {
@@ -34,10 +46,14 @@ export const activityParamsSchema: JSONSchemaType<ActivityParams> = {
 			properties: {
 				organizer: { type: 'integer', nullable: true },
 				translator: { type: 'array', nullable: true, items: { type: 'integer' } },
-				judges: { type: 'array', nullable: true, items: { type: 'integer' } }
+				judges: { type: 'array', nullable: true, items: { type: 'integer' } },
+				others: { type: 'array', nullable: true, items: { type: 'integer' } }
 			},
 			additionalProperties: false
-		}
+		},
+		rules: { $ref: '#i18nNull' },
+		timesorother: { $ref: '#i18nNull' },
+		faq: { $ref: '#i18nNull' }
 	},
 	required: ['activityId', 'activityName', 'activityLogo', 'activityCover', 'desc'],
 	additionalProperties: true
@@ -55,6 +71,18 @@ export const activityUpdateParamsSchema: JSONSchemaType<ActivityUpdateParams> = 
 				en: { type: 'string', nullable: true }
 			},
 			required: ['cn'],
+			additionalProperties: false
+		},
+		i18nNullable: {
+			$id: '#i18nNull',
+			type: 'object',
+			nullable: true,
+			properties: {
+				cn: { type: 'string', nullable: true },
+				jp: { type: 'string', nullable: true },
+				en: { type: 'string', nullable: true }
+			},
+			required: [],
 			additionalProperties: false
 		}
 	},
@@ -76,10 +104,14 @@ export const activityUpdateParamsSchema: JSONSchemaType<ActivityUpdateParams> = 
 			properties: {
 				organizer: { type: 'integer', nullable: true },
 				translator: { type: 'array', nullable: true, items: { type: 'integer' } },
-				judges: { type: 'array', nullable: true, items: { type: 'integer' } }
+				judges: { type: 'array', nullable: true, items: { type: 'integer' } },
+				others: { type: 'array', nullable: true, items: { type: 'integer' } }
 			},
 			additionalProperties: false
-		}
+		},
+		rules: { $ref: '#i18nNull' },
+		timesorother: { $ref: '#i18nNull' },
+		faq: { $ref: '#i18nNull' }
 	},
 	required: ['activityId'],
 	additionalProperties: true

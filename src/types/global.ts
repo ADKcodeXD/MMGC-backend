@@ -49,12 +49,17 @@ declare global {
 		 * 翻译人员
 		 */
 		translator?: number[] | null
+		/**
+		 * 其他贡献者
+		 */
+		others?: number[] | null
 	}
 
 	type StaffVo = {
 		judges?: MemberVo[] | null
 		organizer?: null | MemberVo
 		translator?: MemberVo[] | null
+		others?: MemberVo[] | null
 	}
 
 	type Sns = {

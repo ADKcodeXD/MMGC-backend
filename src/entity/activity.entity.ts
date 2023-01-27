@@ -1,6 +1,9 @@
 import { ActivityModel, ActivityParams, ActivityVo } from 'Activity'
 
 export class ActivityModelEntity implements Required<ActivityModel> {
+	rules: I18N | null = null
+	timesorother: I18N | null = null
+	faq: I18N | null = null
 	activityBackgroundImg: string | null = null
 	activityCM: string[] | null = null
 	activityCover = ''
@@ -20,6 +23,9 @@ export class ActivityModelEntity implements Required<ActivityModel> {
 }
 
 export class ActivityVoEntity implements Required<ActivityVo> {
+	rules: I18N | null = null
+	faq: I18N | null = null
+	timesorother: I18N | null = null
 	sponsorListVo: any[] | null = null
 	activityBackgroundImg: string | null = null
 	activityCM: string[] | null = null
@@ -40,6 +46,9 @@ export class ActivityVoEntity implements Required<ActivityVo> {
 }
 
 export class ActivityParamsEntity implements Required<ActivityParams> {
+	rules: I18N | null = null
+	faq: I18N | null = null
+	timesorother: I18N | null = null
 	activityBackgroundImg: string | null = null
 	activityCM: string[] | null = null
 	activityCover = ''
