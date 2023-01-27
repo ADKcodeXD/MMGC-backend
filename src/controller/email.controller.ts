@@ -29,16 +29,23 @@ export default class EmailController {
 			this.map.delete(email)
 		}, 60 * 1000)
 		this.map.set(email, timeOut)
-		await this.emailUtil.sendEmail(email)
+		try {
+			await this.emailUtil.sendEmail(email)
+		} catch (error) {
+			clearTimeout(this.map.get(email))
+			this.map.delete(email)
+			return Result.fail(RESULT_CODE.SEND_EMAIL_ERROR, RESULT_MSG.SEND_EMAIL_ERROR, null)
+		}
 		return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, null)
 	}
 
 	@PostMapping('/verify')
-	async verifyCode(@Body() body: { email: string; code: number }) {
+	async verifyCode(@Body() body: { email: string; code: number | string }) {
 		if (!body.email || !body.code) {
 			return Result.fail(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
 		}
-		if (await this.emailUtil.verifyCode(body.email, body.code)) {
+		const flag = await this.emailUtil.verifyCode(body.email, parseInt(body.code.toString()))
+		if (flag) {
 			if (this.map.has(body.email)) {
 				clearTimeout(this.map.get(body.email))
 				this.map.delete(body.email)

@@ -6,11 +6,12 @@ import koabody from './middleware/koabody.middleware'
 import mongoware from './middleware/mongoose.middleware'
 import { Error, ErrorHandle } from '~/middleware/koajsonerror.middleware'
 import jwt from '~/middleware/jwt.middleware'
+import login from '~/middleware/logininterceptor.middleware'
 import logger from 'koa-logger'
 
 const app = new Koa()
 
-app.use(koabody).use(logger()).use(mongoware).use(Error).use(ErrorHandle).use(jwt)
+app.use(koabody).use(logger()).use(mongoware).use(Error).use(ErrorHandle).use(jwt).use(login)
 
 initRoutes(app, router)
 
