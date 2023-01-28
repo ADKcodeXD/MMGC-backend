@@ -53,7 +53,7 @@ export const memberUpdateParamsSchema: JSONSchemaType<MemberVo> = {
 		}
 	},
 	properties: {
-		username: { type: 'string' },
+		username: { type: 'string', nullable: true },
 		password: { type: 'string', nullable: true },
 		memberName: { type: 'string', nullable: true },
 		email: { type: 'string', nullable: true },
@@ -65,6 +65,6 @@ export const memberUpdateParamsSchema: JSONSchemaType<MemberVo> = {
 		memberId: { type: 'integer', nullable: true },
 		createTime: { type: 'string', nullable: true }
 	},
-	required: ['username', 'memberId'],
+	required: [],
 	additionalProperties: false
 }
