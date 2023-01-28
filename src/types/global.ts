@@ -115,6 +115,15 @@ declare global {
 		total: number
 		page: number
 	}
+	/**
+	 * CMVO
+	 */
+	interface Cmvo {
+		cmEditor: string | null
+		desc: null | string
+		link: null | string
+		title: null | string
+	}
 
 	interface PageParams {
 		page?: number | null

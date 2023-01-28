@@ -5,7 +5,7 @@ export class ActivityModelEntity implements Required<ActivityModel> {
 	timesorother: I18N | null = null
 	faq: I18N | null = null
 	activityBackgroundImg: string | null = null
-	activityCM: string[] | null = null
+	activityCM: Cmvo[] | null = null
 	activityCover = ''
 	activityId = 0
 	activityLogo = ''
@@ -28,7 +28,7 @@ export class ActivityVoEntity implements Required<ActivityVo> {
 	timesorother: I18N | null = null
 	sponsorListVo: any[] | null = null
 	activityBackgroundImg: string | null = null
-	activityCM: string[] | null = null
+	activityCM: Cmvo[] | null = null
 	activityCover = ''
 	activityId = 0
 	activityLogo = ''
@@ -50,7 +50,7 @@ export class ActivityParamsEntity implements Required<ActivityParams> {
 	faq: I18N | null = null
 	timesorother: I18N | null = null
 	activityBackgroundImg: string | null = null
-	activityCM: string[] | null = null
+	activityCM: Cmvo[] | null = null
 	activityCover = ''
 	activityId = 0
 	activityLogo = ''

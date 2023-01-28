@@ -7,7 +7,7 @@ declare module 'Activity' {
 		/**
 		 * 活动cm 视频链接 可以拥有好几个CM
 		 */
-		activityCM: string[] | null
+		activityCM: Cmvo[] | null
 		/**
 		 * 活动封面图
 		 */

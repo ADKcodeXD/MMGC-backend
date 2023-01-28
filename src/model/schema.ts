@@ -25,7 +25,22 @@ export const activitySchema = new mongoose.Schema<ActivityModel>(
 		movieNums: { type: Number, default: 0 },
 		sponsorId: { type: Array, default: [] },
 		staff: { type: Map, default: null },
-		startTime: { type: Date, default: null }
+		startTime: { type: Date, default: null },
+		timesorother: {
+			cn: { type: String, default: null },
+			jp: { type: String, default: null },
+			en: { type: String, default: null }
+		},
+		faq: {
+			cn: { type: String, default: null },
+			jp: { type: String, default: null },
+			en: { type: String, default: null }
+		},
+		rules: {
+			cn: { type: String, default: null },
+			jp: { type: String, default: null },
+			en: { type: String, default: null }
+		}
 	},
 	{ collection: 'activities' }
 )

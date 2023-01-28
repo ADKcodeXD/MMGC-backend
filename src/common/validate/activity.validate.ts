@@ -34,7 +34,21 @@ export const activityParamsSchema: JSONSchemaType<ActivityParams> = {
 		activityCover: { type: 'string' },
 		activityLogo: { type: 'string' },
 		desc: { $ref: '#i18n' },
-		activityCM: { type: 'array', nullable: true, items: { type: 'string' } },
+		activityCM: {
+			type: 'array',
+			nullable: true,
+			items: {
+				type: 'object',
+				properties: {
+					title: { type: 'string', nullable: true },
+					cmEditor: { type: 'string', nullable: true },
+					link: { type: 'string', nullable: true },
+					desc: { type: 'string', nullable: true }
+				},
+				required: [],
+				additionalProperties: true
+			}
+		},
 		activityBackgroundImg: { type: 'string', nullable: true },
 		days: { type: 'integer', nullable: true },
 		startTime: { type: 'string', nullable: true },
@@ -92,7 +106,21 @@ export const activityUpdateParamsSchema: JSONSchemaType<ActivityUpdateParams> = 
 		activityCover: { type: 'string', nullable: true },
 		activityLogo: { type: 'string', nullable: true },
 		desc: { $ref: '#i18n', nullable: true, type: 'object' },
-		activityCM: { type: 'array', nullable: true, items: { type: 'string' } },
+		activityCM: {
+			type: 'array',
+			nullable: true,
+			items: {
+				type: 'object',
+				properties: {
+					title: { type: 'string', nullable: true },
+					cmEditor: { type: 'string', nullable: true },
+					link: { type: 'string', nullable: true },
+					desc: { type: 'string', nullable: true }
+				},
+				required: [],
+				additionalProperties: true
+			}
+		},
 		activityBackgroundImg: { type: 'string', nullable: true },
 		days: { type: 'integer', nullable: true },
 		startTime: { type: 'string', nullable: true },
