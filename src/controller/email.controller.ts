@@ -36,7 +36,7 @@ export default class EmailController {
 			this.map.delete(email)
 			return Result.fail(RESULT_CODE.SEND_EMAIL_ERROR, RESULT_MSG.SEND_EMAIL_ERROR, null)
 		}
-		return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, null)
+		return Result.success(null)
 	}
 
 	@PostMapping('/verify')
@@ -50,7 +50,7 @@ export default class EmailController {
 				clearTimeout(this.map.get(body.email))
 				this.map.delete(body.email)
 			}
-			return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, null)
+			return Result.success(null)
 		} else {
 			return Result.fail(RESULT_CODE.VERIFY_ERROR, RESULT_MSG.VERIFY_ERROR, null)
 		}

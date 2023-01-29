@@ -30,7 +30,7 @@ export default class ActivityController {
 		copyProperties(activityParam, newActivity)
 		const activityDocument = new Activity(newActivity)
 		const { activityId } = await activityDocument.save()
-		return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, activityId)
+		return Result.success(activityId)
 	}
 
 	@GetMapping('/getActivityDetail/:activityId')
@@ -39,7 +39,7 @@ export default class ActivityController {
 			return Result.fail<null>(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
 		}
 		const res = await this.activityService.findActivityVoByActivityId(activityId)
-		if (res) return Result.success<ActivityVo>(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, res)
+		if (res) return Result.success<ActivityVo>(res)
 		return Result.fail<null>(RESULT_CODE.DATA_NOTFOUND, RESULT_MSG.DATA_NOTFOUND, null)
 	}
 
@@ -54,7 +54,7 @@ export default class ActivityController {
 		}
 		const updateRes = await this.activityService.updateByActivityId(activityParams)
 
-		if (updateRes) return Result.success<number>(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, updateRes)
+		if (updateRes) return Result.success<number>(updateRes)
 		return Result.fail<null>(RESULT_CODE.DATA_NOTFOUND, RESULT_MSG.DATA_NOTFOUND, null)
 	}
 
@@ -68,12 +68,12 @@ export default class ActivityController {
 			return Result.fail<null>(RESULT_CODE.DATA_NOTFOUND, RESULT_MSG.DATA_NOTFOUND, null)
 		}
 		await this.activityService.deleteByActivityId(activityId)
-		return Result.success<null>(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, null)
+		return Result.success<null>(null)
 	}
 
 	@GetMapping('/getActivityList')
 	async getActivityList(@QueryAll() pageParams: PageParams) {
 		const res = await this.activityService.findActivityList(pageParams)
-		return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, res)
+		return Result.success(res)
 	}
 }

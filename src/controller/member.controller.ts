@@ -38,7 +38,7 @@ export default class MemberController {
 			copyProperties(registerParams, params)
 			const member = await this.memberService.save(params)
 			const token = createJsonWebToken(member, config.JWT_SECRET || 'jwt-token', 3600 * 48)
-			return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, token)
+			return Result.success(token)
 		} else {
 			return Result.fail(RESULT_CODE.VERIFY_ERROR, RESULT_MSG.VERIFY_ERROR, null)
 		}
@@ -54,11 +54,7 @@ export default class MemberController {
 			const decryptData = aesDecrypt(user.password, key)
 			if (decryptData === loginParams.password) {
 				const userVo = this.memberService.copyToVo(user, true)
-				return Result.success(
-					RESULT_CODE.SUCCESS,
-					RESULT_MSG.SUCCESS,
-					createJsonWebToken(userVo, config.JWT_SECRET || 'jwt-token', 3600 * 48)
-				)
+				return Result.success(createJsonWebToken(userVo, config.JWT_SECRET || 'jwt-token', 3600 * 48))
 			} else {
 				return Result.fail(RESULT_CODE.USER_PASSWORD_WRONG, RESULT_MSG.USER_PASSWORD_WRONG, null)
 			}
@@ -67,7 +63,7 @@ export default class MemberController {
 
 	@GetMapping('/getMyInfo')
 	async getMyInfo(@User() user: MemberModel) {
-		return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, this.memberService.copyToVo(user))
+		return Result.success(this.memberService.copyToVo(user))
 	}
 
 	/**
@@ -78,7 +74,7 @@ export default class MemberController {
 	@GetMapping('/getUserList')
 	async getUserList(@QueryAll() pageParams: PageParams) {
 		const res = await this.memberService.findMemberList(pageParams, false)
-		return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, res)
+		return Result.success(res)
 	}
 
 	/**
@@ -89,20 +85,20 @@ export default class MemberController {
 	@GetMapping('/getUserListAll')
 	async getUserListAll(@QueryAll() pageParams: PageParams) {
 		const res = await this.memberService.findMemberList(pageParams, true)
-		return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, res)
+		return Result.success(res)
 	}
 
 	@DeleteMapping('/batchDelete')
 	async deleteUserBatch(@Body() memberIds: Array<number>) {
 		const res = await this.memberService.batchDelete(memberIds)
-		return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, res)
+		return Result.success(res)
 	}
 
 	@PutMapping('/updateMember', [Validtor('body', memberUpdateParamsValidate)])
 	async updateUser(@Body() memberParams: MemberVo) {
 		const res = await this.memberService.updateUser(memberParams)
 		if (res) {
-			return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, res)
+			return Result.success(res)
 		} else {
 			return Result.fail(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
 		}
@@ -115,7 +111,7 @@ export default class MemberController {
 		}
 		const res = await this.memberService.addMember(memberParams)
 		if (res) {
-			return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, res)
+			return Result.success(res)
 		} else {
 			return Result.fail(RESULT_CODE.USER_NOTFOUND, RESULT_MSG.USER_NOTFOUND, null)
 		}
@@ -125,7 +121,7 @@ export default class MemberController {
 	async getUserDetail(@Param('memberId') memberId: number) {
 		const res = await this.memberService.findMemberVoByMemberId(memberId, true)
 		if (res) {
-			return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, res)
+			return Result.success(res)
 		} else {
 			return Result.fail(RESULT_CODE.USER_NOTFOUND, RESULT_MSG.USER_NOTFOUND, null)
 		}

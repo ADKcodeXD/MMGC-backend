@@ -31,7 +31,7 @@ export default class MovieService extends BaseService {
 
 		const res = await new Movie(model).save()
 		if (res) {
-			return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, res)
+			return Result.success(res)
 		} else {
 			return Result.fail(RESULT_CODE.VERIFY_ERROR, RESULT_MSG.VERIFY_ERROR, null)
 		}

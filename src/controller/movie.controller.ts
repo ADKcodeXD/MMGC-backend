@@ -43,7 +43,7 @@ export default class MovieController {
 		if (!params.activityId) {
 			return Result.fail(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
 		}
-		return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, this.movieService.getMovieByActivityId(params))
+		return Result.success(this.movieService.getMovieByActivityId(params))
 	}
 
 	@GetMapping('/getMovieDetail')
@@ -52,7 +52,7 @@ export default class MovieController {
 			return Result.fail(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
 		}
 		const res = await this.movieService.getMovieDetail(movieId)
-		return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, res)
+		return Result.success(res)
 	}
 
 	@GetMapping('/getMovieDetailAll')
@@ -61,7 +61,7 @@ export default class MovieController {
 			return Result.fail(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
 		}
 		const res = await this.movieService.getMovieDetail(movieId, true)
-		return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, res)
+		return Result.success(res)
 	}
 
 	@DeleteMapping('/delete/:movieId')
@@ -70,13 +70,13 @@ export default class MovieController {
 			return Result.fail(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
 		}
 		this.movieService.deleteMovie(movieId)
-		return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, null)
+		return Result.success(null)
 	}
 
 	@GetMapping('/getAllMovie')
 	async getAllMovie(@QueryAll() moviePageParams: MoviePageParams) {
 		const res = await this.movieService.getMovieList(moviePageParams)
-		return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, res)
+		return Result.success(res)
 	}
 
 	@PutMapping('/updateMovie', [Validtor('body', movieUpdateParamsValidate)])
@@ -86,7 +86,7 @@ export default class MovieController {
 		if (!res) {
 			return Result.fail<null>(RESULT_CODE.DATA_NOTFOUND, RESULT_MSG.DATA_NOTFOUND, null)
 		}
-		if (res) return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, null)
+		if (res) return Result.success(null)
 		return Result.fail<null>(RESULT_CODE.DATA_NOTFOUND, RESULT_MSG.DATA_NOTFOUND, null)
 	}
 }

@@ -29,11 +29,11 @@ export default class ConfigController {
 			model.otherSettings = ''
 			model.configType = 1
 			await new Config(model).save()
-			return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, model)
+			return Result.success(model)
 		} else {
 			const model = new MMGCSysConfigEntity()
 			copyProperties(res, model)
-			return Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, model)
+			return Result.success(model)
 		}
 	}
 
@@ -44,6 +44,6 @@ export default class ConfigController {
 		} else {
 			await Config.updateOne({ configType: body.configType }, body)
 		}
-		Result.success(RESULT_CODE.SUCCESS, RESULT_MSG.SUCCESS, null)
+		Result.success(null)
 	}
 }
