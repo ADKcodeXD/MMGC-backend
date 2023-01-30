@@ -11,6 +11,9 @@ const body = KoaBody({
 		keepExtensions: true, // 保持文件的后缀
 		maxFieldsSize: 200 * 1024 * 1024,
 		filename(name, ext) {
+			if (ext === '.mp4') {
+				return `${name}${ext}`
+			}
 			return `${uuidv4()}${ext}`
 		}
 	}

@@ -16,7 +16,8 @@ export const enum RESULT_CODE {
 	TOO_MANY_REQUEST = 8006, // 请求次数过多
 	VERIFY_ERROR = 8007, // 验证码错误
 	USER_PASSWORD_WRONG = 8008, // 用户名错误或密码错误
-	SEND_EMAIL_ERROR = 8009 // 发邮件错误
+	SEND_EMAIL_ERROR = 8009, // 发邮件错误
+	TRY_AGAIN = 8010 // 上传发生错误 请重试
 }
 
 export const enum RESULT_MSG {
@@ -29,7 +30,8 @@ export const enum RESULT_MSG {
 	TOO_MANY_REQUEST = '请稍后再请求', // 请求次数过多
 	VERIFY_ERROR = '验证码错误', // 验证码错误
 	USER_PASSWORD_WRONG = '用户名错误或密码错误', // 用户名错误或密码错误
-	SEND_EMAIL_ERROR = '发送邮件错误'
+	SEND_EMAIL_ERROR = '发送邮件错误',
+	TRY_AGAIN = '上传发生错误 请重试' // 上传发生错误 请重试
 }
 
 export const enum ROLE {

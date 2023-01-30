@@ -15,4 +15,39 @@ export default class Result {
 			data: data
 		}
 	}
+	static paramsError(): ResResult<null> {
+		return {
+			code: RESULT_CODE.PARAMS_ERROR,
+			msg: RESULT_MSG.PARAMS_ERROR,
+			data: null
+		}
+	}
+	static tooManyRequest(): ResResult<null> {
+		return {
+			code: RESULT_CODE.TOO_MANY_REQUEST,
+			msg: RESULT_MSG.TOO_MANY_REQUEST,
+			data: null
+		}
+	}
+	static noAuth(): ResResult<null> {
+		return {
+			code: RESULT_CODE.NO_AUTHORIZION,
+			msg: RESULT_MSG.NO_AUTHORIZION,
+			data: null
+		}
+	}
+	static dataNotFound(): ResResult<null> {
+		return {
+			code: RESULT_CODE.DATA_NOTFOUND,
+			msg: RESULT_MSG.DATA_NOTFOUND,
+			data: null
+		}
+	}
+	static tryAgain(): ResResult<null> {
+		return {
+			code: RESULT_CODE.TRY_AGAIN,
+			msg: RESULT_MSG.TRY_AGAIN,
+			data: null
+		}
+	}
 }
