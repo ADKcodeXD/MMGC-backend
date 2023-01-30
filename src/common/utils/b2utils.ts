@@ -3,9 +3,9 @@ import BackBlazeB2 from 'backblaze-b2'
 import config from '~/config/config.default'
 import { formatTime } from './moment'
 import { v4 as uuidv4 } from 'uuid'
-import axios from 'axios'
-import Result from '../result'
+import axios, { AxiosProgressEvent } from 'axios'
 import { RESULT_CODE } from '~/types/enum'
+import { _ } from 'ajv'
 
 export class B2Util {
 	static b2: BackBlazeB2 = new BackBlazeB2({
@@ -18,7 +18,7 @@ export class B2Util {
 
 	map = new Map()
 
-	queue = new Set()
+	waitTingQueue = new Map()
 
 	async uploadImg(body: Buffer, fileName: string) {
 		// 处理名字
@@ -45,28 +45,67 @@ export class B2Util {
 	}
 
 	async uploadVideo(body: Buffer, fileName: string) {
-		if (this.queue.size > 5) {
+		if (this.waitTingQueue.size > 5) {
 			return RESULT_CODE.TOO_MANY_REQUEST
 		}
-		this.queue.add(fileName)
+		if (!this.waitTingQueue.has(fileName)) {
+			this.waitTingQueue.set(fileName, {
+				total: body.length,
+				loaded: 0,
+				progress: 0,
+				key: '',
+				parts: [],
+				id: null,
+				source: axios.CancelToken.source(),
+				loadedParts: null
+			})
+		} else {
+			// 可能是 上次没传完 重新传的 终止
+			const result = await this.cancelLargeFile(this.waitTingQueue.get(fileName))
+
+			if (Array.isArray(result)) {
+				// 重新走上传流程 区别在于 已经有了上传好的分片
+				const item = this.waitTingQueue.get(fileName)
+				item.loadedParts = result
+				this.waitTingQueue.set(fileName, item)
+			} else if (result) {
+				// 秒传
+				this.waitTingQueue.delete(fileName)
+				return `${config.B2_SERVER_PATH}/${result.fileName}`
+			} else {
+				this.waitTingQueue.set(fileName, {
+					total: body.length,
+					loaded: 0,
+					progress: 0,
+					parts: [],
+					key: '',
+					id: null,
+					source: axios.CancelToken.source(),
+					loadedParts: null
+				})
+			}
+		}
 		const reg = /(mp4)$/
 		const split = fileName.split('.')
 		const ext = split[split.length - 1] || ''
 		if (!reg.test(ext)) {
 			return null
 		}
-		const nameArr = [this.videoPath]
-		const date = formatTime(new Date(), 'YYYY-MM')
-		nameArr.push(date)
-		nameArr.push(`${uuidv4()}.${ext}`)
-		const key = nameArr.join('/')
-		this.map.set(key, 0)
+		let key = ''
+		const item = this.waitTingQueue.get(fileName)
+		if (!item.key) {
+			key = this.getRandomUuidName(fileName)
+			item.key = key
+			this.waitTingQueue.set(fileName, item)
+		} else {
+			key = item.key
+		}
 		try {
 			// 处理b2
 			await B2Util.b2.authorize()
 			// 判断大小 默认20M以上分片上传
 			if (body.length > 20 * 1024 * 1024) {
-				await this.bigFileUpload(body, key)
+				await this.bigFileUpload(body, key, fileName)
 			} else {
 				const response = await B2Util.b2.getUploadUrl({
 					bucketId: config.B2_BUCKET_ID || ''
@@ -76,74 +115,48 @@ export class B2Util {
 		} catch (error) {
 			return null
 		} finally {
-			this.queue.delete(fileName)
+			this.waitTingQueue.delete(fileName)
 		}
 		return `${config.B2_SERVER_PATH}/${key}`
 	}
 
-	async sliceParts(data: Buffer, size: number) {
+	async bigFileUpload(data: Buffer, key: string, fileName: string) {
+		try {
+			// 处理大文件上传 获取文件ID
+			const item = this.waitTingQueue.get(fileName)
+			if (!item.id) {
+				const { data: initData } = await B2Util.b2.startLargeFile({ bucketId: config.B2_BUCKET_ID || '', fileName: key })
+				const fileId = initData.fileId
+				item.id = fileId
+				this.waitTingQueue.set(fileName, item)
+			}
+			// 分片
+			const parts = await this.sliceParts(data, 1024 * 1024 * 20, fileName)
+			// 开始分片上传
+			await this.uploadParts(parts, item.id, fileName)
+			await B2Util.b2.finishLargeFile({
+				fileId: item.id,
+				partSha1Array: parts.map(item => this.sha1(item.buf))
+			})
+		} catch (error: any) {
+			throw new Error(error)
+		}
+	}
+
+	async sliceParts(data: Buffer, size: number, fileName: string) {
 		const num = Math.ceil(data.length / size)
 		const arr = []
+		const item = this.waitTingQueue.get(fileName)
 		for (let i = 0; i < num; i++) {
 			const obj = {
 				partsNum: i + 1,
 				buf: data.subarray(i * size, i + 1 === num ? data.length : (i + 1) * size)
 			}
 			arr.push(obj)
+			if (!(item.parts.length >= num)) item.parts.push({ loaded: 0, total: i + 1 === num ? data.length - i * size : size, progress: 0 })
 		}
+		this.waitTingQueue.set(fileName, item)
 		return arr
-	}
-
-	uploadParts(parts: Array<{ partsNum: number; buf: Buffer }>, fileId: any) {
-		const promises = parts.map(item => {
-			return new Promise((resolve, reject) => {
-				B2Util.b2
-					.getUploadPartUrl({ fileId })
-					.then(({ data }) => {
-						const uploadURL = data.uploadUrl
-						const authToken = data.authorizationToken
-						this.uploadPart({
-							partNumber: item.partsNum,
-							uploadUrl: uploadURL,
-							uploadAuthToken: authToken,
-							data: item.buf
-						})
-							.then(res => {
-								resolve(res)
-							})
-							.catch(err => {
-								reject(err)
-							})
-					})
-					.catch(reject)
-			})
-		})
-
-		return Promise.all(promises)
-	}
-
-	sha1(buffer: Buffer) {
-		const shasum = crypto.createHash('sha1')
-		shasum.update(buffer)
-		return shasum.digest('hex')
-	}
-
-	async bigFileUpload(data: Buffer, key: string) {
-		try {
-			// 处理大文件上传 获取文件ID
-			const { data: initData } = await B2Util.b2.startLargeFile({ bucketId: config.B2_BUCKET_ID || '', fileName: key })
-			const fileId = initData.fileId
-			// 分片
-			const parts = await this.sliceParts(data, 1024 * 1024 * 20)
-			// 开始分片上传
-			await this.uploadParts(parts, fileId)
-			await B2Util.b2.finishLargeFile({
-				fileId,
-				partSha1Array: parts.map(item => this.sha1(item.buf))
-			})
-		} catch (error: any) {
-			throw new Error(error)
-		}
 	}
 
 	async smallFileUpload(data: Buffer, key: string, response: any) {
@@ -156,7 +169,7 @@ export class B2Util {
 		return _data
 	}
 
-	async uploadPart(args: { uploadUrl: any; uploadAuthToken: any; contentLength?: any; data: Buffer; partNumber: any; hash?: any }) {
+	async uploadPart(args: any, fileName: string) {
 		const options = {
 			url: args.uploadUrl,
 			method: 'POST',
@@ -169,13 +182,117 @@ export class B2Util {
 			data: args.data,
 			maxRedirects: 0
 		}
+		const item = this.waitTingQueue.get(fileName)
+		const progressFn = (progressEvent: AxiosProgressEvent) => {
+			const loaded = progressEvent.loaded
+			if (item && item.parts.length > 0) {
+				const currentParts = item.parts[args.partNumber - 1]
+				currentParts.loaded = loaded
+				currentParts.progress = (currentParts.loaded / currentParts.total) * 100
+				item.loaded = item.parts.reduce((progress: any, item: any) => item.loaded + progress, 0)
+				item.progress = ((item.loaded / item.total) * 100).toFixed(2)
+				this.waitTingQueue.set(fileName, item)
+			} else {
+				throw new Error('abort upload')
+			}
+		}
 		return await axios({
 			...options,
-			timeout: 600000 * 2,
-			onUploadProgress(progressEvent) {
-				// TODO: display upload progress
-				// console.log(progressEvent)
-			}
+			timeout: 600000 * 60,
+			onUploadProgress: progressFn,
+			cancelToken: item.source.token
 		})
+	}
+
+	getRandomUuidName(fileName: string) {
+		const split = fileName.split('.')
+		const ext = split[split.length - 1] || ''
+		const nameArr = [this.videoPath]
+		const date = formatTime(new Date(), 'YYYY-MM')
+		nameArr.push(date)
+		nameArr.push(`${uuidv4()}.${ext}`)
+		const key = nameArr.join('/')
+		return key
+	}
+
+	getBackUploadProgress(fileName: string) {
+		if (this.waitTingQueue.has(fileName)) {
+			return this.waitTingQueue.get(fileName)
+		} else {
+			return null
+		}
+	}
+
+	uploadParts(parts: Array<{ partsNum: number; buf: Buffer }>, fileId: any, fileName: string) {
+		const promises = parts
+			.map(item => {
+				const cacheItem = this.waitTingQueue.get(fileName)
+				if (cacheItem.loadedParts) {
+					const part = cacheItem.loadedParts.find((part: any) => part.partNumber === item.partsNum)
+					if (part) {
+						cacheItem.parts[item.partsNum - 1].loaded = cacheItem.parts[item.partsNum - 1].total
+						return null
+					}
+				}
+				return new Promise((resolve, reject) => {
+					B2Util.b2
+						.getUploadPartUrl({ fileId })
+						.then(({ data }) => {
+							const uploadURL = data.uploadUrl
+							const authToken = data.authorizationToken
+							this.uploadPart(
+								{
+									partNumber: item.partsNum,
+									uploadUrl: uploadURL,
+									uploadAuthToken: authToken,
+									data: item.buf
+								},
+								fileName
+							)
+								.then(res => {
+									resolve(res)
+								})
+								.catch(err => {
+									reject(err)
+								})
+						})
+						.catch(reject)
+				})
+			})
+			.filter(item => item)
+		return new Promise((resolve, reject) => {
+			Promise.all(promises)
+				.then(res => {
+					resolve(res)
+				})
+				.catch(err => {
+					reject(err)
+				})
+		})
+	}
+
+	sha1(buffer: Buffer) {
+		const shasum = crypto.createHash('sha1')
+		shasum.update(buffer)
+		return shasum.digest('hex')
+	}
+
+	async cancelLargeFile(item: any) {
+		if (item.id) {
+			await B2Util.b2.authorize()
+			try {
+				const { data } = await B2Util.b2.getFileInfo({ fileId: item.id })
+				return data
+			} catch (error) {
+				if (item.source) {
+					item.source.cancel('reject axios')
+				}
+				item.source = axios.CancelToken.source()
+				const { data } = await B2Util.b2.listParts({ fileId: item.id, startPartNumber: 1, maxPartCount: 100 })
+				// 获取已经上传了的分片
+				return data.parts
+			}
+		}
+		return null
 	}
 }
