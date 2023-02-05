@@ -100,7 +100,7 @@ export default class MemberController {
 		if (res) {
 			return Result.success(res)
 		} else {
-			return Result.fail(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
+			return Result.paramsError()
 		}
 	}
 

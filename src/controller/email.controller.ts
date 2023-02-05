@@ -19,10 +19,10 @@ export default class EmailController {
 	@GetMapping('/getCode')
 	async getCode(@Query('email') email: string) {
 		if (!email) {
-			return Result.fail(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
+			return Result.paramsError()
 		}
 		if (this.map.has(email)) {
-			return Result.fail(RESULT_CODE.TOO_MANY_REQUEST, RESULT_MSG.TOO_MANY_REQUEST, null)
+			return Result.tooManyRequest()
 		}
 		const timeOut = setTimeout(() => {
 			clearTimeout(this.map.get(email))
@@ -42,7 +42,7 @@ export default class EmailController {
 	@PostMapping('/verify')
 	async verifyCode(@Body() body: { email: string; code: number | string }) {
 		if (!body.email || !body.code) {
-			return Result.fail(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
+			return Result.paramsError()
 		}
 		const flag = await this.emailUtil.verifyCode(body.email, parseInt(body.code.toString()))
 		if (flag) {

@@ -67,7 +67,7 @@ export default class MovieController {
 	@DeleteMapping('/delete/:movieId')
 	async deleteMovie(@Param('movieId') movieId: number) {
 		if (!movieId) {
-			return Result.fail(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
+			return Result.paramsError()
 		}
 		this.movieService.deleteMovie(movieId)
 		return Result.success(null)
@@ -82,11 +82,7 @@ export default class MovieController {
 	@PutMapping('/updateMovie', [Validtor('body', movieUpdateParamsValidate)])
 	async updateMovie(@Body() movieParams: MovieUpdateParams) {
 		const res = await this.movieService.updateMovie(movieParams)
-		console.log(movieParams)
-		if (!res) {
-			return Result.fail<null>(RESULT_CODE.DATA_NOTFOUND, RESULT_MSG.DATA_NOTFOUND, null)
-		}
 		if (res) return Result.success(null)
-		return Result.fail<null>(RESULT_CODE.DATA_NOTFOUND, RESULT_MSG.DATA_NOTFOUND, null)
+		return Result.dataNotFound()
 	}
 }

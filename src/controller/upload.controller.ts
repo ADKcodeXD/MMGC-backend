@@ -32,19 +32,19 @@ export default class UploadController {
 			fs.unlinkSync(path)
 		}
 		if (res) return Result.success(res)
-		else return Result.fail(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
+		else return Result.paramsError()
 	}
 
 	@PostMapping('/uploadVideo')
 	async uploadVideo(@Ctx() ctx: Context) {
 		const file = ctx.request.files?.file as any
 		if (file.size > 200 * 1024 * 1024) {
-			return Result.fail(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
+			return Result.paramsError()
 		}
 		const path = file.filepath as string
 
 		if (!fs.existsSync(path)) {
-			return Result.fail(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
+			return Result.paramsError()
 		}
 		if (fs.statSync(path).isFile()) {
 			const reader = fs.readFileSync(path)
@@ -52,7 +52,7 @@ export default class UploadController {
 			try {
 				const res = await this.b2Util.uploadVideo(reader, file.originalFilename)
 				if (res === RESULT_CODE.TOO_MANY_REQUEST) {
-					result = Result.fail(RESULT_CODE.TOO_MANY_REQUEST, RESULT_MSG.TOO_MANY_REQUEST, null)
+					result = Result.tooManyRequest()
 				} else if (res) {
 					result = Result.success(res)
 				}
@@ -64,7 +64,7 @@ export default class UploadController {
 			}
 			return result || Result.paramsError()
 		} else {
-			return Result.fail(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
+			return Result.paramsError()
 		}
 	}
 

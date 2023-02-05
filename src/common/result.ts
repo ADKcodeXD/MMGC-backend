@@ -43,6 +43,13 @@ export default class Result {
 			data: null
 		}
 	}
+	static dataRepeat(): ResResult<null> {
+		return {
+			code: RESULT_CODE.DATA_REPEAT,
+			msg: RESULT_MSG.DATA_REPEAT,
+			data: null
+		}
+	}
 	static tryAgain(): ResResult<null> {
 		return {
 			code: RESULT_CODE.TRY_AGAIN,
