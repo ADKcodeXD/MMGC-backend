@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import { ActivityModel } from 'Activity'
+import { ActivityModel, DayModel } from 'Activity'
 import { MemberModel } from 'Member'
 import { MovieModel } from 'Movie'
 export const activitySchema = new mongoose.Schema<ActivityModel>(
@@ -119,4 +119,25 @@ export const configSchema = new mongoose.Schema<MMGCSysConfig>(
 		configType: String
 	},
 	{ collection: 'configs' }
+)
+
+export const daySchema = new mongoose.Schema<DayModel>(
+	{
+		activityId: { type: Number, default: null },
+		themeCover: { type: String, default: null },
+		themeDesc: {
+			cn: String,
+			jp: { type: String, default: null },
+			en: { type: String, default: null }
+		},
+		themeName: {
+			cn: String,
+			jp: { type: String, default: null },
+			en: { type: String, default: null }
+		},
+		day: { type: Number, default: 0 },
+		isPublic: { type: Boolean, default: true },
+		sortIndex: { type: Number, default: 0 }
+	},
+	{ collection: 'days' }
 )

@@ -7,7 +7,8 @@ const whiteList = [
 	'/user/login',
 	'/config/getConfig',
 	'/activity/getActivityList',
-	'/activity/getActivityDetail'
+	'/activity/getActivityDetail',
+	'/activity/getDays'
 ].map(item => new RegExp(`^${config.MMGC_PREFIX}${item}`.split('/').join('\\/')))
 
 export default Jwt({

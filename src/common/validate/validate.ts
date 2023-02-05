@@ -1,9 +1,9 @@
-import { ActivityParams, ActivityUpdateParams } from 'Activity'
+import { ActivityParams, ActivityUpdateParams, DayParams } from 'Activity'
 import Ajv from 'ajv'
 import ajvErrors from 'ajv-errors'
 import { MemberParams } from 'Member'
 import { MovieParams, MovieUpdateParams } from 'Movie'
-import { activityParamsSchema, activityUpdateParamsSchema } from './activity.validate'
+import { activityParamsSchema, activityUpdateParamsSchema, DayParamsSchema } from './activity.validate'
 import { memberParamsSchema, memberUpdateParamsSchema } from './member.validate'
 import { movieParamsSchema, movieUpdateParamsSchema } from './movie.validate'
 import { configUpdateSchemas } from './config.validate'
@@ -13,6 +13,8 @@ ajvErrors(ajv)
 const activityParamsValidate = ajv.compile<ActivityParams>(activityParamsSchema)
 
 const activityUpdateParamsSchemaValidate = ajv.compile<ActivityUpdateParams>(activityUpdateParamsSchema)
+
+const DayParamsSchemaValidate = ajv.compile<DayParams>(DayParamsSchema)
 
 const memberParamsValidate = ajv.compile<MemberParams>(memberParamsSchema)
 
@@ -31,5 +33,6 @@ export {
 	activityUpdateParamsSchemaValidate,
 	movieParamsValidate,
 	movieUpdateParamsValidate,
-	configUpdateParamsValidate
+	configUpdateParamsValidate,
+	DayParamsSchemaValidate
 }

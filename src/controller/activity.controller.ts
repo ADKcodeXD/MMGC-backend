@@ -1,13 +1,14 @@
-import { Body, Controller, DeleteMapping, GetMapping, Param, PostMapping, PutMapping, QueryAll } from '~/common/decorator/decorator'
+import { Body, Controller, DeleteMapping, GetMapping, Param, PostMapping, PutMapping, Query, QueryAll } from '~/common/decorator/decorator'
 import { RESULT_CODE, RESULT_MSG } from '~/types/enum'
 import Result from '~/common/result'
-import { Activity } from '~/model/index'
-import { ActivityModel, ActivityParams, ActivityUpdateParams, ActivityVo } from 'Activity'
+import { Activity, Day } from '~/model/index'
+import { ActivityModel, ActivityParams, ActivityUpdateParams, ActivityVo, DayModel, DayParams } from 'Activity'
 import { copyProperties } from '~/common/utils'
 import { Validtor } from '~/middleware/ajv.middleware'
-import { activityParamsValidate, activityUpdateParamsSchemaValidate } from '~/common/validate/validate'
+import { activityParamsValidate, activityUpdateParamsSchemaValidate, DayParamsSchemaValidate } from '~/common/validate/validate'
 import ActivityService from '~/service/activity.service'
-import { ActivityModelEntity } from '~/entity/activity.entity'
+import DayService from '~/service/day.service'
+import { ActivityModelEntity, DayParamsEntity } from '~/entity/activity.entity'
 
 @Controller('/activity')
 export default class ActivityController {
@@ -19,12 +20,13 @@ export default class ActivityController {
 		return ActivityController.singletonInstance
 	}
 	activityService = ActivityService.getInstance()
+	dayService = DayService.getInstance()
 
 	@PostMapping('/saveActivity', [Validtor('body', activityParamsValidate)])
 	async saveActivity(@Body() activityParam: ActivityParams) {
 		const res = await this.activityService.findActivityVoByActivityId(activityParam.activityId)
 		if (res) {
-			return Result.fail<null>(RESULT_CODE.DATA_REPEAT, RESULT_MSG.DATA_REPEAT, null)
+			return Result.dataNotFound()
 		}
 		const newActivity: ActivityModel = new ActivityModelEntity()
 		copyProperties(activityParam, newActivity)
@@ -36,36 +38,36 @@ export default class ActivityController {
 	@GetMapping('/getActivityDetail/:activityId')
 	async getActivityDetail(@Param('activityId') activityId: number) {
 		if (!activityId) {
-			return Result.fail<null>(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
+			return Result.paramsError()
 		}
 		const res = await this.activityService.findActivityVoByActivityId(activityId)
 		if (res) return Result.success<ActivityVo>(res)
-		return Result.fail<null>(RESULT_CODE.DATA_NOTFOUND, RESULT_MSG.DATA_NOTFOUND, null)
+		return Result.dataNotFound()
 	}
 
 	@PutMapping('/updateActivity', [Validtor('body', activityUpdateParamsSchemaValidate)])
 	async updateActivity(@Body() activityParams: ActivityUpdateParams) {
 		if (!activityParams.activityId) {
-			return Result.fail<null>(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
+			return Result.paramsError()
 		}
 		const res = await this.activityService.findActivityVoByActivityId(activityParams.activityId)
 		if (!res) {
-			return Result.fail<null>(RESULT_CODE.DATA_NOTFOUND, RESULT_MSG.DATA_NOTFOUND, null)
+			return Result.dataNotFound()
 		}
 		const updateRes = await this.activityService.updateByActivityId(activityParams)
 
 		if (updateRes) return Result.success<number>(updateRes)
-		return Result.fail<null>(RESULT_CODE.DATA_NOTFOUND, RESULT_MSG.DATA_NOTFOUND, null)
+		return Result.dataNotFound()
 	}
 
 	@DeleteMapping('/deleteActivity/:activityId')
 	async deleteActivity(@Param('activityId') activityId: number) {
 		if (!activityId) {
-			return Result.fail<null>(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
+			return Result.paramsError()
 		}
 		const res = await this.activityService.findActivityVoByActivityId(activityId)
 		if (!res) {
-			return Result.fail<null>(RESULT_CODE.DATA_NOTFOUND, RESULT_MSG.DATA_NOTFOUND, null)
+			return Result.dataNotFound()
 		}
 		await this.activityService.deleteByActivityId(activityId)
 		return Result.success<null>(null)
@@ -75,5 +77,62 @@ export default class ActivityController {
 	async getActivityList(@QueryAll() pageParams: PageParams) {
 		const res = await this.activityService.findActivityList(pageParams)
 		return Result.success(res)
+	}
+
+	@PostMapping('/saveDay', [Validtor('body', DayParamsSchemaValidate)])
+	async saveDay(@Body() dayParams: DayParams) {
+		if (!dayParams.day || !dayParams.activityId) {
+			return Result.paramsError()
+		}
+		if (await this.dayService.findDayDetail(dayParams.activityId, dayParams.day)) {
+			return Result.dataRepeat()
+		}
+		const newDay: DayModel = new DayParamsEntity()
+		copyProperties(dayParams, newDay)
+		const activityDocument = new Day(newDay)
+		await activityDocument.save()
+		return Result.success(null)
+	}
+
+	@GetMapping('/getDays')
+	async getDays(@Query('activityId') activityId: number) {
+		if (!activityId) {
+			return Result.paramsError()
+		}
+		const res = await this.dayService.findDaysByActivityId(activityId, false)
+		if (res) {
+			return Result.success(res)
+		}
+		return Result.dataNotFound()
+	}
+
+	@GetMapping('/getDaysAll')
+	async getDaysAll(@Query('activityId') activityId: number) {
+		if (!activityId) {
+			return Result.paramsError()
+		}
+		const res = await this.dayService.findDaysByActivityId(activityId, true)
+		if (res) {
+			return Result.success(res)
+		}
+		return Result.dataNotFound()
+	}
+
+	@PutMapping('/updateDay', [Validtor('body', DayParamsSchemaValidate)])
+	async updateDay(@Body() dayParams: DayParams) {
+		if (!dayParams.activityId) {
+			return Result.paramsError()
+		}
+		await this.dayService.updateDay(dayParams)
+		return Result.success(null)
+	}
+
+	@DeleteMapping('/deleteDay')
+	async deleteDay(@Body() dayParams: { activityId: number; day: number }) {
+		if (!dayParams.activityId || !dayParams.day) {
+			return Result.paramsError()
+		}
+		await this.dayService.deleteDay(dayParams)
+		return Result.success(null)
 	}
 }

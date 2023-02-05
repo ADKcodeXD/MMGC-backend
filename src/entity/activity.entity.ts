@@ -1,4 +1,4 @@
-import { ActivityModel, ActivityParams, ActivityVo } from 'Activity'
+import { ActivityModel, ActivityParams, ActivityVo, DayModel, DayParams, DayVo } from 'Activity'
 
 export class ActivityModelEntity implements Required<ActivityModel> {
 	rules: I18N | null = null
@@ -67,4 +67,34 @@ export class ActivityParamsEntity implements Required<ActivityParams> {
 	sponsorId: number[] | null = null
 	staff: Staff | null = null
 	startTime: string | null = null
+}
+
+export class DayParamsEntity implements Required<DayParams> {
+	activityId: number | null = null
+	day: number | null = 0
+	themeCover: string | null = null
+	themeDesc: I18N | null = null
+	themeName: I18N | null = null
+	isPublic: boolean | null = true
+	sortIndex: number | null = 0
+}
+
+export class DayModelEntity implements Required<DayModel> {
+	activityId: number | null = null
+	day: number | null = 0
+	themeCover: string | null = null
+	themeDesc: I18N | null = null
+	themeName: I18N | null = null
+	isPublic: boolean | null = false
+	sortIndex: number | null = 0
+}
+
+export class DayVoEntity implements Required<DayVo> {
+	day: number | null = null
+	themeCover: string | null = null
+	themeDesc: I18N | null = null
+	themeName: I18N | null = null
+	isPublic: boolean | null = null
+	sortIndex: number | null = 0
+	activityId: number | null = 0
 }

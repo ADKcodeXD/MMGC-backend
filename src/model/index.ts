@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import { activitySchema, memberSchema, incrementSchema, movieSchema, configSchema } from './schema'
+import { activitySchema, memberSchema, incrementSchema, movieSchema, configSchema, daySchema } from './schema'
 
 const Activity = mongoose.model('Activity', activitySchema)
 
@@ -11,4 +11,6 @@ const Movie = mongoose.model('Movie', movieSchema)
 
 const Config = mongoose.model('Config', configSchema)
 
-export { Activity, Member, Increment, Movie, Config }
+const Day = mongoose.model('Day', daySchema)
+
+export { Activity, Member, Increment, Movie, Config, Day }

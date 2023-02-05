@@ -1,4 +1,4 @@
-import { ActivityParams, ActivityUpdateParams } from 'Activity'
+import { ActivityParams, ActivityUpdateParams, DayParams } from 'Activity'
 import { JSONSchemaType } from 'ajv'
 
 export const activityParamsSchema: JSONSchemaType<ActivityParams> = {
@@ -142,5 +142,45 @@ export const activityUpdateParamsSchema: JSONSchemaType<ActivityUpdateParams> = 
 		faq: { $ref: '#i18nNull' }
 	},
 	required: ['activityId'],
+	additionalProperties: true
+}
+
+export const DayParamsSchema: JSONSchemaType<DayParams> = {
+	type: 'object',
+	definitions: {
+		i18n: {
+			$id: '#i18n',
+			type: 'object',
+			properties: {
+				cn: { type: 'string' },
+				jp: { type: 'string', nullable: true },
+				en: { type: 'string', nullable: true }
+			},
+			required: ['cn'],
+			additionalProperties: false
+		},
+		i18nNullable: {
+			$id: '#i18nNull',
+			type: 'object',
+			nullable: true,
+			properties: {
+				cn: { type: 'string', nullable: true },
+				jp: { type: 'string', nullable: true },
+				en: { type: 'string', nullable: true }
+			},
+			required: [],
+			additionalProperties: false
+		}
+	},
+	properties: {
+		activityId: { type: 'integer' },
+		day: { type: 'integer' },
+		themeName: { $ref: '#i18n' },
+		isPublic: { type: 'boolean', nullable: true },
+		themeCover: { type: 'string', nullable: true },
+		sortIndex: { type: 'integer', nullable: true },
+		themeDesc: { $ref: '#i18nNull' }
+	},
+	required: ['activityId', 'day', 'themeName'],
 	additionalProperties: true
 }

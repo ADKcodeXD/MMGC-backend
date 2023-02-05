@@ -68,6 +68,7 @@ export const movieUpdateParamsSchema: JSONSchemaType<MovieUpdateParams> = {
 		i18n: {
 			$id: '#i18n',
 			type: 'object',
+			nullable: true,
 			properties: {
 				cn: { type: 'string' },
 				jp: { type: 'string', nullable: true },
@@ -106,7 +107,7 @@ export const movieUpdateParamsSchema: JSONSchemaType<MovieUpdateParams> = {
 	},
 	properties: {
 		movieName: { $ref: '#i18n' },
-		movieCover: { type: 'string' },
+		movieCover: { type: 'string', nullable: true },
 		movieDesc: { $ref: '#i18n' },
 		moviePlaylink: { $ref: '#i18n' },
 		movieLink: { $ref: '#snsSite' },
@@ -120,6 +121,6 @@ export const movieUpdateParamsSchema: JSONSchemaType<MovieUpdateParams> = {
 		authorId: { type: 'integer', nullable: true },
 		authorName: { type: 'string', nullable: true }
 	},
-	required: ['movieName', 'movieCover', 'movieDesc', 'moviePlaylink', 'movieId'],
+	required: ['movieId'],
 	additionalProperties: true
 }
