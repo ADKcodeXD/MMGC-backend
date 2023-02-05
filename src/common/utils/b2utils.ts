@@ -60,29 +60,34 @@ export class B2Util {
 				loadedParts: null
 			})
 		} else {
-			// 可能是 上次没传完 重新传的 终止
-			const result = await this.cancelLargeFile(this.waitTingQueue.get(fileName))
+			try {
+				// 可能是 上次没传完 重新传的 终止
+				const result = await this.cancelLargeFile(this.waitTingQueue.get(fileName))
 
-			if (Array.isArray(result)) {
-				// 重新走上传流程 区别在于 已经有了上传好的分片
-				const item = this.waitTingQueue.get(fileName)
-				item.loadedParts = result
-				this.waitTingQueue.set(fileName, item)
-			} else if (result) {
-				// 秒传
+				if (Array.isArray(result)) {
+					// 重新走上传流程 区别在于 已经有了上传好的分片
+					const item = this.waitTingQueue.get(fileName)
+					item.loadedParts = result
+					this.waitTingQueue.set(fileName, item)
+				} else if (result) {
+					// 秒传
+					this.waitTingQueue.delete(fileName)
+					return `${config.B2_SERVER_PATH}/${result.fileName}`
+				} else {
+					this.waitTingQueue.set(fileName, {
+						total: body.length,
+						loaded: 0,
+						progress: 0,
+						parts: [],
+						key: '',
+						id: null,
+						source: axios.CancelToken.source(),
+						loadedParts: null
+					})
+				}
+			} catch (error) {
 				this.waitTingQueue.delete(fileName)
-				return `${config.B2_SERVER_PATH}/${result.fileName}`
-			} else {
-				this.waitTingQueue.set(fileName, {
-					total: body.length,
-					loaded: 0,
-					progress: 0,
-					parts: [],
-					key: '',
-					id: null,
-					source: axios.CancelToken.source(),
-					loadedParts: null
-				})
+				return null
 			}
 		}
 		const reg = /(mp4)$/
@@ -153,6 +158,7 @@ export class B2Util {
 				buf: data.subarray(i * size, i + 1 === num ? data.length : (i + 1) * size)
 			}
 			arr.push(obj)
+			// 如果当前parts拥有分片 则开启分片上传
 			if (!(item.parts.length >= num)) item.parts.push({ loaded: 0, total: i + 1 === num ? data.length - i * size : size, progress: 0 })
 		}
 		this.waitTingQueue.set(fileName, item)
