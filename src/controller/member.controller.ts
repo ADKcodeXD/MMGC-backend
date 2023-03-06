@@ -11,6 +11,7 @@ import { EmailUtil } from '~/common/utils/emailutil'
 import { createJsonWebToken } from '~/common/utils/jwtutil'
 import config from '~/config/config.default'
 import crypto from 'node:crypto'
+import { Auth } from '~/common/decorator/auth'
 
 @Controller('/user')
 export default class MemberController {
@@ -83,18 +84,21 @@ export default class MemberController {
 	 * @returns
 	 */
 	@GetMapping('/getUserListAll')
+	@Auth([ROLE.ADMIN, ROLE.SUBADMIN], '/getUserListAll')
 	async getUserListAll(@QueryAll() pageParams: PageParams) {
 		const res = await this.memberService.findMemberList(pageParams, true)
 		return Result.success(res)
 	}
 
 	@DeleteMapping('/batchDelete')
+	@Auth([ROLE.ADMIN], '/batchDelete')
 	async deleteUserBatch(@Body() memberIds: Array<number>) {
 		const res = await this.memberService.batchDelete(memberIds)
 		return Result.success(res)
 	}
 
 	@PutMapping('/updateMember', [Validtor('body', memberUpdateParamsValidate)])
+	@Auth([ROLE.ADMIN, ROLE.SUBADMIN], '/updateMember')
 	async updateUser(@Body() memberParams: MemberVo) {
 		const res = await this.memberService.updateUser(memberParams)
 		if (res) {
@@ -105,6 +109,7 @@ export default class MemberController {
 	}
 
 	@PostMapping('/addMember')
+	@Auth([ROLE.ADMIN, ROLE.SUBADMIN], '/addMember')
 	async addMember(@Body() memberParams: MemberVo) {
 		if (await this.memberService.findMemberVoByUsername(memberParams.username)) {
 			return Result.fail(RESULT_CODE.DATA_REPEAT, RESULT_MSG.DATA_REPEAT, null)
@@ -118,6 +123,7 @@ export default class MemberController {
 	}
 
 	@GetMapping('/getUserDetail/:memberId')
+	@Auth([ROLE.ADMIN, ROLE.SUBADMIN], '/getUserDetail')
 	async getUserDetail(@Param('memberId') memberId: number) {
 		const res = await this.memberService.findMemberVoByMemberId(memberId, true)
 		if (res) {

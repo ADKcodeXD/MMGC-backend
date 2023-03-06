@@ -59,7 +59,6 @@ export const RequestMapping = ({ url = '', method = '', middleware = [] as Array
 			instance: target.constructor.getInstance(),
 			name: name
 		}
-
 		controllers.push(item)
 	}
 }

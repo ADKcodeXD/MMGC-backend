@@ -2,6 +2,7 @@ import { Singleton } from '../decorator/decorator'
 import nodemailer from 'nodemailer'
 import config from '~/config/config.default'
 import { randomNum } from '.'
+import logger from '~/common/utils/log4j'
 
 @Singleton()
 export class EmailUtil {
@@ -53,7 +54,7 @@ export class EmailUtil {
 		try {
 			const res = await this.transporter.sendMail(option)
 			if (res.messageId) {
-				console.log(`sendSuccess: code ${code}`)
+				logger.debug(`Send Success: ${code}`)
 			}
 		} catch (error) {
 			throw new Error('邮件发送错误')

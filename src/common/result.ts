@@ -31,6 +31,13 @@ export default class Result {
 	}
 	static noAuth(): ResResult<null> {
 		return {
+			code: RESULT_CODE.NO_PERMISSION,
+			msg: RESULT_MSG.NO_PERMISSION,
+			data: null
+		}
+	}
+	static noPermission(): ResResult<null> {
+		return {
 			code: RESULT_CODE.NO_AUTHORIZION,
 			msg: RESULT_MSG.NO_AUTHORIZION,
 			data: null

@@ -17,7 +17,8 @@ export const enum RESULT_CODE {
 	VERIFY_ERROR = 8007, // 验证码错误
 	USER_PASSWORD_WRONG = 8008, // 用户名错误或密码错误
 	SEND_EMAIL_ERROR = 8009, // 发邮件错误
-	TRY_AGAIN = 8010 // 上传发生错误 请重试
+	TRY_AGAIN = 8010, // 上传发生错误 请重试
+	NO_PERMISSION = 403 // 上传发生错误 请重试
 }
 
 export const enum RESULT_MSG {
@@ -31,7 +32,8 @@ export const enum RESULT_MSG {
 	VERIFY_ERROR = '验证码错误', // 验证码错误
 	USER_PASSWORD_WRONG = '用户名错误或密码错误', // 用户名错误或密码错误
 	SEND_EMAIL_ERROR = '发送邮件错误',
-	TRY_AGAIN = '上传发生错误 请重试' // 上传发生错误 请重试
+	TRY_AGAIN = '上传发生错误 请重试', // 上传发生错误 请重试
+	NO_PERMISSION = '暂无权限' // 上传发生错误 请重试
 }
 
 export const enum ROLE {

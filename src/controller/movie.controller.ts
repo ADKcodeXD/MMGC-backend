@@ -17,6 +17,7 @@ import Result from '~/common/result'
 import MovieService from '~/service/movie.service'
 import { Validtor } from '~/middleware/ajv.middleware'
 import { movieParamsValidate, movieUpdateParamsValidate } from '~/common/validate/validate'
+import { Auth } from '~/common/decorator/auth'
 
 @Controller('/movie')
 export default class MovieController {
@@ -31,6 +32,7 @@ export default class MovieController {
 	movieService = MovieService.getInstance()
 
 	@PostMapping('/save', [Validtor('body', movieParamsValidate)])
+	@Auth([ROLE.ADMIN, ROLE.SUBADMIN, ROLE.COMMITTER, ROLE.GROUPMEMBER], '/movie/save')
 	async save(@Body() movieParams: MovieParams, @User() userInfo: MemberVo) {
 		if (!userInfo || !userInfo.memberId) {
 			return Result.fail(RESULT_CODE.USER_NOTFOUND, RESULT_MSG.USER_NOTFOUND, null)
@@ -43,7 +45,7 @@ export default class MovieController {
 		if (!params.activityId) {
 			return Result.fail(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
 		}
-		return Result.success(this.movieService.getMovieByActivityId(params))
+		return Result.success(await this.movieService.getMovieByActivityId(params))
 	}
 
 	@GetMapping('/getMovieDetail')
@@ -56,6 +58,7 @@ export default class MovieController {
 	}
 
 	@GetMapping('/getMovieDetailAll')
+	@Auth([ROLE.ADMIN, ROLE.SUBADMIN, ROLE.COMMITTER, ROLE.GROUPMEMBER], '/getMovieDetailAll')
 	async getMovieDetailAll(@Query('movieId') movieId: number) {
 		if (!movieId) {
 			return Result.fail(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
@@ -65,6 +68,7 @@ export default class MovieController {
 	}
 
 	@DeleteMapping('/delete/:movieId')
+	@Auth([ROLE.ADMIN, ROLE.SUBADMIN, ROLE.COMMITTER, ROLE.GROUPMEMBER], '/movie/delete')
 	async deleteMovie(@Param('movieId') movieId: number) {
 		if (!movieId) {
 			return Result.paramsError()
@@ -74,12 +78,14 @@ export default class MovieController {
 	}
 
 	@GetMapping('/getAllMovie')
+	@Auth([ROLE.ADMIN, ROLE.SUBADMIN, ROLE.COMMITTER, ROLE.GROUPMEMBER], '/getAllMovie')
 	async getAllMovie(@QueryAll() moviePageParams: MoviePageParams) {
 		const res = await this.movieService.getMovieList(moviePageParams)
 		return Result.success(res)
 	}
 
 	@PutMapping('/updateMovie', [Validtor('body', movieUpdateParamsValidate)])
+	@Auth([ROLE.ADMIN, ROLE.SUBADMIN, ROLE.COMMITTER, ROLE.GROUPMEMBER], '/updateMovie')
 	async updateMovie(@Body() movieParams: MovieUpdateParams) {
 		const res = await this.movieService.updateMovie(movieParams)
 		if (res) return Result.success(null)

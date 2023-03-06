@@ -1,4 +1,3 @@
-import { RESULT_CODE, RESULT_MSG } from '~/types/enum'
 import { Body, Controller, GetMapping, PostMapping } from '~/common/decorator/decorator'
 import Result from '~/common/result'
 import { Config } from '~/model'
@@ -7,6 +6,7 @@ import { MMGCSysConfigEntity } from '~/entity/global'
 import { copyProperties } from '~/common/utils'
 import { Validtor } from '~/middleware/ajv.middleware'
 import { configUpdateParamsValidate } from '~/common/validate/validate'
+import { Auth } from '~/common/decorator/auth'
 
 @Controller('/config')
 export default class ConfigController {
@@ -38,12 +38,13 @@ export default class ConfigController {
 	}
 
 	@PostMapping('/updateConfig', [Validtor('body', configUpdateParamsValidate)])
+	@Auth([ROLE.ADMIN, ROLE.SUBADMIN, ROLE.COMMITTER, ROLE.GROUPMEMBER], '/updateConfig')
 	async updateConfig(@Body() body: MMGCSysConfig) {
 		if (!body.configType) {
 			await Config.updateOne({ configType: config.SYS_CONFIG }, body)
 		} else {
 			await Config.updateOne({ configType: body.configType }, body)
 		}
-		Result.success(null)
+		return Result.success(null)
 	}
 }

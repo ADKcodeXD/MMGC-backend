@@ -143,7 +143,7 @@ declare global {
 		currentValue: number
 	}
 
-	export interface MoviePageParams extends PageParams {
+	interface MoviePageParams extends PageParams {
 		/** 活动id */
 		activityId?: number
 		/** 活动天数 */
@@ -154,12 +154,21 @@ declare global {
 		uploader?: number
 	}
 
-	export interface MMGCSysConfig {
+	interface MMGCSysConfig {
 		currentActivityId?: number
 		skin?: string
 		isVideoPlay?: boolean
 		otherSettings?: string
 		configType?: number
+	}
+
+	const enum ROLE {
+		ADMIN = 'ADMIN', // 全局管理员
+		SUBADMIN = 'SUBADMIN', // 子管理员
+		GUEST = 'GUEST', // 访客
+		GROUPMEMBER = 'GROUPMEMBER', // 组内成员
+		COMMITTER = 'COMMITTER', // 贡献者
+		ALL = 'ALL' // 贡献者
 	}
 }
 export {}

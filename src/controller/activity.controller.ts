@@ -9,6 +9,7 @@ import { activityParamsValidate, activityUpdateParamsSchemaValidate, DayParamsSc
 import ActivityService from '~/service/activity.service'
 import DayService from '~/service/day.service'
 import { ActivityModelEntity, DayParamsEntity } from '~/entity/activity.entity'
+import { Auth } from '~/common/decorator/auth'
 
 @Controller('/activity')
 export default class ActivityController {
@@ -23,6 +24,7 @@ export default class ActivityController {
 	dayService = DayService.getInstance()
 
 	@PostMapping('/saveActivity', [Validtor('body', activityParamsValidate)])
+	@Auth([ROLE.ADMIN, ROLE.SUBADMIN], '/saveActivity')
 	async saveActivity(@Body() activityParam: ActivityParams) {
 		const res = await this.activityService.findActivityVoByActivityId(activityParam.activityId)
 		if (res) {
@@ -46,6 +48,7 @@ export default class ActivityController {
 	}
 
 	@PutMapping('/updateActivity', [Validtor('body', activityUpdateParamsSchemaValidate)])
+	@Auth([ROLE.ADMIN, ROLE.SUBADMIN, ROLE.COMMITTER, ROLE.GROUPMEMBER], '/updateActivity')
 	async updateActivity(@Body() activityParams: ActivityUpdateParams) {
 		if (!activityParams.activityId) {
 			return Result.paramsError()
@@ -61,6 +64,7 @@ export default class ActivityController {
 	}
 
 	@DeleteMapping('/deleteActivity/:activityId')
+	@Auth([ROLE.ADMIN, ROLE.SUBADMIN], '/deleteActivity')
 	async deleteActivity(@Param('activityId') activityId: number) {
 		if (!activityId) {
 			return Result.paramsError()
@@ -80,6 +84,7 @@ export default class ActivityController {
 	}
 
 	@PostMapping('/saveDay', [Validtor('body', DayParamsSchemaValidate)])
+	@Auth([ROLE.ADMIN, ROLE.SUBADMIN, ROLE.COMMITTER, ROLE.GROUPMEMBER], '/saveDay')
 	async saveDay(@Body() dayParams: DayParams) {
 		if (!dayParams.day || !dayParams.activityId) {
 			return Result.paramsError()
@@ -107,6 +112,7 @@ export default class ActivityController {
 	}
 
 	@GetMapping('/getDaysAll')
+	@Auth([ROLE.ADMIN, ROLE.SUBADMIN, ROLE.COMMITTER, ROLE.GROUPMEMBER], '/getDaysAll')
 	async getDaysAll(@Query('activityId') activityId: number) {
 		if (!activityId) {
 			return Result.paramsError()
@@ -119,6 +125,7 @@ export default class ActivityController {
 	}
 
 	@PutMapping('/updateDay', [Validtor('body', DayParamsSchemaValidate)])
+	@Auth([ROLE.ADMIN, ROLE.SUBADMIN, ROLE.COMMITTER, ROLE.GROUPMEMBER], '/updateDay')
 	async updateDay(@Body() dayParams: DayParams) {
 		if (!dayParams.activityId) {
 			return Result.paramsError()
@@ -128,6 +135,7 @@ export default class ActivityController {
 	}
 
 	@DeleteMapping('/deleteDay')
+	@Auth([ROLE.ADMIN, ROLE.SUBADMIN, ROLE.COMMITTER, ROLE.GROUPMEMBER], '/deleteDay')
 	async deleteDay(@Body() dayParams: { activityId: number; day: number }) {
 		if (!dayParams.activityId || !dayParams.day) {
 			return Result.paramsError()
