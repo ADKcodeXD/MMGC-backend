@@ -1,6 +1,7 @@
 import { Context } from 'koa'
 import mongoose from 'mongoose'
 import config from '../config/config.default'
+import logger from '~/common/utils/log4j'
 
 export default async (ctx: Context, next: any) => {
 	mongoose.connect(`${config.MONGO_PATH}/${config.MONGO_COLLECTION}`, {
@@ -14,7 +15,7 @@ export default async (ctx: Context, next: any) => {
 
 	db.on('error', console.error.bind(console, 'connection error:'))
 	db.once('open', function () {
-		console.log('connected to MongoDB')
+		logger.info('Connected to MongoDB')
 	})
 	await next()
 }
