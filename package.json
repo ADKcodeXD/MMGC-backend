@@ -4,11 +4,12 @@
 	"description": "mmgc backend by koa2 + typescript + mongodb",
 	"main": "index.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"build": "tsc",
+		"build": "tsc -p tsconfig.json",
 		"lint": "eslint ./",
 		"dev": "cross-env NODE_ENV=dev MODE=dev nodemon --watch src -e ts --delay 500ms --exec ts-node -r tsconfig-paths/register src/index.ts --files",
-		"dev:prod": "cross-env NODE_ENV=prod MODE=prod nodemon --watch src -e ts --delay 500ms --exec ts-node -r tsconfig-paths/register src/index.ts --files"
+		"dev:prod": "cross-env NODE_ENV=prod MODE=prod nodemon --watch src -e ts --delay 500ms --exec ts-node -r tsconfig-paths/register src/index.ts --files",
+		"pm2": "cross-env NODE_ENV=prod pm2 start ecosystem.config.js",
+		"node:test": "tsc -p tsconfig.json && cross-env NODE_ENV=prod ts-node -r tsconfig-paths/register ./dist/index.js"
 	},
 	"author": "ADKcode <790532173@qq.com>",
 	"license": "MIT",
@@ -19,15 +20,16 @@
 		"backblaze-b2": "^1.7.0",
 		"body-parser": "^1.20.1",
 		"cos-nodejs-sdk-v5": "^2.11.15",
+		"dayjs": "^1.11.7",
 		"dotenv": "^16.0.3",
 		"jsonwebtoken": "^9.0.0",
 		"koa": "^2.13.4",
 		"koa-body": "^6.0.1",
 		"koa-json-error": "^3.1.2",
 		"koa-jwt": "^4.0.3",
-		"koa-logger": "^3.2.1",
 		"koa-router": "^12.0.0",
-		"moment": "^2.29.4",
+		"log4js": "^6.8.0",
+		"module-alias": "^2.2.2",
 		"mongoose": "^6.7.0",
 		"nodemailer": "^6.8.0",
 		"reflect-metadata": "^0.1.13",
@@ -52,7 +54,7 @@
 		"nodemon": "^2.0.20",
 		"prettier": "^2.5.1",
 		"ts-node": "^10.9.1",
-		"tsconfig-paths": "^4.1.0",
+		"tsconfig-paths": "^4.1.2",
 		"typescript": "^4.4.4"
 	}
 }
