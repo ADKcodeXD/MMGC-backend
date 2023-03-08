@@ -9,6 +9,7 @@
 		"dev": "cross-env NODE_ENV=dev MODE=dev nodemon --watch src -e ts --delay 500ms --exec ts-node -r tsconfig-paths/register src/index.ts --files",
 		"dev:prod": "cross-env NODE_ENV=prod MODE=prod nodemon --watch src -e ts --delay 500ms --exec ts-node -r tsconfig-paths/register src/index.ts --files",
 		"pm2": "cross-env NODE_ENV=prod pm2 start ecosystem.config.js",
+		"start": "cross-env NODE_ENV=prod pm2 start ecosystem.config.js --env production",
 		"node:test": "tsc -p tsconfig.json && cross-env NODE_ENV=prod ts-node -r tsconfig-paths/register ./dist/index.js"
 	},
 	"author": "ADKcode <790532173@qq.com>",

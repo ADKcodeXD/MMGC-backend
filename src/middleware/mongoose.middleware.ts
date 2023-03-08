@@ -13,7 +13,7 @@ export default async (ctx: Context, next: any) => {
 
 	const db = mongoose.connection
 
-	db.on('error', console.error.bind(console, 'connection error:'))
+	db.on('error', () => logger.error('Connected Error'))
 	db.once('open', function () {
 		logger.info('Connected to MongoDB')
 	})

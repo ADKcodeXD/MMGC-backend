@@ -18,7 +18,8 @@ module.exports = {
 		autorestart: true, // 默认为true, 发生异常的情况下自动重启
 		cron_restart: '', // crontab时间格式重启应用，目前只支持cluster模式;
 		restart_delay: 60, // 异常重启情况下，延时重启时间
-		env: {
+		user: 0,
+		env_production: {
 			NODE_ENV: 'prod' // process.env.REMOTE_ADDR
 		},
 		env_dev: {
