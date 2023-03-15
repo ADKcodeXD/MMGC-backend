@@ -23,6 +23,7 @@ export default class UploadController {
 	@PostMapping('/uploadImg')
 	async uploadImg(@Ctx() ctx: Context) {
 		const file = ctx.request.files?.file as any
+		console.log(file)
 		const path = file.filepath as string
 		const reader = fs.readFileSync(path)
 		const res = await this.b2Util.uploadImg(reader, file.originalFilename)

@@ -64,7 +64,12 @@ export default class MemberController {
 
 	@GetMapping('/getMyInfo')
 	async getMyInfo(@User() user: MemberModel) {
-		return Result.success(this.memberService.copyToVo(user))
+		const realUser = await this.memberService.findMemberVoByMemberId(user.memberId, true)
+		if (realUser) {
+			return Result.success(realUser)
+		} else {
+			return Result.noAuth()
+		}
 	}
 
 	/**
@@ -107,6 +112,23 @@ export default class MemberController {
 			return Result.paramsError()
 		}
 	}
+
+	@PostMapping('/updateUserInfoByToken', [Validtor('body', memberUpdateParamsValidate)])
+	async updateUserInfoByToken(@Body() memberParams: MemberVo, @User() user: MemberVo) {
+		if (!user || !user.memberId) return Result.noAuth()
+		if (!memberParams.memberId) return Result.paramsError()
+		if (user.memberId !== memberParams.memberId) {
+			return Result.noAuth()
+		}
+		const res = await this.memberService.updateUser(memberParams)
+		if (res) {
+			return Result.success(res)
+		} else {
+			return Result.paramsError()
+		}
+	}
+
+	// updateUserInfoByToken
 
 	@PostMapping('/addMember')
 	@Auth([ROLE.ADMIN, ROLE.SUBADMIN], '/addMember')

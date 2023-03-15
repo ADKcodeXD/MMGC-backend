@@ -62,7 +62,7 @@ export const memberUpdateParamsSchema: JSONSchemaType<MemberVo> = {
 		desc: { type: 'string', nullable: true },
 		gender: { type: 'number', nullable: true },
 		role: { type: 'string', nullable: true },
-		memberId: { type: 'integer', nullable: true },
+		memberId: { type: 'integer' },
 		createTime: { type: 'string', nullable: true }
 	},
 	required: [],
