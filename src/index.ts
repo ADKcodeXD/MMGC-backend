@@ -9,10 +9,11 @@ import jwt from './middleware/jwt.middleware'
 import auth from './middleware/auth.middleware'
 import log4js from './middleware/log4js.middleware'
 import logger from './common/utils/log4j'
+import cors from 'koa2-cors'
 
 const app = new Koa()
 
-app.use(koabody).use(mongoware).use(jwt).use(auth).use(Error).use(ErrorHandle).use(log4js)
+app.use(koabody).use(mongoware).use(jwt).use(auth).use(Error).use(ErrorHandle).use(log4js).use(cors())
 
 initRoutes(app, router)
 

@@ -5,7 +5,6 @@ import { formatTime } from './moment'
 import { v4 as uuidv4 } from 'uuid'
 import axios, { AxiosProgressEvent } from 'axios'
 import { RESULT_CODE } from '~/types/enum'
-import { _ } from 'ajv'
 
 export class B2Util {
 	static b2: BackBlazeB2 = new BackBlazeB2({
