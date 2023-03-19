@@ -124,7 +124,7 @@ export default class MovieService extends BaseService {
 			_filter.activityId = movieParams.activityId
 		}
 
-		if (movieParams.activityId) {
+		if (movieParams.day) {
 			_filter.day = movieParams.day
 		}
 		const res = await pageQuery(movieParams, this.movieModel, _filter)
