@@ -17,7 +17,6 @@ export default (app: any, router: any) => {
 				.sort((a, b) => a.index - b.index)
 				.map(i => i.fn(ctx))
 			try {
-				console.log(item.instance)
 				const res = await item.handler.call(item.instance, ...args, ctx)
 				ctx.body = res
 			} catch (error: any) {
