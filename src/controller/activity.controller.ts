@@ -1,5 +1,4 @@
 import { Body, Controller, DeleteMapping, GetMapping, Param, PostMapping, PutMapping, Query, QueryAll } from '~/common/decorator/decorator'
-import { RESULT_CODE, RESULT_MSG } from '~/types/enum'
 import Result from '~/common/result'
 import { Activity, Day } from '~/model/index'
 import { ActivityModel, ActivityParams, ActivityUpdateParams, ActivityVo, DayModel, DayParams } from 'Activity'

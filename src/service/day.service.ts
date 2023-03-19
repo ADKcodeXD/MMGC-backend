@@ -35,7 +35,7 @@ export default class ActivityService extends BaseService {
 
 	async updateDay(dayParams: DayParams) {
 		const update: Partial<DayParams> = {}
-		update.isPublic = dayParams.isPublic || undefined
+		update.isPublic = typeof dayParams.isPublic === 'boolean' ? dayParams.isPublic : undefined
 		update.themeCover = dayParams.themeCover || undefined
 		update.themeName = dayParams.themeName || undefined
 		update.themeDesc = dayParams.themeDesc || undefined

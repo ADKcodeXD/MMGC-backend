@@ -10,7 +10,7 @@ export const Error = KoaError({
 	format: (err: any) => {
 		const reg = /^[\u4e00-\u9fa5][^%&',;=?$\x22]+$/
 		const message = process.env.NODE_ENV === 'dev' ? err.message : reg.test(err.message) ? err.message : '服务器内部错误！'
-		logger.error(err.message)
+
 		return Result.fail(err.status, message, process.env.NODE_ENV === 'dev' ? err.stack : null)
 	}
 })
@@ -19,6 +19,7 @@ export const ErrorHandle = async (ctx: Context, next: Function) => {
 	try {
 		await next()
 	} catch (error: any) {
+		logger.error(error.message)
 		ctx.throw(error)
 	}
 }

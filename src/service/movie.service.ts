@@ -1,14 +1,15 @@
 import { RESULT_CODE, RESULT_MSG } from '~/types/enum'
 import { Singleton } from '~/common/decorator/decorator'
 import { Movie } from '~/model'
-import BaseService from './base.service'
-import IncrementService from './increment.service'
 import { MovieModel, MovieParams, MovieUpdateParams, MovieVo } from 'Movie'
 import { MovieModelEntity, MovieVoEntity } from '~/entity/movie.entity'
 import { copyProperties, pageQuery } from '~/common/utils'
 import Result from '~/common/result'
 import MemberService from './member.service'
 import ActivityService from './activity.service'
+import OperService from './oper.service'
+import BaseService from './base.service'
+import IncrementService from './increment.service'
 import { formatTime } from '~/common/utils/moment'
 
 @Singleton()
@@ -17,6 +18,7 @@ export default class MovieService extends BaseService {
 	incrementService = IncrementService.getInstance()
 	memberService = MemberService.getInstance()
 	activityService = ActivityService.getInstance()
+
 	static getInstance() {
 		console.log('dont have Singleton')
 		return new this()
@@ -41,7 +43,7 @@ export default class MovieService extends BaseService {
 		const movieList = (await this.movieModel.find({
 			activityId: params.activityId,
 			day: params.day,
-			expectPlayTime: { $lt: Date.now() }
+			expectPlayTime: { $lt: new Date() }
 		})) as MovieModel[]
 		if (movieList) {
 			const movieVoList = await this.copyToVoList<MovieModel, MovieVo>(movieList, false)
@@ -58,7 +60,7 @@ export default class MovieService extends BaseService {
 		}
 	}
 
-	async getMovieDetail(movieId: number, isAll?: boolean) {
+	async getMovieDetail(movieId: number, isAll?: boolean, memberId?: number) {
 		const _filter: any = {
 			movieId: movieId
 		}
@@ -66,9 +68,18 @@ export default class MovieService extends BaseService {
 			_filter.expectPlayTime = { $lt: new Date() }
 		}
 
-		const model = await this.movieModel.findOne(_filter)
+		const model = await this.movieModel.findOneAndUpdate(_filter)
 		if (model) {
-			return this.copyToVo(model)
+			await this.movieModel.updateOne({ movieId: model.movieId }, { viewNums: model.viewNums + 1 })
+			return this.copyToVo(model, memberId, true)
+		}
+		return null
+	}
+
+	async findMovieModel(movieId: number) {
+		const model = await this.movieModel.findOne({ movieId: movieId })
+		if (model) {
+			return model
 		}
 		return null
 	}
@@ -98,7 +109,11 @@ export default class MovieService extends BaseService {
 
 		if (movieParams.isPublic) {
 			movieParams.isPublic = parseInt(movieParams.isPublic as any)
-			_filter.expectPlayTime = movieParams.isPublic === 0 ? { $gt: new Date() } : { $lt: new Date() }
+			if (movieParams.isPublic === 0) {
+				_filter.expectPlayTime = { $gt: new Date() }
+			} else if (movieParams.isPublic === 1) {
+				_filter.expectPlayTime = { $lt: new Date() }
+			}
 		}
 
 		if (movieParams.uploader) {
@@ -112,11 +127,10 @@ export default class MovieService extends BaseService {
 		if (movieParams.activityId) {
 			_filter.day = movieParams.day
 		}
-
 		const res = await pageQuery(movieParams, this.movieModel, _filter)
 
 		return {
-			result: await this.copyToVoList(res.result, false),
+			result: await this.copyToVoList(res.result, null, false),
 			page: res.page,
 			total: res.total
 		}
@@ -135,7 +149,7 @@ export default class MovieService extends BaseService {
 		return false
 	}
 
-	async copyToVo(movieModel: MovieModel, needActivityVo = true) {
+	async copyToVo(movieModel: MovieModel, memberId?: number, needActivityVo?: boolean) {
 		const vo = new MovieVoEntity()
 		copyProperties(movieModel, vo)
 		if (needActivityVo && movieModel.activityId) {
@@ -156,6 +170,22 @@ export default class MovieService extends BaseService {
 		} else {
 			vo.isPublic = true
 		}
+		// TODO: fix: 循环依赖问题
+
+		// if (memberId) {
+		// 	const isPoll = await OperService.getInstance().canMoviePoll(movieModel.movieId, memberId)
+		// 	const isLike = await OperService.getInstance().canMovieLike(movieModel.movieId, memberId)
+		// 	const loginVo: LoginVo = {
+		// 		isLike,
+		// 		isPoll,
+		// 		isCollect: false
+		// 	}
+		// 	vo.loginVo = loginVo
+		// }
+		// const likeNums = await OperService.getInstance().findLikeCoundByMovieId(movieModel.movieId)
+		// const pollNums = await OperService.getInstance().findPollCountByMovieId(movieModel.movieId)
+		// vo.likeNums = likeNums
+		// vo.pollNums = pollNums
 		if (vo.realPublishTime) vo.realPublishTime = formatTime(movieModel.realPublishTime)
 		vo.uploader = await this.memberService.findMemberVoByMemberId(movieModel.uploader)
 		vo.createTime = formatTime(movieModel.createTime)

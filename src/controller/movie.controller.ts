@@ -80,6 +80,7 @@ export default class MovieController {
 	@GetMapping('/getAllMovie')
 	@Auth([ROLE.ADMIN, ROLE.SUBADMIN, ROLE.COMMITTER, ROLE.GROUPMEMBER], '/getAllMovie')
 	async getAllMovie(@QueryAll() moviePageParams: MoviePageParams) {
+		console.log('moviePageParams', moviePageParams)
 		const res = await this.movieService.getMovieList(moviePageParams)
 		return Result.success(res)
 	}

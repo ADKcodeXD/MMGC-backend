@@ -83,6 +83,7 @@ export const pageQuery = async <T>(pageParams: PageParams, model: Model<T>, filt
 	} else {
 		sort = { createTime: orderRule }
 	}
+	console.log(filter, sort, params.page, params.pageSize)
 	const res = await model
 		.find(filter)
 		.sort(sort)

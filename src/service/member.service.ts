@@ -121,7 +121,6 @@ export default class MemberService extends BaseService {
 		}
 		delete memberParams.createTime
 		const member = await this.memberModel.updateOne({ memberId: memberParams.memberId }, memberParams)
-		console.log(member)
 		return member
 	}
 

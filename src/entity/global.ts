@@ -1,3 +1,5 @@
+import { OperType } from 'Oper'
+
 export class PageParamsEntity implements PageParams {
 	page = 1
 	pageSize = 10
@@ -14,4 +16,14 @@ export class MMGCSysConfigEntity implements MMGCSysConfig {
 	isVideoPlay = true
 	otherSettings = ''
 	configType = 1
+}
+
+export class OperTypeEntity implements OperType {
+	createTime: number | null = null
+	memberId: number | null = null
+	movieId = 0
+	operType: 'like' | 'poll' = 'like'
+	operId = 0
+	day: number | null = null
+	activityId: number | null = null
 }

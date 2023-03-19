@@ -18,7 +18,10 @@ export const enum RESULT_CODE {
 	USER_PASSWORD_WRONG = 8008, // 用户名错误或密码错误
 	SEND_EMAIL_ERROR = 8009, // 发邮件错误
 	TRY_AGAIN = 8010, // 上传发生错误 请重试
-	NO_PERMISSION = 403 // 上传发生错误 请重试
+	NO_PERMISSION = 403, // 无权限
+	CANT_POLL_VIDEO = 8011,
+	CANT_LIKE_VIDEO = 8012,
+	USER_EMAIL_EXIST = 8013 //用户邮箱已存在
 }
 
 export const enum RESULT_MSG {
@@ -33,7 +36,10 @@ export const enum RESULT_MSG {
 	USER_PASSWORD_WRONG = '用户名错误或密码错误', // 用户名错误或密码错误
 	SEND_EMAIL_ERROR = '发送邮件错误',
 	TRY_AGAIN = '上传发生错误 请重试', // 上传发生错误 请重试
-	NO_PERMISSION = '暂无权限' // 上传发生错误 请重试
+	NO_PERMISSION = '暂无权限', // 无权限
+	CANT_POLL_VIDEO = '无法投票',
+	CANT_LIKE_VIDEO = '无法点赞',
+	USER_EMAIL_EXIST = '邮箱已存在' //用户邮箱已存在
 }
 
 export const enum ROLE {

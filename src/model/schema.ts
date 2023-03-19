@@ -2,6 +2,8 @@ import mongoose from 'mongoose'
 import { ActivityModel, DayModel } from 'Activity'
 import { MemberModel } from 'Member'
 import { MovieModel } from 'Movie'
+import { SponsorModel } from 'Sponsor'
+import { OperType } from 'Oper'
 export const activitySchema = new mongoose.Schema<ActivityModel>(
 	{
 		activityBackgroundImg: { type: String, default: null },
@@ -136,8 +138,40 @@ export const daySchema = new mongoose.Schema<DayModel>(
 			en: { type: String, default: null }
 		},
 		day: { type: Number, default: 0 },
-		isPublic: { type: Boolean, default: true },
+		isPublic: { type: Boolean, default: false },
 		sortIndex: { type: Number, default: 0 }
 	},
 	{ collection: 'days' }
+)
+
+export const sponsorSchema = new mongoose.Schema<SponsorModel>(
+	{
+		sponsorDesc: {
+			cn: String,
+			jp: { type: String, default: null },
+			en: { type: String, default: null }
+		},
+		sponsorName: {
+			cn: String,
+			jp: { type: String, default: null },
+			en: { type: String, default: null }
+		},
+		sponsorId: { type: Number, default: null },
+		sponsorLogo: { type: String, default: null },
+		createTime: { type: Number, default: Date.now() }
+	},
+	{ collection: 'sponsors' }
+)
+
+export const operSchema = new mongoose.Schema<OperType>(
+	{
+		operId: { type: Number, default: 0 },
+		operType: { type: String, default: 'like' },
+		createTime: { type: Number, default: Date.now() },
+		movieId: { type: Number, default: null },
+		memberId: { type: Number, default: null },
+		activityId: { type: Number, default: null },
+		day: { type: Number, default: null }
+	},
+	{ collection: 'opers' }
 )

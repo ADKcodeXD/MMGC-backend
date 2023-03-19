@@ -2,6 +2,7 @@ import { RESULT_CODE, RESULT_MSG } from '~/types/enum'
 import { Body, Controller, GetMapping, PostMapping, Query } from '~/common/decorator/decorator'
 import Result from '~/common/result'
 import { EmailUtil } from '~/common/utils/emailutil'
+import MemberService from '~/service/member.service'
 
 @Controller('/email')
 export default class EmailController {
@@ -14,6 +15,7 @@ export default class EmailController {
 	}
 	static emailMap = new Map()
 	emailUtil = EmailUtil.getInstance()
+	memberService = MemberService.getInstance()
 	map = new Map()
 
 	@GetMapping('/getCode')
@@ -23,6 +25,10 @@ export default class EmailController {
 		}
 		if (this.map.has(email)) {
 			return Result.tooManyRequest()
+		}
+		const res = await this.memberService.findMemberVoByEmail(email)
+		if (res) {
+			return Result.emailExist()
 		}
 		const timeOut = setTimeout(() => {
 			clearTimeout(this.map.get(email))

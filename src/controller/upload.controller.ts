@@ -1,4 +1,3 @@
-import { RESULT_CODE, RESULT_MSG } from '~/types/enum'
 import { Context } from 'koa'
 import { Controller, Ctx, GetMapping, PostMapping, Query } from '~/common/decorator/decorator'
 import { CosUtil } from '~/common/utils/cosutil'
@@ -23,10 +22,9 @@ export default class UploadController {
 	@PostMapping('/uploadImg')
 	async uploadImg(@Ctx() ctx: Context) {
 		const file = ctx.request.files?.file as any
-		console.log(file)
 		const path = file.filepath as string
 		const reader = fs.readFileSync(path)
-		const res = await this.b2Util.uploadImg(reader, file.originalFilename)
+		const res = await this.cosUtil.uploadImg(reader, file.originalFilename)
 		// 上传成功 将目录下的图片缓存删除
 		const stat = fs.statSync(path)
 		if (stat.isFile()) {
@@ -48,22 +46,17 @@ export default class UploadController {
 			return Result.paramsError()
 		}
 		if (fs.statSync(path).isFile()) {
-			const reader = fs.readFileSync(path)
-			let result = null
 			try {
-				const res = await this.b2Util.uploadVideo(reader, file.originalFilename)
-				if (res === RESULT_CODE.TOO_MANY_REQUEST) {
-					result = Result.tooManyRequest()
-				} else if (res) {
-					result = Result.success(res)
+				const res = await this.cosUtil.uploadVideo(path, file.originalFilename)
+				if (res) {
+					return Result.success(res)
 				}
 			} finally {
-				// 上传成功 将目录下的图片缓存删除
 				if (fs.existsSync(path) && fs.statSync(path).isFile()) {
 					fs.unlinkSync(path)
 				}
 			}
-			return result || Result.paramsError()
+			return Result.paramsError()
 		} else {
 			return Result.paramsError()
 		}
@@ -75,7 +68,7 @@ export default class UploadController {
 			return Result.paramsError()
 		}
 		const newFileName = decodeURIComponent(fileName)
-		const res = this.b2Util.getBackUploadProgress(newFileName)
+		const res = this.cosUtil.getBackUploadProgress(newFileName)
 		if (res) {
 			return Result.success(res)
 		} else {

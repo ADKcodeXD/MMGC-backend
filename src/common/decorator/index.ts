@@ -1,3 +1,4 @@
+import logger from '~/common/utils/log4j'
 import { Context } from 'koa'
 import { controllers, params } from './decorator'
 
@@ -15,8 +16,13 @@ export default (app: any, router: any) => {
 				.filter(i => i.name === item.name)
 				.sort((a, b) => a.index - b.index)
 				.map(i => i.fn(ctx))
-			const res = await item.handler.call(item.instance, ...args, ctx)
-			ctx.body = res
+			try {
+				console.log(item.instance)
+				const res = await item.handler.call(item.instance, ...args, ctx)
+				ctx.body = res
+			} catch (error: any) {
+				console.log(error)
+			}
 		})
 	})
 	app.use(router.routes()).use(router.allowedMethods()) // 路由装箱

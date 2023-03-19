@@ -64,4 +64,25 @@ export default class Result {
 			data: null
 		}
 	}
+	static emailExist(): ResResult<null> {
+		return {
+			code: RESULT_CODE.USER_EMAIL_EXIST,
+			msg: RESULT_MSG.USER_EMAIL_EXIST,
+			data: null
+		}
+	}
+	static cantLikeVideo(): ResResult<null> {
+		return {
+			code: RESULT_CODE.CANT_LIKE_VIDEO,
+			msg: RESULT_MSG.CANT_LIKE_VIDEO,
+			data: null
+		}
+	}
+	static cantPollVideo(): ResResult<null> {
+		return {
+			code: RESULT_CODE.CANT_POLL_VIDEO,
+			msg: RESULT_MSG.CANT_POLL_VIDEO,
+			data: null
+		}
+	}
 }
