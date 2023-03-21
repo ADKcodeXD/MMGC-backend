@@ -3,15 +3,10 @@ import { copyProperties } from '~/common/utils'
 import { Day } from '~/model'
 import { DayVoEntity } from '~/entity/activity.entity'
 import BaseService from './base.service'
-import { Singleton } from '~/common/decorator/decorator'
+import { Service } from '~/common/decorator/decorator'
 
-@Singleton()
-export default class ActivityService extends BaseService {
-	static getInstance() {
-		console.log('dont have Singleton')
-		return new this()
-	}
-
+@Service(true)
+export default class DayService extends BaseService {
 	dayModel = Day
 
 	async findDaysByActivityId(activityId: number, isAll?: boolean) {

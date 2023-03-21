@@ -1,6 +1,7 @@
 export interface AuthItem {
 	funcName: string
 	path: string
+	target: any
 	allowRoles: Array<ROLE>
 }
 
@@ -15,7 +16,8 @@ export const Auth = (allowRoles: Array<ROLE> = [ROLE.GUEST], path = '') => {
 	return function (target: any, name: string) {
 		const item: AuthItem = {
 			funcName: name,
-			path: `${target.constructor.getInstance()['prefix'] || ''}${path || `/${name}`}`,
+			target: target,
+			path: path,
 			allowRoles: allowRoles
 		}
 		authList.push(item)

@@ -6,14 +6,6 @@ import Result from '~/common/result'
 import { B2Util } from '~/common/utils/b2utils'
 @Controller('/upload')
 export default class UploadController {
-	static singletonInstance: UploadController = new UploadController()
-	static getInstance() {
-		if (!UploadController.singletonInstance) {
-			UploadController.singletonInstance = new UploadController()
-		}
-		return UploadController.singletonInstance
-	}
-
 	cosUtil = new CosUtil()
 	b2Util = new B2Util()
 

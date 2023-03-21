@@ -4,19 +4,15 @@ import { formatTime } from '~/common/utils/moment'
 import { Activity } from '~/model'
 import { ActivityVoEntity } from '~/entity/activity.entity'
 import BaseService from './base.service'
-import { Singleton } from '~/common/decorator/decorator'
+import { Autowired, Service } from '~/common/decorator/decorator'
 import MemberService from './member.service'
 
-@Singleton()
+@Service(true)
 export default class ActivityService extends BaseService {
-	static getInstance() {
-		console.log('dont have Singleton')
-		return new this()
-	}
-
 	activityModel = Activity
 
-	memberService = MemberService.getInstance()
+	@Autowired()
+	memberService!: MemberService
 
 	async findActivityVoByActivityId(activityId: number) {
 		const activityModel: ActivityModel = <ActivityModel>await this.activityModel.findOne({ activityId: activityId })

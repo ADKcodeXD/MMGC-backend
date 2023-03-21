@@ -1,12 +1,14 @@
 import { Context } from 'koa'
 import { authList } from '~/common/decorator/auth'
 import Result from '~/common/result'
+import ContainerInstance from '~/common/utils/container'
 import MemberService from '~/service/member.service'
-const memberService = MemberService.getInstance()
 
 export default async (ctx: Context, next: Function) => {
+	const memberService = ContainerInstance.get<MemberService>('MemberService')
 	for (const item of authList) {
-		if (ctx.path.indexOf(item.path) !== -1) {
+		const path = `${item.target.constructor.prefix}${item.path}`
+		if (ctx.path.indexOf(path) !== -1) {
 			let member
 			if (ctx.state.user) {
 				member = await memberService.findMemberVoByMemberId(ctx.state.user.memberId, true)

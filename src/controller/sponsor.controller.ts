@@ -11,6 +11,7 @@ import {
 	DeleteMapping,
 	Param,
 	PutMapping,
+	Autowired,
 	Query
 } from '~/common/decorator/decorator'
 import Result from '~/common/result'
@@ -22,15 +23,8 @@ import { RESULT_CODE, RESULT_MSG } from '~/types/enum'
 
 @Controller('/sponsor')
 export default class SponsorController {
-	static singletonInstance: SponsorController = new SponsorController()
-	static getInstance() {
-		if (!SponsorController.singletonInstance) {
-			SponsorController.singletonInstance = new this()
-		}
-		return SponsorController.singletonInstance
-	}
-
-	sponsorService = SponsorService.getInstance()
+	@Autowired()
+	sponsorService!: SponsorService
 
 	@PostMapping('/saveSponsor', [Validtor('body', sponsorParamsValidate)])
 	@Auth([ROLE.ADMIN, ROLE.SUBADMIN, ROLE.COMMITTER, ROLE.GROUPMEMBER], '/sponsor/saveSponsor')

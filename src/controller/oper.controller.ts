@@ -1,20 +1,13 @@
 import { MemberVo } from 'Member'
-import { Controller, PostMapping, User, Query } from '~/common/decorator/decorator'
+import { Controller, PostMapping, User, Query, Autowired } from '~/common/decorator/decorator'
 import Result from '~/common/result'
 import OperService from '~/service/oper.service'
 import { RESULT_CODE, RESULT_MSG } from '~/types/enum'
 
 @Controller('/oper')
 export default class OperController {
-	static singletonInstance: OperController = new OperController()
-	static getInstance() {
-		if (!OperController.singletonInstance) {
-			OperController.singletonInstance = new this()
-		}
-		return OperController.singletonInstance
-	}
-
-	operService = OperService.getInstance()
+	@Autowired()
+	operService!: OperService
 
 	@PostMapping('/likeVideo')
 	async likeVideo(@Query('movieId') movieId: number, @User() userInfo: MemberVo) {

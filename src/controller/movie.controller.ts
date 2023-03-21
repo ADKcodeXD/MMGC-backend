@@ -1,5 +1,6 @@
 import { RESULT_CODE, RESULT_MSG } from '~/types/enum'
 import {
+	Autowired,
 	Body,
 	Controller,
 	DeleteMapping,
@@ -21,15 +22,8 @@ import { Auth } from '~/common/decorator/auth'
 
 @Controller('/movie')
 export default class MovieController {
-	static singletonInstance: MovieController = new MovieController()
-	static getInstance() {
-		if (!MovieController.singletonInstance) {
-			MovieController.singletonInstance = new this()
-		}
-		return MovieController.singletonInstance
-	}
-
-	movieService = MovieService.getInstance()
+	@Autowired()
+	movieService!: MovieService
 
 	@PostMapping('/save', [Validtor('body', movieParamsValidate)])
 	@Auth([ROLE.ADMIN, ROLE.SUBADMIN, ROLE.COMMITTER, ROLE.GROUPMEMBER], '/movie/save')

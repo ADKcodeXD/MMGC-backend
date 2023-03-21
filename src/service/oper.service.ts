@@ -1,4 +1,4 @@
-import { Singleton } from '~/common/decorator/decorator'
+import { Autowired, Service } from '~/common/decorator/decorator'
 import Result from '~/common/result'
 import { Oper } from '~/model'
 import BaseService from './base.service'
@@ -6,19 +6,18 @@ import IncrementService from './increment.service'
 import MovieService from './movie.service'
 import { OperTypeEntity } from '~/entity/global'
 
-@Singleton()
+@Service(true)
 export default class OperService extends BaseService {
 	operModel = Oper
-	incrementService = IncrementService.getInstance()
 
-	static singleton: OperService = new OperService()
-	static getInstance() {
-		console.log('dont have Singleton')
-		return new this()
-	}
+	@Autowired()
+	incrementService!: IncrementService
+
+	@Autowired('MovieService')
+	movieService!: MovieService
 
 	async addLikeOperRecord(movieId: number, memberId: number) {
-		const movieVo = await MovieService.getInstance().getMovieDetail(movieId, false)
+		const movieVo = await this.movieService.getMovieDetail(movieId, false)
 		if (!movieVo) {
 			return Result.dataNotFound()
 		}
@@ -33,7 +32,7 @@ export default class OperService extends BaseService {
 	}
 
 	async deleteLikeOperRecord(movieId: number, memberId: number) {
-		const movieVo = await MovieService.getInstance().findMovieModel(movieId)
+		const movieVo = await this.movieService.findMovieModel(movieId)
 		if (!movieVo) {
 			return Result.dataNotFound()
 		}
@@ -45,7 +44,7 @@ export default class OperService extends BaseService {
 	}
 
 	async addPollOerRecord(movieId: number, memberId: number) {
-		const movieVo = await MovieService.getInstance().findMovieModel(movieId)
+		const movieVo = await this.movieService.findMovieModel(movieId)
 		if (!movieVo) {
 			return Result.dataNotFound()
 		}
@@ -75,7 +74,7 @@ export default class OperService extends BaseService {
 	}
 
 	async findLikeCoundByMovieId(movieId: number) {
-		const movieVo = await MovieService.getInstance().getMovieDetail(movieId, false)
+		const movieVo = await this.movieService.findMovieModel(movieId)
 		if (!movieVo) {
 			return 0
 		}
@@ -84,7 +83,7 @@ export default class OperService extends BaseService {
 	}
 
 	async findPollCountByMovieId(movieId: number) {
-		const movieVo = await MovieService.getInstance().getMovieDetail(movieId, false)
+		const movieVo = await this.movieService.findMovieModel(movieId)
 		if (!movieVo) {
 			return 0
 		}
@@ -93,7 +92,7 @@ export default class OperService extends BaseService {
 	}
 
 	async canMoviePoll(movieId: number, memberId: number) {
-		const movieVo = await MovieService.getInstance().findMovieModel(movieId)
+		const movieVo = await this.movieService.findMovieModel(movieId)
 		if (!movieVo) {
 			return false
 		}

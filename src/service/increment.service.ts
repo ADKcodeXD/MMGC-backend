@@ -1,14 +1,9 @@
 import { Model } from 'mongoose'
-import { Singleton } from '~/common/decorator/decorator'
+import { Service } from '~/common/decorator/decorator'
 import { Increment } from '~/model'
 
-@Singleton()
+@Service(true)
 export default class IncrementService {
-	static getInstance() {
-		console.log('dont have Singleton')
-		return new this()
-	}
-
 	increment = Increment
 
 	/**

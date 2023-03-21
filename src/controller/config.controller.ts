@@ -10,14 +10,6 @@ import { Auth } from '~/common/decorator/auth'
 
 @Controller('/config')
 export default class ConfigController {
-	static singletonInstance: ConfigController = new ConfigController()
-	static getInstance() {
-		if (!ConfigController.singletonInstance) {
-			ConfigController.singletonInstance = new this()
-		}
-		return ConfigController.singletonInstance
-	}
-
 	@GetMapping('/getConfig')
 	async getConfig() {
 		const res = await Config.findOne({ configType: config.SYS_CONFIG })

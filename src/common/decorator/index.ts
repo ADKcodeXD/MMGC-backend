@@ -1,6 +1,7 @@
 import logger from '~/common/utils/log4j'
 import { Context } from 'koa'
 import { controllers, params } from './decorator'
+import ContainerInstance from '../utils/container'
 
 export * from '~/controller/index'
 
@@ -17,7 +18,7 @@ export default (app: any, router: any) => {
 				.sort((a, b) => a.index - b.index)
 				.map(i => i.fn(ctx))
 			try {
-				const res = await item.handler.call(item.instance, ...args, ctx)
+				const res = await item.handler.call(ContainerInstance.get(Reflect.getMetadata('cus:id', item.constructor)), ...args, ctx)
 				ctx.body = res
 			} catch (error: any) {
 				console.log(error)

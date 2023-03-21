@@ -1,5 +1,5 @@
 import { RESULT_CODE, RESULT_MSG } from '~/types/enum'
-import { Singleton } from '~/common/decorator/decorator'
+import { Autowired, Service } from '~/common/decorator/decorator'
 import { Movie } from '~/model'
 import { MovieModel, MovieParams, MovieUpdateParams, MovieVo } from 'Movie'
 import { MovieModelEntity, MovieVoEntity } from '~/entity/movie.entity'
@@ -12,17 +12,21 @@ import BaseService from './base.service'
 import IncrementService from './increment.service'
 import { formatTime } from '~/common/utils/moment'
 
-@Singleton()
+@Service(true)
 export default class MovieService extends BaseService {
 	movieModel = Movie
-	incrementService = IncrementService.getInstance()
-	memberService = MemberService.getInstance()
-	activityService = ActivityService.getInstance()
 
-	static getInstance() {
-		console.log('dont have Singleton')
-		return new this()
-	}
+	@Autowired()
+	incrementService!: IncrementService
+
+	@Autowired()
+	memberService!: MemberService
+
+	@Autowired()
+	activityService!: ActivityService
+
+	@Autowired()
+	operService!: OperService
 
 	async save(movieParams: MovieParams, memberId: number) {
 		const model = new MovieModelEntity()
@@ -68,10 +72,10 @@ export default class MovieService extends BaseService {
 			_filter.expectPlayTime = { $lt: new Date() }
 		}
 
-		const model = await this.movieModel.findOneAndUpdate(_filter)
+		const model = await this.movieModel.findOne(_filter)
 		if (model) {
 			await this.movieModel.updateOne({ movieId: model.movieId }, { viewNums: model.viewNums + 1 })
-			return this.copyToVo(model, memberId, true)
+			return await this.copyToVo(model, memberId, isAll)
 		}
 		return null
 	}
@@ -170,22 +174,22 @@ export default class MovieService extends BaseService {
 		} else {
 			vo.isPublic = true
 		}
-		// TODO: fix: 循环依赖问题
 
-		// if (memberId) {
-		// 	const isPoll = await OperService.getInstance().canMoviePoll(movieModel.movieId, memberId)
-		// 	const isLike = await OperService.getInstance().canMovieLike(movieModel.movieId, memberId)
-		// 	const loginVo: LoginVo = {
-		// 		isLike,
-		// 		isPoll,
-		// 		isCollect: false
-		// 	}
-		// 	vo.loginVo = loginVo
-		// }
-		// const likeNums = await OperService.getInstance().findLikeCoundByMovieId(movieModel.movieId)
-		// const pollNums = await OperService.getInstance().findPollCountByMovieId(movieModel.movieId)
-		// vo.likeNums = likeNums
-		// vo.pollNums = pollNums
+		if (memberId) {
+			const isPoll = await this.operService.canMoviePoll(movieModel.movieId, memberId)
+			const isLike = await this.operService.canMovieLike(movieModel.movieId, memberId)
+			const loginVo: LoginVo = {
+				isLike,
+				isPoll,
+				isCollect: false
+			}
+			vo.loginVo = loginVo
+		}
+		const likeNums = await this.operService.findLikeCoundByMovieId(movieModel.movieId)
+		const pollNums = await this.operService.findPollCountByMovieId(movieModel.movieId)
+		vo.likeNums = likeNums
+		vo.pollNums = pollNums
+
 		if (vo.realPublishTime) vo.realPublishTime = formatTime(movieModel.realPublishTime)
 		vo.uploader = await this.memberService.findMemberVoByMemberId(movieModel.uploader)
 		vo.createTime = formatTime(movieModel.createTime)

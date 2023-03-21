@@ -1,5 +1,5 @@
 import { MemberVo, MemberModel } from 'Member'
-import { Singleton } from '~/common/decorator/decorator'
+import { Autowired, Service, Singleton } from '~/common/decorator/decorator'
 import { aesEncrypt, copyProperties, pageQuery } from '~/common/utils'
 import { MemberModelEntity, MemberParamsEntity, MemberVoEntity } from '~/entity/member.entity'
 import { Member } from '~/model'
@@ -9,14 +9,12 @@ import config from '~/config/config.default'
 import IncrementService from './increment.service'
 import { formatTime } from '~/common/utils/moment'
 
-@Singleton()
+@Service(true)
 export default class MemberService extends BaseService {
 	memberModel = Member
-	incrementService = IncrementService.getInstance()
-	static getInstance() {
-		console.log('dont have Singleton')
-		return new this()
-	}
+
+	@Autowired()
+	incrementService!: IncrementService
 
 	async findMemberVoByMemberId(memberId: number, needDetail = false) {
 		const memberModel = await this.memberModel.findOne({ memberId: memberId })

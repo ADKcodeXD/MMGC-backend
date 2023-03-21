@@ -1,6 +1,17 @@
 import { RESULT_CODE, RESULT_MSG } from '~/types/enum'
 import Result from '~/common/result'
-import { Body, Controller, DeleteMapping, GetMapping, Param, PostMapping, PutMapping, QueryAll, User } from '~/common/decorator/decorator'
+import {
+	Autowired,
+	Body,
+	Controller,
+	DeleteMapping,
+	GetMapping,
+	Param,
+	PostMapping,
+	PutMapping,
+	QueryAll,
+	User
+} from '~/common/decorator/decorator'
 import { aesDecrypt, copyProperties } from '~/common/utils'
 import { Validtor } from '~/middleware/ajv.middleware'
 import { memberParamsValidate, memberUpdateParamsValidate } from '~/common/validate/validate'
@@ -15,15 +26,8 @@ import { Auth } from '~/common/decorator/auth'
 
 @Controller('/user')
 export default class MemberController {
-	static singletonInstance: MemberController = new MemberController()
-	static getInstance() {
-		if (!MemberController.singletonInstance) {
-			MemberController.singletonInstance = new MemberController()
-		}
-		return MemberController.singletonInstance
-	}
-
-	memberService = MemberService.getInstance()
+	@Autowired()
+	memberService!: MemberService
 
 	@PostMapping('/register', [Validtor('body', memberParamsValidate)])
 	async register(@Body() registerParams: MemberParams) {

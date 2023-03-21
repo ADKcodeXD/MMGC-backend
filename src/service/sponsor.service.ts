@@ -2,7 +2,7 @@ import { pageQuery } from '~/common/utils'
 // write a service for sponsor
 
 import { SponsorModel, SponsorParams, SponsorUpdateParams } from 'Sponsor'
-import { Singleton } from '~/common/decorator/decorator'
+import { Autowired, Service } from '~/common/decorator/decorator'
 import Result from '~/common/result'
 import { copyProperties } from '~/common/utils'
 import { SponsorModelEntity } from '~/entity/sponsor.entity.'
@@ -11,19 +11,12 @@ import BaseService from './base.service'
 import IncrementService from './increment.service'
 import { formatTime } from '~/common/utils/moment'
 
-@Singleton()
+@Service(true)
 export default class SponsorService extends BaseService {
-	static singleton: SponsorService = new SponsorService()
-
-	static getInstance() {
-		if (!SponsorService.singleton) {
-			SponsorService.singleton = new this()
-		}
-		return SponsorService.singleton
-	}
-
 	sponsorModel = Sponsor
-	incrementService = IncrementService.getInstance()
+
+	@Autowired()
+	incrementService!: IncrementService
 
 	async findSponsorList(pageParams: PageParams) {
 		const res = await pageQuery(pageParams, this.sponsorModel)
@@ -76,6 +69,8 @@ export default class SponsorService extends BaseService {
 
 	copyToVo(model: SponsorModel) {
 		model.createTime = formatTime(model.createTime)
-		return model
+		const vo = new SponsorModelEntity()
+		copyProperties(model, vo)
+		return vo
 	}
 }

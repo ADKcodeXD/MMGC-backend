@@ -1,5 +1,5 @@
 import { RESULT_CODE, RESULT_MSG } from '~/types/enum'
-import { Body, Controller, GetMapping, PostMapping, Query } from '~/common/decorator/decorator'
+import { Body, Controller, GetMapping, PostMapping, Query, Autowired } from '~/common/decorator/decorator'
 import Result from '~/common/result'
 import { EmailUtil } from '~/common/utils/emailutil'
 import MemberService from '~/service/member.service'
@@ -15,7 +15,10 @@ export default class EmailController {
 	}
 	static emailMap = new Map()
 	emailUtil = EmailUtil.getInstance()
-	memberService = MemberService.getInstance()
+
+	@Autowired()
+	memberService!: MemberService
+
 	map = new Map()
 
 	@GetMapping('/getCode')

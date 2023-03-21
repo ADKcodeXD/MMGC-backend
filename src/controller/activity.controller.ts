@@ -1,4 +1,15 @@
-import { Body, Controller, DeleteMapping, GetMapping, Param, PostMapping, PutMapping, Query, QueryAll } from '~/common/decorator/decorator'
+import {
+	Autowired,
+	Body,
+	Controller,
+	DeleteMapping,
+	GetMapping,
+	Param,
+	PostMapping,
+	PutMapping,
+	Query,
+	QueryAll
+} from '~/common/decorator/decorator'
 import Result from '~/common/result'
 import { Activity, Day } from '~/model/index'
 import { ActivityModel, ActivityParams, ActivityUpdateParams, ActivityVo, DayModel, DayParams } from 'Activity'
@@ -12,15 +23,11 @@ import { Auth } from '~/common/decorator/auth'
 
 @Controller('/activity')
 export default class ActivityController {
-	static singletonInstance: ActivityController = new ActivityController()
-	static getInstance() {
-		if (!ActivityController.singletonInstance) {
-			ActivityController.singletonInstance = new this()
-		}
-		return ActivityController.singletonInstance
-	}
-	activityService = ActivityService.getInstance()
-	dayService = DayService.getInstance()
+	@Autowired()
+	activityService!: ActivityService
+
+	@Autowired()
+	dayService!: DayService
 
 	@PostMapping('/saveActivity', [Validtor('body', activityParamsValidate)])
 	@Auth([ROLE.ADMIN, ROLE.SUBADMIN], '/saveActivity')
