@@ -9,11 +9,15 @@
 				"@/*": [
 					"src/*"
 				]
-			}
+			},
+			"experimentalDecorators": true,
+			"emitDecoratorMetadata": true,
+			"target": "es2020",
+			"declaration": true,
 		}
 	},
 	"compilerOptions": {
-		"target": "es2016",
+		"target": "es2020",
 		"module": "commonjs",
 		"allowJs": true,
 		"checkJs": true,
@@ -27,6 +31,7 @@
 		"outDir": "./dist",
 		"baseUrl": "src",
 		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
 		"paths": {
 			"~/*": [
 				"./*"
