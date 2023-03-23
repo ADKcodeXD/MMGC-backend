@@ -5,7 +5,6 @@ import { Increment } from '~/model'
 @Service(true)
 export default class IncrementService {
 	increment = Increment
-
 	/**
 	 * 获取自增id
 	 * @param collection 集合的名字

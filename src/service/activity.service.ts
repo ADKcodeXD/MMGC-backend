@@ -6,6 +6,7 @@ import { ActivityVoEntity } from '~/entity/activity.entity'
 import BaseService from './base.service'
 import { Autowired, Service } from '~/common/decorator/decorator'
 import MemberService from './member.service'
+import SponsorService from './sponsor.service'
 
 @Service(true)
 export default class ActivityService extends BaseService {
@@ -13,6 +14,9 @@ export default class ActivityService extends BaseService {
 
 	@Autowired()
 	memberService!: MemberService
+
+	@Autowired()
+	sponsorService!: SponsorService
 
 	async findActivityVoByActivityId(activityId: number) {
 		const activityModel: ActivityModel = <ActivityModel>await this.activityModel.findOne({ activityId: activityId })
@@ -81,6 +85,13 @@ export default class ActivityService extends BaseService {
 			await setMembersByKey('judges', activityModel.staff)
 			await setMembersByKey('translator', activityModel.staff)
 			await setMembersByKey('others', activityModel.staff)
+		}
+		if (activityModel.sponsorId && activityModel.sponsorId.length > 0) {
+			activityVo.sponsorListVo = []
+			for await (const item of activityModel.sponsorId) {
+				const res = await this.sponsorService.findSponsorBySponsorId(item)
+				activityVo.sponsorListVo!.push(res)
+			}
 		}
 		return activityVo
 	}

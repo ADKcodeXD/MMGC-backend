@@ -15,8 +15,7 @@ import {
 	Query
 } from '~/common/decorator/decorator'
 import Result from '~/common/result'
-import { sponsorUpdateParamsSchema } from '~/common/validate/sponsor.validate'
-import { sponsorParamsValidate } from '~/common/validate/validate'
+import { sponsorParamsValidate, sponsorUpdateParamsValidate } from '~/common/validate/validate'
 import { Validtor } from '~/middleware/ajv.middleware'
 import SponsorService from '~/service/sponsor.service'
 import { RESULT_CODE, RESULT_MSG } from '~/types/enum'
@@ -27,7 +26,7 @@ export default class SponsorController {
 	sponsorService!: SponsorService
 
 	@PostMapping('/saveSponsor', [Validtor('body', sponsorParamsValidate)])
-	@Auth([ROLE.ADMIN, ROLE.SUBADMIN, ROLE.COMMITTER, ROLE.GROUPMEMBER], '/sponsor/saveSponsor')
+	@Auth([ROLE.ADMIN, ROLE.SUBADMIN, ROLE.COMMITTER, ROLE.GROUPMEMBER], '/saveSponsor')
 	async saveSponsor(@Body() sponsortParams: SponsorParams, @User() userInfo: MemberVo) {
 		if (!userInfo || !userInfo.memberId) {
 			return Result.fail(RESULT_CODE.USER_NOTFOUND, RESULT_MSG.USER_NOTFOUND, null)
@@ -56,9 +55,9 @@ export default class SponsorController {
 		return Result.success(res)
 	}
 
-	@PutMapping('/updateSponsor', [Validtor('body', sponsorUpdateParamsSchema)])
+	@PutMapping('/updateSponsor', [Validtor('body', sponsorUpdateParamsValidate)])
 	@Auth([ROLE.ADMIN, ROLE.SUBADMIN, ROLE.COMMITTER, ROLE.GROUPMEMBER], '/updateSponsor')
-	async getMovieDetailAll(@Body() updateParams: SponsorUpdateParams) {
+	async updateSponsor(@Body() updateParams: SponsorUpdateParams) {
 		if (!updateParams.sponsorId) {
 			return Result.paramsError()
 		}
@@ -67,8 +66,8 @@ export default class SponsorController {
 	}
 
 	@DeleteMapping('/deleteSponsor/:sponsorId')
-	@Auth([ROLE.ADMIN, ROLE.SUBADMIN, ROLE.COMMITTER, ROLE.GROUPMEMBER], '/movie/delete')
-	async deleteMovie(@Param('sponsorId') sponsorId: number) {
+	@Auth([ROLE.ADMIN, ROLE.SUBADMIN, ROLE.COMMITTER, ROLE.GROUPMEMBER], '/delete')
+	async deleteSponsor(@Param('sponsorId') sponsorId: number) {
 		if (!sponsorId) {
 			return Result.paramsError()
 		}

@@ -68,9 +68,11 @@ export default class SponsorService extends BaseService {
 	}
 
 	copyToVo(model: SponsorModel) {
-		model.createTime = formatTime(model.createTime)
-		const vo = new SponsorModelEntity()
+		const vo: any = new SponsorModelEntity()
+		delete vo._id
+		delete vo._v
 		copyProperties(model, vo)
-		return vo
+		vo.createTime = formatTime(model.createTime)
+		return vo as SponsorModel
 	}
 }

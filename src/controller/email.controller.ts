@@ -14,7 +14,9 @@ export default class EmailController {
 		return EmailController.singletonInstance
 	}
 	static emailMap = new Map()
-	emailUtil = EmailUtil.getInstance()
+
+	@Autowired()
+	emailUtil!: EmailUtil
 
 	@Autowired()
 	memberService!: MemberService

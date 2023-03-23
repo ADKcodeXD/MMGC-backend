@@ -29,16 +29,18 @@ export default class MemberController {
 	@Autowired()
 	memberService!: MemberService
 
+	@Autowired()
+	emailUtils!: EmailUtil
+
 	@PostMapping('/register', [Validtor('body', memberParamsValidate)])
 	async register(@Body() registerParams: MemberParams) {
-		const email = EmailUtil.getInstance()
 		if (
 			(await this.memberService.findMemberVoByEmail(registerParams.email)) ||
 			(await this.memberService.findMemberVoByUsername(registerParams.username))
 		) {
 			return Result.fail(RESULT_CODE.DATA_REPEAT, RESULT_MSG.DATA_REPEAT, null)
 		}
-		if (await email.verifyCode(registerParams.email, registerParams.verifyCode)) {
+		if (await this.emailUtils.verifyCode(registerParams.email, registerParams.verifyCode)) {
 			const params = new MemberParamsEntity()
 			copyProperties(registerParams, params)
 			const member = await this.memberService.save(params)

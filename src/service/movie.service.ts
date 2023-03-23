@@ -25,7 +25,7 @@ export default class MovieService extends BaseService {
 	@Autowired()
 	activityService!: ActivityService
 
-	@Autowired()
+	@Autowired('OperService')
 	operService!: OperService
 
 	async save(movieParams: MovieParams, memberId: number) {
@@ -176,11 +176,11 @@ export default class MovieService extends BaseService {
 		}
 
 		if (memberId) {
-			const isPoll = await this.operService.canMoviePoll(movieModel.movieId, memberId)
-			const isLike = await this.operService.canMovieLike(movieModel.movieId, memberId)
+			const canPoll = await this.operService.canMoviePoll(movieModel.movieId, memberId)
+			const canLike = await this.operService.canMovieLike(movieModel.movieId, memberId)
 			const loginVo: LoginVo = {
-				isLike,
-				isPoll,
+				isLike: !canLike,
+				isPoll: !canPoll,
 				isCollect: false
 			}
 			vo.loginVo = loginVo

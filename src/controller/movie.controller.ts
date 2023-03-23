@@ -26,7 +26,7 @@ export default class MovieController {
 	movieService!: MovieService
 
 	@PostMapping('/save', [Validtor('body', movieParamsValidate)])
-	@Auth([ROLE.ADMIN, ROLE.SUBADMIN, ROLE.COMMITTER, ROLE.GROUPMEMBER], '/movie/save')
+	@Auth([ROLE.ADMIN, ROLE.SUBADMIN, ROLE.COMMITTER, ROLE.GROUPMEMBER], '/save')
 	async save(@Body() movieParams: MovieParams, @User() userInfo: MemberVo) {
 		if (!userInfo || !userInfo.memberId) {
 			return Result.fail(RESULT_CODE.USER_NOTFOUND, RESULT_MSG.USER_NOTFOUND, null)
@@ -43,11 +43,11 @@ export default class MovieController {
 	}
 
 	@GetMapping('/getMovieDetail')
-	async getMovieDetailById(@Query('movieId') movieId: number) {
+	async getMovieDetailById(@Query('movieId') movieId: number, @User() member?: MemberVo) {
 		if (!movieId) {
 			return Result.fail(RESULT_CODE.PARAMS_ERROR, RESULT_MSG.PARAMS_ERROR, null)
 		}
-		const res = await this.movieService.getMovieDetail(movieId)
+		const res = await this.movieService.getMovieDetail(movieId, true, member && member.memberId)
 		return Result.success(res)
 	}
 
@@ -62,7 +62,7 @@ export default class MovieController {
 	}
 
 	@DeleteMapping('/delete/:movieId')
-	@Auth([ROLE.ADMIN, ROLE.SUBADMIN, ROLE.COMMITTER, ROLE.GROUPMEMBER], '/movie/delete')
+	@Auth([ROLE.ADMIN, ROLE.SUBADMIN, ROLE.COMMITTER, ROLE.GROUPMEMBER], '/delete')
 	async deleteMovie(@Param('movieId') movieId: number) {
 		if (!movieId) {
 			return Result.paramsError()

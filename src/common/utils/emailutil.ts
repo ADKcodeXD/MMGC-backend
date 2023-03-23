@@ -6,10 +6,6 @@ import logger from '~/common/utils/log4j'
 
 @Singleton()
 export class EmailUtil {
-	static getInstance() {
-		return new this()
-	}
-
 	private map = new Map()
 
 	private timeMap = new Map()
@@ -78,6 +74,7 @@ export class EmailUtil {
 			throw new Error('验证码格式错误')
 		}
 		let flag = false
+		console.log(this.map)
 		if (this.map.has(email)) {
 			if (this.map.get(email) === code) {
 				flag = true

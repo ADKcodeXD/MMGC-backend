@@ -58,7 +58,7 @@ export default class OperService extends BaseService {
 			day: movieVo.day,
 			activityId: movieVo.activityId
 		})
-		if (target) {
+		if (target && target.length > 0) {
 			return Result.cantPollVideo()
 		}
 		const model = new OperTypeEntity()
@@ -96,7 +96,7 @@ export default class OperService extends BaseService {
 		if (!movieVo) {
 			return false
 		}
-		if (!movieId || memberId) {
+		if (!movieId || !memberId) {
 			return false
 		}
 		const target = await this.operModel.findOne({
@@ -108,17 +108,19 @@ export default class OperService extends BaseService {
 			return false
 		}
 		const list = await this.operModel.find({
+			memberId: memberId,
+			operType: 'poll',
 			activityId: movieVo.activityId,
 			day: movieVo.day
 		})
-		if (list) {
+		if (list && list.length > 0) {
 			return false
 		}
 		return true
 	}
 
 	async canMovieLike(movieId: number, memberId: number) {
-		if (!movieId || memberId) {
+		if (!movieId || !memberId) {
 			return false
 		}
 		const target = await this.operModel.findOne({
@@ -126,6 +128,7 @@ export default class OperService extends BaseService {
 			memberId: memberId,
 			operType: 'like'
 		})
+
 		if (target) {
 			return false
 		}
