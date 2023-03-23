@@ -6,6 +6,7 @@ import MemberService from '~/service/member.service'
 
 export default async (ctx: Context, next: Function) => {
 	const memberService = ContainerInstance.get<MemberService>('MemberService')
+
 	for (const item of authList) {
 		const path = `${item.target.constructor.prefix}${item.path}`
 		if (ctx.path.indexOf(path) !== -1) {

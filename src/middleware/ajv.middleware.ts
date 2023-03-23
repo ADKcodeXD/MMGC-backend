@@ -10,7 +10,7 @@ export const Validtor = (paramType: RequestParamType, validateRef: any) => {
 			if (validateRef(ctx.request.body)) {
 				await next()
 			} else {
-				log4j.error(`${validateRef.errors[0].instancePath} ${validateRef.errors[0].message}`)
+				log4j.debug(`${validateRef.errors[0].instancePath} ${validateRef.errors[0].message}`)
 				if (process.env.MODE === 'dev') {
 					ctx.body = Result.fail(RESULT_CODE.PARAMS_ERROR, `${validateRef.errors[0].instancePath} ${validateRef.errors[0].message}`, null)
 					throw new Error(`${validateRef.errors[0].instancePath} ${validateRef.errors[0].message}`)

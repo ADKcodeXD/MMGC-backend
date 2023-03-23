@@ -93,7 +93,6 @@ export function Autowired(id?: string): PropertyDecorator {
 
 /**
  * 用于单例模式 使得该类拥有getInstance方法
- * @deprecated 已经启用 请使用 Service 注解代替
  * @returns
  */
 export const Singleton = () => {
