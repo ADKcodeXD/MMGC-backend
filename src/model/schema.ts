@@ -4,6 +4,7 @@ import { MemberModel } from 'Member'
 import { MovieModel } from 'Movie'
 import { SponsorModel } from 'Sponsor'
 import { OperType } from 'Oper'
+import { CommentModel } from 'Comment'
 export const activitySchema = new mongoose.Schema<ActivityModel>(
 	{
 		activityBackgroundImg: { type: String, default: null },
@@ -174,4 +175,17 @@ export const operSchema = new mongoose.Schema<OperType>(
 		day: { type: Number, default: null }
 	},
 	{ collection: 'opers' }
+)
+
+export const commentSchema = new mongoose.Schema<CommentModel>(
+	{
+		commentId: { type: Number, default: 0 },
+		movieId: { type: Number, default: null },
+		memberId: { type: Number, default: null },
+		content: { type: String, default: null },
+		createTime: { type: Number, default: Date.now() },
+		toMemberId: { type: Number, default: null },
+		parentId: { type: Number, default: null }
+	},
+	{ collection: 'comments' }
 )

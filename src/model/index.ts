@@ -1,5 +1,15 @@
 import mongoose from 'mongoose'
-import { activitySchema, memberSchema, incrementSchema, movieSchema, configSchema, daySchema, sponsorSchema, operSchema } from './schema'
+import {
+	activitySchema,
+	memberSchema,
+	incrementSchema,
+	movieSchema,
+	configSchema,
+	daySchema,
+	sponsorSchema,
+	operSchema,
+	commentSchema
+} from './schema'
 
 const Activity = mongoose.model('Activity', activitySchema)
 
@@ -17,4 +27,6 @@ const Sponsor = mongoose.model('Sponsor', sponsorSchema)
 
 const Oper = mongoose.model('Oper', operSchema)
 
-export { Activity, Member, Increment, Movie, Config, Day, Sponsor, Oper }
+const Comment = mongoose.model('Comment', commentSchema)
+
+export { Activity, Member, Increment, Movie, Config, Day, Sponsor, Oper, Comment }
