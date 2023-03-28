@@ -2,13 +2,13 @@ import { CommentModel, CommentVo } from 'Comment'
 import { MemberVo } from 'Member'
 
 export class CommentModelEntity implements CommentModel {
-	commentId = NaN
+	commentId: number | null = null
 	content = ''
 	createTime: number = Date.now()
-	movieId = NaN
-	memberId = NaN
-	toMemberId = NaN
-	parentId = NaN
+	movieId: number | null = null
+	memberId: number | null = null
+	toMemberId: number | null = null
+	parentId: number | null = null
 }
 
 export class CommentVoEntity implements CommentVo {
