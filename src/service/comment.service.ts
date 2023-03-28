@@ -11,6 +11,7 @@ import IncrementService from './increment.service'
 import { formatTime } from '~/common/utils/moment'
 import MemberService from './member.service'
 import { CommentModel, CommentParams, CommentVo } from 'Comment'
+import { MemberVo } from 'Member'
 
 @Service(true)
 export default class CommentService extends BaseService {
@@ -44,7 +45,7 @@ export default class CommentService extends BaseService {
 				return []
 			}
 		}
-		const res = await this.copyToVoList<CommentModel, CommentVo>(result, true)
+		const res = await this.copyToVoList<CommentModel, CommentVo>(result)
 		// 找到page中的所有不含子的评论 然后再循环调用
 		for await (const item of res) {
 			item.children = await findChildren(item)
@@ -70,11 +71,12 @@ export default class CommentService extends BaseService {
 		return Result.dataNotFound()
 	}
 
-	async save(commentParams: CommentParams) {
+	async save(commentParams: CommentParams, userInfo: MemberVo) {
 		const model = new CommentModelEntity()
 		copyProperties(commentParams, model)
 		model.commentId = await this.incrementService.incrementId('comments', { model: Comment, key: 'commentId' })
 		model.createTime = Date.now()
+		model.memberId = userInfo.memberId
 		const res = await new Comment(model).save()
 		return res || null
 	}

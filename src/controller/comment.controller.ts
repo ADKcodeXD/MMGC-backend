@@ -18,7 +18,7 @@ export default class CommentController {
 			return Result.noAuth()
 		}
 
-		const res = await this.commentService.save(sponsortParams)
+		const res = await this.commentService.save(sponsortParams, userInfo)
 		if (res) return Result.success(res)
 
 		return Result.paramsError()
@@ -33,7 +33,7 @@ export default class CommentController {
 	}
 
 	@DeleteMapping('/deleteComment/:commentId')
-	async deleteSponsor(@Param('commentId') commentId: number, @User() userInfo: MemberVo) {
+	async deleteComment(@Param('commentId') commentId: number, @User() userInfo: MemberVo) {
 		if (!userInfo || !userInfo.memberId) {
 			return Result.fail(RESULT_CODE.NO_AUTHORIZION, RESULT_MSG.NO_AUTHORIZION, null)
 		}

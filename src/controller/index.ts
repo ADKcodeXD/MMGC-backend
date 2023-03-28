@@ -6,6 +6,7 @@ import MovieController from './movie.controller'
 import ConfigController from './config.controller'
 import OperController from './oper.controller'
 import SponsorController from './sponsor.controller'
+import CommentController from './comment.controller'
 
 export {
 	ActivityController,
@@ -15,5 +16,6 @@ export {
 	ConfigController,
 	OperController,
 	SponsorController,
-	MovieController
+	MovieController,
+	CommentController
 }
