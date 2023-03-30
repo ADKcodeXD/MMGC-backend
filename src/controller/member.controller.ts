@@ -103,14 +103,21 @@ export default class MemberController {
 
 	@DeleteMapping('/batchDelete')
 	@Auth([ROLE.ADMIN], '/batchDelete')
-	async deleteUserBatch(@Body() memberIds: Array<number>) {
+	async deleteUserBatch(@Body() memberIds: Array<number>, @User() userInfo: MemberVo) {
+		if (memberIds.includes(userInfo.memberId)) {
+			return Result.noPermission()
+		}
 		const res = await this.memberService.batchDelete(memberIds)
 		return Result.success(res)
 	}
 
 	@PutMapping('/updateMember', [Validtor('body', memberUpdateParamsValidate)])
 	@Auth([ROLE.ADMIN, ROLE.SUBADMIN], '/updateMember')
-	async updateUser(@Body() memberParams: MemberVo) {
+	async updateUser(@Body() memberParams: MemberVo, @User() userInfo: MemberVo) {
+		const { role } = memberParams
+		if (role === ROLE.ADMIN && userInfo.role !== ROLE.ADMIN) {
+			return Result.noAuth()
+		}
 		const res = await this.memberService.updateUser(memberParams)
 		if (res) {
 			return Result.success(res)

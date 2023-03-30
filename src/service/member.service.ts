@@ -117,6 +117,11 @@ export default class MemberService extends BaseService {
 		if (res && res?.memberId !== memberParams.memberId) {
 			return false
 		}
+		if (memberParams.password) {
+			const key = crypto.scryptSync(config.AES_PASSWORD || '', config.AES_SALT || '', 16)
+			const password = aesEncrypt(memberParams.password, key)
+			memberParams.password = password
+		}
 		delete memberParams.createTime
 		const member = await this.memberModel.updateOne({ memberId: memberParams.memberId }, memberParams)
 		return member
