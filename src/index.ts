@@ -14,6 +14,8 @@ import cors from 'koa2-cors'
 
 const app = new Koa()
 
+app.proxy = true
+
 app.use(koabody).use(mongoware).use(jwt).use(auth).use(Error).use(ErrorHandle).use(log4js).use(cors()).use(user)
 
 initRoutes(app, router)

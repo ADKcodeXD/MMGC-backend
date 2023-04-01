@@ -10,11 +10,15 @@ import ActivityService from './activity.service'
 import OperService from './oper.service'
 import BaseService from './base.service'
 import IncrementService from './increment.service'
+import logger from '~/common/utils/log4j'
 import { formatTime } from '~/common/utils/moment'
+import { IpUtils } from '~/common/utils/ipUtils'
 
 @Service(true)
 export default class MovieService extends BaseService {
 	movieModel = Movie
+	map = new Map()
+	timmer!: NodeJS.Timeout
 
 	@Autowired()
 	incrementService!: IncrementService
@@ -27,6 +31,9 @@ export default class MovieService extends BaseService {
 
 	@Autowired('OperService')
 	operService!: OperService
+
+	@Autowired()
+	ipUtils!: IpUtils
 
 	async save(movieParams: MovieParams, memberId: number) {
 		const model = new MovieModelEntity()
@@ -74,7 +81,6 @@ export default class MovieService extends BaseService {
 
 		const model = await this.movieModel.findOne(_filter)
 		if (model) {
-			await this.movieModel.updateOne({ movieId: model.movieId }, { viewNums: model.viewNums + 1 })
 			return await this.copyToVo(model, memberId, isAll)
 		}
 		return null
@@ -151,6 +157,22 @@ export default class MovieService extends BaseService {
 			return false
 		}
 		return false
+	}
+
+	async updateMovieViewNums(movieId: number, ip: string) {
+		const model = await this.movieModel.findOne({ movieId: movieId })
+		if (!model) return null
+		if (this.map.get(ip)) return null
+		this.map.set(
+			ip,
+			setTimeout(() => {
+				this.map.has(ip) && clearTimeout(this.map.get(ip)) // 清除定时器 防止内存泄漏
+				this.map.delete(ip)
+				logger.debug(`清除定时器 && 删除${ip}记录`)
+			}, 1000 * 60)
+		)
+		await this.movieModel.updateOne({ movieId: model.movieId }, { viewNums: model.viewNums + 1 })
+		return null
 	}
 
 	async copyToVo(movieModel: MovieModel, memberId?: number, needActivityVo?: boolean) {

@@ -193,3 +193,7 @@ export const User = () => {
 export const Headers = (arg: string) => {
 	return Inject((ctx: Context) => ctx.headers[arg])
 }
+
+export const Ip = () => {
+	return Inject((ctx: Context) => ctx.ip)
+}
