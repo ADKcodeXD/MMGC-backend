@@ -54,6 +54,7 @@ export class MovieModelEntity implements MovieModel {
 }
 
 export class MovieVoEntity implements MovieVo {
+	expectPlayTime: string | null = null
 	authorName: string | null = null
 	isPublic: boolean | null = false
 	isActivityMovie: boolean | null = false
