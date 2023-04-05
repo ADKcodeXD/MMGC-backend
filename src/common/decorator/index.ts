@@ -21,6 +21,7 @@ export default (app: any, router: any) => {
 				const res = await item.handler.call(ContainerInstance.get(Reflect.getMetadata('cus:id', item.constructor)), ...args, ctx)
 				ctx.body = res
 			} catch (error: any) {
+				console.log(error)
 				logger.debug(error)
 			}
 		})

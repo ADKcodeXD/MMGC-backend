@@ -13,6 +13,7 @@ import IncrementService from './increment.service'
 import logger from '~/common/utils/log4j'
 import { formatTime } from '~/common/utils/moment'
 import { IpUtils } from '~/common/utils/ipUtils'
+import CommentService from './comment.service'
 
 @Service(true)
 export default class MovieService extends BaseService {
@@ -31,6 +32,9 @@ export default class MovieService extends BaseService {
 
 	@Autowired('OperService')
 	operService!: OperService
+
+	@Autowired('CommentService')
+	commentService!: CommentService
 
 	@Autowired()
 	ipUtils!: IpUtils
@@ -53,11 +57,11 @@ export default class MovieService extends BaseService {
 	async getMovieByActivityId(params: { activityId: number; day?: number }): Promise<PageResult<MovieVo>> {
 		const movieList = (await this.movieModel.find({
 			activityId: params.activityId,
-			day: params.day,
-			expectPlayTime: { $lt: new Date() }
+			day: params.day
 		})) as MovieModel[]
+
 		if (movieList) {
-			const movieVoList = await this.copyToVoList<MovieModel, MovieVo>(movieList, false)
+			const movieVoList = await this.copyToVoList<MovieModel, MovieVo>(movieList, null, false, false)
 			return {
 				result: movieVoList,
 				total: movieList.length,
@@ -75,13 +79,13 @@ export default class MovieService extends BaseService {
 		const _filter: any = {
 			movieId: movieId
 		}
-		if (!isAll) {
+		if (typeof isAll === 'boolean' && !isAll) {
 			_filter.expectPlayTime = { $lt: new Date() }
 		}
 
 		const model = await this.movieModel.findOne(_filter)
 		if (model) {
-			return await this.copyToVo(model, memberId, isAll)
+			return await this.copyToVo(model, memberId, true, true)
 		}
 		return null
 	}
@@ -175,7 +179,7 @@ export default class MovieService extends BaseService {
 		return null
 	}
 
-	async copyToVo(movieModel: MovieModel, memberId?: number, needActivityVo?: boolean) {
+	async copyToVo(movieModel: MovieModel, memberId?: number, needActivityVo?: boolean, needLink?: boolean) {
 		const vo = new MovieVoEntity()
 		copyProperties(movieModel, vo)
 		if (needActivityVo && movieModel.activityId) {
@@ -184,6 +188,16 @@ export default class MovieService extends BaseService {
 		} else {
 			vo.activityVo = null
 			vo.isActivityMovie = movieModel.activityId ? true : false
+		}
+		if (
+			!needLink &&
+			typeof needLink === 'boolean' &&
+			movieModel.expectPlayTime &&
+			new Date(movieModel.expectPlayTime as any).getTime() > new Date().getTime()
+		) {
+			vo.moviePlaylink = null
+			vo.movieDownloadLink = null
+			vo.movieLink = null
 		}
 		if (movieModel.authorId) vo.author = await this.memberService.findMemberVoByMemberId(movieModel.authorId)
 		if (movieModel.expectPlayTime) {
@@ -207,10 +221,14 @@ export default class MovieService extends BaseService {
 			}
 			vo.loginVo = loginVo
 		}
+
 		const likeNums = await this.operService.findLikeCoundByMovieId(movieModel.movieId)
 		const pollNums = await this.operService.findPollCountByMovieId(movieModel.movieId)
+		const commentNums = await this.commentService.countCommentByMovieId(movieModel.movieId)
+
 		vo.likeNums = likeNums
 		vo.pollNums = pollNums
+		vo.commentNums = commentNums
 
 		if (vo.realPublishTime) vo.realPublishTime = formatTime(movieModel.realPublishTime)
 		vo.uploader = await this.memberService.findMemberVoByMemberId(movieModel.uploader)

@@ -73,7 +73,7 @@ export class MovieVoEntity implements MovieVo {
 	movieDesc: I18N = {
 		cn: ''
 	}
-	moviePlaylink: I18N = {
+	moviePlaylink: I18N | null = {
 		cn: ''
 	}
 	movieDownloadLink: DownloadLink | null = null

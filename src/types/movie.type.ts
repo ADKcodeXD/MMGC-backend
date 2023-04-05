@@ -66,7 +66,7 @@ declare module 'Movie' {
 		/**
 		 * 三语播放i18n列表 适用于有多个源的情况下
 		 */
-		moviePlaylink: I18N
+		moviePlaylink: I18N | null
 		/**
 		 * 票数 仅用于活动作品 统计投票次数 一个人单日只能投一个作品
 		 */

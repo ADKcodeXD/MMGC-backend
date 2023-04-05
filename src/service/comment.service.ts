@@ -71,6 +71,11 @@ export default class CommentService extends BaseService {
 		return Result.dataNotFound()
 	}
 
+	async countCommentByMovieId(movieId: number) {
+		const res = await this.commentModel.countDocuments({ movieId: movieId })
+		return res
+	}
+
 	async save(commentParams: CommentParams, userInfo: MemberVo) {
 		const model = new CommentModelEntity()
 		copyProperties(commentParams, model)

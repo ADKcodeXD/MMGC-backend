@@ -1,4 +1,3 @@
-import { RESULT_CODE, RESULT_MSG } from '~/types/enum'
 import {
 	Autowired,
 	Body,
@@ -48,8 +47,9 @@ export default class MovieController {
 		if (!movieId) {
 			return Result.paramsError()
 		}
+		const res = await this.movieService.getMovieDetail(movieId, false, member && member.memberId)
 		await this.movieService.updateMovieViewNums(movieId, ip)
-		const res = await this.movieService.getMovieDetail(movieId, true, member && member.memberId)
+
 		return Result.success(res)
 	}
 
