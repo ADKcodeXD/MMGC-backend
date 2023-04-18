@@ -184,6 +184,13 @@ export default class MovieService extends BaseService {
 		copyProperties(movieModel, vo)
 		if (needActivityVo && movieModel.activityId) {
 			vo.activityVo = await this.activityService.findActivityVoByActivityId(movieModel.activityId)
+			if (vo.activityVo) {
+				vo.activityVo.staff = null
+				vo.activityVo.desc = null
+				vo.activityVo.rules = null
+				vo.activityVo.faq = null
+				vo.activityVo.sponsorListVo = null
+			}
 			vo.isActivityMovie = true
 		} else {
 			vo.activityVo = null
