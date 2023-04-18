@@ -189,6 +189,7 @@ export default class MovieService extends BaseService {
 				vo.activityVo.desc = null
 				vo.activityVo.rules = null
 				vo.activityVo.faq = null
+				vo.activityVo.timesorother = null
 				vo.activityVo.sponsorListVo = null
 			}
 			vo.isActivityMovie = true

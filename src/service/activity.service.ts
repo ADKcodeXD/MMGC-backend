@@ -44,7 +44,7 @@ export default class ActivityService extends BaseService {
 		}
 		const res = await pageQuery(pageParams, this.activityModel, _filter)
 		return {
-			result: await this.copyToVoList(res.result),
+			result: await this.copyToVoList(res.result, false),
 			page: res.page,
 			total: res.total
 		}
@@ -61,7 +61,7 @@ export default class ActivityService extends BaseService {
 		return res
 	}
 
-	async copyToVo(activityModel: ActivityModel): Promise<ActivityVo> {
+	async copyToVo(activityModel: ActivityModel, needDetail = true): Promise<ActivityVo> {
 		const activityVo: ActivityVo = new ActivityVoEntity()
 		copyProperties(activityModel, activityVo)
 		activityVo.createTime = formatTime(activityVo.createTime)
@@ -69,7 +69,7 @@ export default class ActivityService extends BaseService {
 		activityVo.startTime = activityVo.startTime ? formatTime(activityVo.startTime) : null
 		activityVo.staff = {}
 
-		if (activityModel.staff) {
+		if (activityModel.staff && needDetail) {
 			const setMembersByKey = async (key: keyof StaffVo, staff: Map<any, any>) => {
 				if (staff.has(key) && Array.isArray(staff.get(key))) {
 					key = key as keyof Omit<Staff, 'organizer'>
@@ -85,6 +85,13 @@ export default class ActivityService extends BaseService {
 			await setMembersByKey('judges', activityModel.staff)
 			await setMembersByKey('translator', activityModel.staff)
 			await setMembersByKey('others', activityModel.staff)
+		}
+		if (!needDetail) {
+			activityVo.desc = null
+			activityVo.faq = null
+			activityVo.rules = null
+			activityVo.sponsorListVo = null
+			activityVo.timesorother = null
 		}
 		if (activityModel.sponsorId && activityModel.sponsorId.length > 0) {
 			activityVo.sponsorListVo = []
