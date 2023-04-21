@@ -1,13 +1,15 @@
 import { Context } from 'koa'
-import { Controller, Ctx, GetMapping, PostMapping, Query } from '~/common/decorator/decorator'
+import { Autowired, Controller, Ctx, GetMapping, PostMapping, Query } from '~/common/decorator/decorator'
 import { CosUtil } from '~/common/utils/cosutil'
 import fs from 'fs'
 import Result from '~/common/result'
-import { B2Util } from '~/common/utils/b2utils'
+import { QiniuUtils } from '~/common/utils/qiniuUtils'
 @Controller('/upload')
 export default class UploadController {
 	cosUtil = new CosUtil()
-	b2Util = new B2Util()
+
+	@Autowired()
+	qiniuUtils!: QiniuUtils
 
 	waitTingQueue = new Set()
 
@@ -15,8 +17,7 @@ export default class UploadController {
 	async uploadImg(@Ctx() ctx: Context) {
 		const file = ctx.request.files?.file as any
 		const path = file.filepath as string
-		const reader = fs.readFileSync(path)
-		const res = await this.cosUtil.uploadImg(reader, file.originalFilename)
+		const res = await this.qiniuUtils.uploadImg(path, file.originalFilename)
 		// 上传成功 将目录下的图片缓存删除
 		const stat = fs.statSync(path)
 		if (stat.isFile()) {
@@ -39,7 +40,7 @@ export default class UploadController {
 		}
 		if (fs.statSync(path).isFile()) {
 			try {
-				const res = await this.cosUtil.uploadVideo(path, file.originalFilename)
+				const res = await this.qiniuUtils.uploadVideo(path, file.originalFilename)
 				if (res) {
 					return Result.success(res)
 				}
