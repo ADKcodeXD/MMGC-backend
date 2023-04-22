@@ -4,6 +4,7 @@ import { CosUtil } from '~/common/utils/cosutil'
 import fs from 'fs'
 import Result from '~/common/result'
 import { QiniuUtils } from '~/common/utils/qiniuUtils'
+import { Auth } from '~/common/decorator/auth'
 @Controller('/upload')
 export default class UploadController {
 	cosUtil = new CosUtil()
@@ -53,6 +54,12 @@ export default class UploadController {
 		} else {
 			return Result.paramsError()
 		}
+	}
+
+	@PostMapping('/getQiniuToken')
+	@Auth([ROLE.ADMIN, ROLE.SUBADMIN, ROLE.COMMITTER, ROLE.GROUPMEMBER], '/getQiniuToken')
+	async getQiniuToken() {
+		return Result.success(this.qiniuUtils.getUptoken())
 	}
 
 	@GetMapping('/getLoaded')

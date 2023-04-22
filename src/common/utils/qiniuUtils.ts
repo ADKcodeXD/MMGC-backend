@@ -68,7 +68,7 @@ export class QiniuUtils {
 		const putExtra = new qiniu.resume_up.PutExtra()
 		putExtra.fname = key
 		putExtra.version = 'v2'
-		putExtra.partSize = 6 * 1024 * 1024
+		putExtra.partSize = 10 * 1024 * 1024
 		return new Promise((reslove, reject) => {
 			formUploader.putFile(uploadToken, key, filePath, putExtra, (respErr, respBody, respInfo) => {
 				if (respErr) {
