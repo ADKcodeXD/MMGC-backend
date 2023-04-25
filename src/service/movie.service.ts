@@ -75,7 +75,7 @@ export default class MovieService extends BaseService {
 		}
 	}
 
-	async getMovieDetail(movieId: number, isAll?: boolean, memberId?: number) {
+	async getMovieDetail(movieId: number, isAll?: boolean, ip?: string) {
 		const _filter: any = {
 			movieId: movieId
 		}
@@ -85,7 +85,7 @@ export default class MovieService extends BaseService {
 
 		const model = await this.movieModel.findOne(_filter)
 		if (model) {
-			return await this.copyToVo(model, memberId, true, true)
+			return await this.copyToVo(model, ip, true, true)
 		}
 		return null
 	}
@@ -179,7 +179,7 @@ export default class MovieService extends BaseService {
 		return null
 	}
 
-	async copyToVo(movieModel: MovieModel, memberId?: number, needActivityVo?: boolean, needLink?: boolean) {
+	async copyToVo(movieModel: MovieModel, ip?: string | null, needActivityVo?: boolean, needLink?: boolean) {
 		const vo = new MovieVoEntity()
 		copyProperties(movieModel, vo)
 		if (needActivityVo && movieModel.activityId) {
@@ -220,9 +220,9 @@ export default class MovieService extends BaseService {
 			vo.isPublic = true
 		}
 
-		if (memberId) {
-			const canPoll = await this.operService.canMoviePoll(movieModel.movieId, memberId)
-			const canLike = await this.operService.canMovieLike(movieModel.movieId, memberId)
+		if (ip) {
+			const canPoll = await this.operService.canMoviePoll(movieModel.movieId, ip)
+			const canLike = await this.operService.canMovieLike(movieModel.movieId, ip)
 			const loginVo: LoginVo = {
 				isLike: !canLike,
 				isPoll: !canPoll,

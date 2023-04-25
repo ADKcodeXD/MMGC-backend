@@ -25,5 +25,6 @@ export class OperTypeEntity implements OperType {
 	operType: 'like' | 'poll' = 'like'
 	operId = 0
 	day: number | null = null
+	ip: string | null = null
 	activityId: number | null = null
 }

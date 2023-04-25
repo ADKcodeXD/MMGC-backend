@@ -2,6 +2,7 @@ import {
 	Autowired,
 	Body,
 	Controller,
+	Ctx,
 	DeleteMapping,
 	GetMapping,
 	Ip,
@@ -19,11 +20,16 @@ import MovieService from '~/service/movie.service'
 import { Validtor } from '~/middleware/ajv.middleware'
 import { movieParamsValidate, movieUpdateParamsValidate } from '~/common/validate/validate'
 import { Auth } from '~/common/decorator/auth'
+import { IpUtils } from '~/common/utils/ipUtils'
+import { Context } from 'koa'
 
 @Controller('/movie')
 export default class MovieController {
 	@Autowired()
 	movieService!: MovieService
+
+	@Autowired()
+	ipUtils!: IpUtils
 
 	@PostMapping('/save', [Validtor('body', movieParamsValidate)])
 	@Auth([ROLE.ADMIN, ROLE.SUBADMIN, ROLE.COMMITTER, ROLE.GROUPMEMBER], '/save')
@@ -43,11 +49,12 @@ export default class MovieController {
 	}
 
 	@GetMapping('/getMovieDetail')
-	async getMovieDetailById(@Query('movieId') movieId: number, @Ip() ip: string, @User() member?: MemberVo) {
+	async getMovieDetailById(@Query('movieId') movieId: number, @Ctx() ctx: Context) {
 		if (!movieId) {
 			return Result.paramsError()
 		}
-		const res = await this.movieService.getMovieDetail(movieId, false, member && member.memberId)
+		const ip = this.ipUtils.getIp(ctx)
+		const res = await this.movieService.getMovieDetail(movieId, false, ip)
 		await this.movieService.updateMovieViewNums(movieId, ip)
 
 		return Result.success(res)

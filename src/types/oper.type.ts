@@ -7,5 +7,6 @@ declare module 'Oper' {
 		operId: number | null
 		day: number | null
 		activityId: number | null
+		ip: string | null
 	}
 }

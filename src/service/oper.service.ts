@@ -1,3 +1,4 @@
+import { IpUtils } from '~/common/utils/ipUtils'
 import { Autowired, Service } from '~/common/decorator/decorator'
 import Result from '~/common/result'
 import { Oper } from '~/model'
@@ -20,7 +21,7 @@ export default class OperService extends BaseService {
 	@Autowired('ActivityService')
 	activityService!: ActivityService
 
-	async addLikeOperRecord(movieId: number, memberId: number) {
+	async addLikeOperRecord(movieId: number, ip: string) {
 		const movieVo = await this.movieService.getMovieDetail(movieId, false)
 		if (!movieVo) {
 			return Result.dataNotFound()
@@ -28,28 +29,28 @@ export default class OperService extends BaseService {
 		const model = new OperTypeEntity()
 		model.operType = 'like'
 		model.movieId = movieId
-		model.memberId = memberId
+		model.ip = ip
 		model.operId = await this.incrementService.incrementId('opers', { model: this.operModel, key: 'operId' })
 		model.createTime = Date.now()
 		await this.operModel.create(model)
 		return Result.success(null)
 	}
 
-	async deleteLikeOperRecord(movieId: number, memberId: number) {
+	async deleteLikeOperRecord(movieId: number, ip: string) {
 		const movieVo = await this.movieService.findMovieModel(movieId)
 		if (!movieVo) {
 			return Result.dataNotFound()
 		}
-		const res = await this.operModel.findOneAndDelete({ movieId: movieId, memberId: memberId, operType: 'like' })
+		const res = await this.operModel.findOneAndDelete({ movieId: movieId, ip: ip, operType: 'like' })
 		if (res) {
 			return Result.success(null)
 		}
 		return Result.dataNotFound()
 	}
 
-	async addPollOerRecord(movieId: number, memberId: number) {
+	async addPollOerRecord(movieId: number, ip: string) {
 		const movieVo = await this.movieService.findMovieModel(movieId)
-		if (!movieVo) {
+		if (!movieVo || !ip) {
 			return Result.dataNotFound()
 		}
 		if (!movieVo.activityId || !movieVo.day) {
@@ -62,18 +63,18 @@ export default class OperService extends BaseService {
 		}
 		const target = await this.operModel.find({
 			movieId: movieId,
-			memberId: memberId,
+			ip: ip,
 			operType: 'poll',
 			day: movieVo.day,
 			activityId: movieVo.activityId
 		})
-		if (target && target.length > 0) {
+		if (target && target.length >= 2) {
 			return Result.cantPollVideo()
 		}
 		const model = new OperTypeEntity()
 		model.operType = 'poll'
 		model.movieId = movieId
-		model.memberId = memberId
+		model.ip = ip
 		model.operId = await this.incrementService.incrementId('opers', { model: this.operModel, key: 'operId' })
 		model.createTime = Date.now()
 		model.day = movieVo.day
@@ -100,41 +101,41 @@ export default class OperService extends BaseService {
 		return count
 	}
 
-	async canMoviePoll(movieId: number, memberId: number) {
+	async canMoviePoll(movieId: number, ip: string) {
 		const movieVo = await this.movieService.findMovieModel(movieId)
 		if (!movieVo) {
 			return false
 		}
-		if (!movieId || !memberId) {
+		if (!movieId || !ip) {
 			return false
 		}
 		const target = await this.operModel.findOne({
 			movieId: movieId,
-			memberId: memberId,
+			ip: ip,
 			operType: 'poll'
 		})
 		if (target) {
 			return false
 		}
-		const list = await this.operModel.find({
-			memberId: memberId,
+		const list = await this.operModel.countDocuments({
+			ip: ip,
 			operType: 'poll',
 			activityId: movieVo.activityId,
 			day: movieVo.day
 		})
-		if (list && list.length > 0) {
+		if (list >= 2) {
 			return false
 		}
 		return true
 	}
 
-	async canMovieLike(movieId: number, memberId: number) {
-		if (!movieId || !memberId) {
+	async canMovieLike(movieId: number, ip: string) {
+		if (!movieId || !ip) {
 			return false
 		}
 		const target = await this.operModel.findOne({
 			movieId: movieId,
-			memberId: memberId,
+			ip: ip,
 			operType: 'like'
 		})
 

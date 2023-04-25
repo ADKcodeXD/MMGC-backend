@@ -172,7 +172,8 @@ export const operSchema = new mongoose.Schema<OperType>(
 		movieId: { type: Number, default: null },
 		memberId: { type: Number, default: null },
 		activityId: { type: Number, default: null },
-		day: { type: Number, default: null }
+		day: { type: Number, default: null },
+		ip: { type: String, default: null }
 	},
 	{ collection: 'opers' }
 )

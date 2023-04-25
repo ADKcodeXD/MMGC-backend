@@ -1,6 +1,8 @@
+import { Context } from 'koa'
 import { MemberVo } from 'Member'
-import { Controller, PostMapping, User, Query, Autowired } from '~/common/decorator/decorator'
+import { Controller, PostMapping, User, Query, Autowired, Ctx } from '~/common/decorator/decorator'
 import Result from '~/common/result'
+import { IpUtils } from '~/common/utils/ipUtils'
 import OperService from '~/service/oper.service'
 import { RESULT_CODE, RESULT_MSG } from '~/types/enum'
 
@@ -9,41 +11,38 @@ export default class OperController {
 	@Autowired()
 	operService!: OperService
 
+	@Autowired()
+	IpUtils!: IpUtils
+
 	@PostMapping('/likeVideo')
-	async likeVideo(@Query('movieId') movieId: number, @User() userInfo: MemberVo) {
-		if (!userInfo || !userInfo.memberId) {
-			return Result.fail(RESULT_CODE.USER_NOTFOUND, RESULT_MSG.USER_NOTFOUND, null)
-		}
+	async likeVideo(@Query('movieId') movieId: number, @Ctx() ctx: Context) {
 		if (!movieId) {
 			return Result.paramsError()
 		}
-		const res = await this.operService.addLikeOperRecord(movieId, userInfo.memberId)
+		const ip = this.IpUtils.getIp(ctx)
+		const res = await this.operService.addLikeOperRecord(movieId, ip)
 		if (res) return res
 		return Result.dataNotFound()
 	}
 
 	@PostMapping('/cancelLikeVideo')
-	async cancelLikeVideo(@Query('movieId') movieId: number, @User() userInfo: MemberVo) {
-		if (!userInfo || !userInfo.memberId) {
-			return Result.fail(RESULT_CODE.USER_NOTFOUND, RESULT_MSG.USER_NOTFOUND, null)
-		}
+	async cancelLikeVideo(@Query('movieId') movieId: number, @Ctx() ctx: Context) {
 		if (!movieId) {
 			return Result.paramsError()
 		}
-		const res = await this.operService.deleteLikeOperRecord(movieId, userInfo.memberId)
+		const ip = this.IpUtils.getIp(ctx)
+		const res = await this.operService.deleteLikeOperRecord(movieId, ip)
 		if (res) return res
 		return Result.dataNotFound()
 	}
 
 	@PostMapping('/pollVideo')
-	async pollVideo(@Query('movieId') movieId: number, @User() userInfo: MemberVo) {
-		if (!userInfo || !userInfo.memberId) {
-			return Result.fail(RESULT_CODE.USER_NOTFOUND, RESULT_MSG.USER_NOTFOUND, null)
-		}
+	async pollVideo(@Query('movieId') movieId: number, @Ctx() ctx: Context) {
 		if (!movieId) {
 			return Result.paramsError()
 		}
-		const res = await this.operService.addPollOerRecord(movieId, userInfo.memberId)
+		const ip = this.IpUtils.getIp(ctx)
+		const res = await this.operService.addPollOerRecord(movieId, ip)
 		if (res) return res
 		return Result.dataNotFound()
 	}
