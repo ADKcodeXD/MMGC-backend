@@ -44,6 +44,7 @@ export class QiniuUtils {
 		return new Promise((reslove, reject) => {
 			formUploader.putFile(uploadToken, key, filePath, putExtra, (respErr, respBody, respInfo) => {
 				if (respErr) {
+					console.log(respErr)
 					throw respErr
 				}
 				if (respInfo.statusCode === 200) {

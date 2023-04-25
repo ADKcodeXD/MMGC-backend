@@ -21,6 +21,7 @@ export const enum RESULT_CODE {
 	NO_PERMISSION = 403, // 无权限
 	CANT_POLL_VIDEO = 8011,
 	CANT_LIKE_VIDEO = 8012,
+	CANT_POLL_VIDEO_LIMIT = 8013,
 	USER_EMAIL_EXIST = 8013 //用户邮箱已存在
 }
 
@@ -38,6 +39,7 @@ export const enum RESULT_MSG {
 	TRY_AGAIN = '上传发生错误 请重试', // 上传发生错误 请重试
 	NO_PERMISSION = '暂无权限', // 无权限
 	CANT_POLL_VIDEO = '无法投票',
+	CANT_POLL_VIDEO_LIMIT = '已过投票截止时间',
 	CANT_LIKE_VIDEO = '无法点赞',
 	USER_EMAIL_EXIST = '邮箱已存在' //用户邮箱已存在
 }

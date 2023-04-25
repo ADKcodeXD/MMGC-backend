@@ -85,4 +85,11 @@ export default class Result {
 			data: null
 		}
 	}
+	static cantPollVideoLimit(): ResResult<null> {
+		return {
+			code: RESULT_CODE.CANT_POLL_VIDEO_LIMIT,
+			msg: RESULT_MSG.CANT_POLL_VIDEO_LIMIT,
+			data: null
+		}
+	}
 }

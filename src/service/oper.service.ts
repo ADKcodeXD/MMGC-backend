@@ -5,6 +5,7 @@ import BaseService from './base.service'
 import IncrementService from './increment.service'
 import MovieService from './movie.service'
 import { OperTypeEntity } from '~/entity/global'
+import ActivityService from './activity.service'
 
 @Service(true)
 export default class OperService extends BaseService {
@@ -15,6 +16,9 @@ export default class OperService extends BaseService {
 
 	@Autowired('MovieService')
 	movieService!: MovieService
+
+	@Autowired('ActivityService')
+	activityService!: ActivityService
 
 	async addLikeOperRecord(movieId: number, memberId: number) {
 		const movieVo = await this.movieService.getMovieDetail(movieId, false)
@@ -50,6 +54,11 @@ export default class OperService extends BaseService {
 		}
 		if (!movieVo.activityId || !movieVo.day) {
 			return Result.cantPollVideo()
+		}
+		const activityVo = await this.activityService.findActivityVoByActivityId(movieVo.activityId, false)
+
+		if (activityVo && new Date(activityVo && (activityVo.endTime as any)).getTime() < new Date().getTime()) {
+			return Result.cantPollVideoLimit()
 		}
 		const target = await this.operModel.find({
 			movieId: movieId,

@@ -18,10 +18,10 @@ export default class ActivityService extends BaseService {
 	@Autowired()
 	sponsorService!: SponsorService
 
-	async findActivityVoByActivityId(activityId: number) {
+	async findActivityVoByActivityId(activityId: number, needDetail = true) {
 		const activityModel: ActivityModel = <ActivityModel>await this.activityModel.findOne({ activityId: activityId })
 		if (activityModel) {
-			return this.copyToVo(activityModel)
+			return this.copyToVo(activityModel, needDetail)
 		}
 		return null
 	}
