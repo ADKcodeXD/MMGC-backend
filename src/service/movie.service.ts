@@ -54,14 +54,14 @@ export default class MovieService extends BaseService {
 		}
 	}
 
-	async getMovieByActivityId(params: { activityId: number; day?: number }): Promise<PageResult<MovieVo>> {
+	async getMovieByActivityId(params: { activityId: number; day?: number; ip?: string }): Promise<PageResult<MovieVo>> {
 		const movieList = (await this.movieModel.find({
 			activityId: params.activityId,
 			day: params.day
 		})) as MovieModel[]
 
 		if (movieList) {
-			const movieVoList = await this.copyToVoList<MovieModel, MovieVo>(movieList, null, false, false)
+			const movieVoList = await this.copyToVoList<MovieModel, MovieVo>(movieList, params.ip, false, false)
 			return {
 				result: movieVoList,
 				total: movieList.length,
@@ -198,10 +198,8 @@ export default class MovieService extends BaseService {
 			vo.isActivityMovie = movieModel.activityId ? true : false
 		}
 		if (
-			!needLink &&
-			typeof needLink === 'boolean' &&
-			movieModel.expectPlayTime &&
-			new Date(movieModel.expectPlayTime as any).getTime() > new Date().getTime()
+			(!needLink && typeof needLink === 'boolean') ||
+			(movieModel.expectPlayTime && new Date(movieModel.expectPlayTime as any).getTime() > new Date().getTime())
 		) {
 			vo.moviePlaylink = null
 			vo.movieDownloadLink = null

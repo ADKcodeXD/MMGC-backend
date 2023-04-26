@@ -41,10 +41,12 @@ export default class MovieController {
 	}
 
 	@GetMapping('/getMovieByActivityId')
-	async getMovieByActivityId(@QueryAll() params: { activityId: number; day?: number }) {
+	async getMovieByActivityId(@QueryAll() params: any, @Ctx() ctx: Context) {
 		if (!params.activityId) {
 			return Result.paramsError()
 		}
+		const ip = this.ipUtils.getIp(ctx)
+		params.ip = ip
 		return Result.success(await this.movieService.getMovieByActivityId(params))
 	}
 
