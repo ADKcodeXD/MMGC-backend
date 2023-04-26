@@ -21,6 +21,8 @@ export default class OperService extends BaseService {
 	@Autowired('ActivityService')
 	activityService!: ActivityService
 
+	pollMap = new Map()
+
 	async addLikeOperRecord(movieId: number, ip: string) {
 		const movieVo = await this.movieService.getMovieDetail(movieId, false)
 		if (!movieVo) {
@@ -49,26 +51,35 @@ export default class OperService extends BaseService {
 	}
 
 	async addPollOerRecord(movieId: number, ip: string) {
+		if (this.pollMap.get(movieId + ip)) {
+			return Result.cantPollVideo()
+		}
+		this.pollMap.set(movieId + ip, movieId + ip)
+
 		const movieVo = await this.movieService.findMovieModel(movieId)
 		if (!movieVo || !ip) {
+			this.pollMap.delete(movieId + ip)
 			return Result.dataNotFound()
 		}
 		if (!movieVo.activityId || !movieVo.day) {
+			this.pollMap.delete(movieId + ip)
 			return Result.cantPollVideo()
 		}
 		const activityVo = await this.activityService.findActivityVoByActivityId(movieVo.activityId, false)
 
 		if (activityVo && new Date(activityVo && (activityVo.endTime as any)).getTime() < new Date().getTime()) {
+			this.pollMap.delete(movieId + ip)
 			return Result.cantPollVideoLimit()
 		}
-		const target = await this.operModel.find({
+		const target = await this.operModel.countDocuments({
 			movieId: movieId,
 			ip: ip,
 			operType: 'poll',
 			day: movieVo.day,
 			activityId: movieVo.activityId
 		})
-		if (target && target.length >= 2) {
+		if (target && target >= 2) {
+			this.pollMap.delete(movieId + ip)
 			return Result.cantPollVideo()
 		}
 		const model = new OperTypeEntity()
@@ -80,6 +91,7 @@ export default class OperService extends BaseService {
 		model.day = movieVo.day
 		model.activityId = movieVo.activityId
 		await this.operModel.create(model)
+		this.pollMap.delete(movieId + ip)
 		return Result.success(null)
 	}
 

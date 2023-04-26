@@ -61,7 +61,7 @@ export default class MovieService extends BaseService {
 		})) as MovieModel[]
 
 		if (movieList) {
-			const movieVoList = await this.copyToVoList<MovieModel, MovieVo>(movieList, params.ip, true, true)
+			const movieVoList = await this.copyToVoList<MovieModel, MovieVo>(movieList, params.ip, false, true)
 			return {
 				result: movieVoList,
 				total: movieList.length,
