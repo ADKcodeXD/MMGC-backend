@@ -51,28 +51,27 @@ export default class OperService extends BaseService {
 	}
 
 	async addPollOerRecord(movieId: number, ip: string) {
-		if (this.pollMap.get(movieId + ip)) {
+		if (this.pollMap.get(ip)) {
 			return Result.cantPollVideo()
 		}
-		this.pollMap.set(movieId + ip, movieId + ip)
+		this.pollMap.set(ip, ip)
 
 		const movieVo = await this.movieService.findMovieModel(movieId)
 		if (!movieVo || !ip) {
-			this.pollMap.delete(movieId + ip)
+			this.pollMap.delete(ip)
 			return Result.dataNotFound()
 		}
 		if (!movieVo.activityId || !movieVo.day) {
-			this.pollMap.delete(movieId + ip)
+			this.pollMap.delete(ip)
 			return Result.cantPollVideo()
 		}
 		const activityVo = await this.activityService.findActivityVoByActivityId(movieVo.activityId, false)
 
 		if (activityVo && new Date(activityVo && (activityVo.endTime as any)).getTime() < new Date().getTime()) {
-			this.pollMap.delete(movieId + ip)
+			this.pollMap.delete(ip)
 			return Result.cantPollVideoLimit()
 		}
 		const target = await this.operModel.countDocuments({
-			movieId: movieId,
 			ip: ip,
 			operType: 'poll',
 			day: movieVo.day,
@@ -91,7 +90,7 @@ export default class OperService extends BaseService {
 		model.day = movieVo.day
 		model.activityId = movieVo.activityId
 		await this.operModel.create(model)
-		this.pollMap.delete(movieId + ip)
+		this.pollMap.delete(ip)
 		return Result.success(null)
 	}
 
