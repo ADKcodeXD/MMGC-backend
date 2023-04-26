@@ -207,7 +207,7 @@ export default class MovieService extends BaseService {
 		}
 		if (movieModel.authorId) vo.author = await this.memberService.findMemberVoByMemberId(movieModel.authorId)
 		if (movieModel.expectPlayTime) {
-			const time = parseInt(formatTime(movieModel.expectPlayTime, 'x'))
+			const time = new Date(movieModel.expectPlayTime).getTime()
 			vo.expectPlayTime = formatTime(movieModel.expectPlayTime)
 			if (time > Date.now()) {
 				vo.isPublic = false
