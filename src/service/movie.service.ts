@@ -203,7 +203,9 @@ export default class MovieService extends BaseService {
 			flag = needLink
 		} else {
 			if (needLink === 'dynamic') {
-				flag = (movieModel.expectPlayTime && new Date(movieModel.expectPlayTime as any).getTime() > new Date().getTime()) || false
+				flag = !(movieModel.expectPlayTime && new Date(movieModel.expectPlayTime as any).getTime() > new Date().getTime()) || false
+			} else {
+				flag = false
 			}
 		}
 
@@ -246,7 +248,7 @@ export default class MovieService extends BaseService {
 		vo.commentNums = commentNums
 
 		if (vo.realPublishTime) vo.realPublishTime = formatTime(movieModel.realPublishTime)
-		if (needLink) vo.uploader = await this.memberService.findMemberVoByMemberId(movieModel.uploader)
+		vo.uploader = await this.memberService.findMemberVoByMemberId(movieModel.uploader)
 
 		vo.createTime = formatTime(movieModel.createTime)
 		return vo
