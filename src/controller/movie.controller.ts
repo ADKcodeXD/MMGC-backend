@@ -68,7 +68,7 @@ export default class MovieController {
 		if (!movieId) {
 			return Result.paramsError()
 		}
-		const res = await this.movieService.getMovieDetail(movieId, true)
+		const res = await this.movieService.getMovieDetail(movieId, true, undefined)
 		return Result.success(res)
 	}
 

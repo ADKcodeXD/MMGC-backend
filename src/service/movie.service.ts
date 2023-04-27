@@ -61,7 +61,7 @@ export default class MovieService extends BaseService {
 		})) as MovieModel[]
 
 		if (movieList) {
-			const movieVoList = await this.copyToVoList<MovieModel, MovieVo>(movieList, params.ip, false, true)
+			const movieVoList = await this.copyToVoList<MovieModel, MovieVo>(movieList, params.ip, false, 'dynamic')
 			return {
 				result: movieVoList,
 				total: movieList.length,
@@ -85,7 +85,7 @@ export default class MovieService extends BaseService {
 
 		const model = await this.movieModel.findOne(_filter)
 		if (model) {
-			return await this.copyToVo(model, ip, true, true)
+			return await this.copyToVo(model, ip, true, isAll ? isAll : 'dynamic')
 		}
 		return null
 	}
@@ -144,7 +144,7 @@ export default class MovieService extends BaseService {
 		const res = await pageQuery(movieParams, this.movieModel, _filter)
 
 		return {
-			result: await this.copyToVoList(res.result, null, false),
+			result: await this.copyToVoList(res.result, null, false, false),
 			page: res.page,
 			total: res.total
 		}
@@ -179,7 +179,7 @@ export default class MovieService extends BaseService {
 		return null
 	}
 
-	async copyToVo(movieModel: MovieModel, ip?: string | null, needActivityVo?: boolean, needLink?: boolean) {
+	async copyToVo(movieModel: MovieModel, ip?: string | null, needActivityVo?: boolean, needLink?: boolean | string) {
 		const vo = new MovieVoEntity()
 		copyProperties(movieModel, vo)
 		if (needActivityVo && movieModel.activityId) {
@@ -197,15 +197,22 @@ export default class MovieService extends BaseService {
 			vo.activityVo = null
 			vo.isActivityMovie = movieModel.activityId ? true : false
 		}
-		if (movieModel.expectPlayTime && new Date(movieModel.expectPlayTime as any).getTime() > new Date().getTime()) {
-			vo.moviePlaylink = null
-			vo.movieDownloadLink = null
-			vo.movieLink = null
-		} else if (!needLink && typeof needLink === 'boolean') {
+
+		let flag = false
+		if (typeof needLink === 'boolean') {
+			flag = needLink
+		} else {
+			if (needLink === 'dynamic') {
+				flag = (movieModel.expectPlayTime && new Date(movieModel.expectPlayTime as any).getTime() > new Date().getTime()) || false
+			}
+		}
+
+		if (movieModel.expectPlayTime && new Date(movieModel.expectPlayTime as any).getTime() > new Date().getTime() && !flag) {
 			vo.moviePlaylink = null
 			vo.movieDownloadLink = null
 			vo.movieLink = null
 		}
+
 		if (movieModel.authorId) vo.author = await this.memberService.findMemberVoByMemberId(movieModel.authorId)
 		if (movieModel.expectPlayTime) {
 			const time = new Date(movieModel.expectPlayTime).getTime()
@@ -239,7 +246,8 @@ export default class MovieService extends BaseService {
 		vo.commentNums = commentNums
 
 		if (vo.realPublishTime) vo.realPublishTime = formatTime(movieModel.realPublishTime)
-		vo.uploader = await this.memberService.findMemberVoByMemberId(movieModel.uploader)
+		if (needLink) vo.uploader = await this.memberService.findMemberVoByMemberId(movieModel.uploader)
+
 		vo.createTime = formatTime(movieModel.createTime)
 		return vo
 	}
