@@ -2,3 +2,7 @@ node_modules
 dist
 public
 logs
+
+./.env.*
+./.env.development
+./.env.production

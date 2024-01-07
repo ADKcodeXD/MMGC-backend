@@ -49,7 +49,7 @@ export default {
 	error: (content: string) => {
 		const logger = log4js.getLogger('error')
 		logger.level = levels.error
-		logger.info(content)
+		logger.error(content) // 使用 error 方法来记录错误日志
 	},
 	info: (content: string) => {
 		const logger = log4js.getLogger('info')

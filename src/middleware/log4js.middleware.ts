@@ -4,8 +4,6 @@ export default async (ctx: Context, next: Function) => {
 	const start = new Date().getTime()
 	try {
 		await next()
-	} catch (error: any) {
-		logger.error(error.message)
 	} finally {
 		const ms = new Date().getTime() - start
 		let tipColorms = ''

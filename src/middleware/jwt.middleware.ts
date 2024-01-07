@@ -12,6 +12,7 @@ const whiteList = [
 	'/movie/getMovieByActivityId',
 	'/movie/getMovieDetail$',
 	'/comment/getCommentList',
+	'/config/getConfig',
 	'/oper'
 ].map(item => new RegExp(`^${config.MMGC_PREFIX}${item}`.split('/').join('\\/')))
 

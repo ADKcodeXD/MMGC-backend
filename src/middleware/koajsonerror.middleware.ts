@@ -9,16 +9,24 @@ import logger from '~/common/utils/log4j'
 export const Error = KoaError({
 	format: (err: any) => {
 		const reg = /^[\u4e00-\u9fa5][^%&',;=?$\x22]+$/
+		logger.error(err.message)
+		logger.error(err.stack)
 		const message = process.env.NODE_ENV === 'dev' ? err.message : reg.test(err.message) ? err.message : '服务器内部错误！'
 		return Result.fail(err.status, message, process.env.NODE_ENV === 'dev' ? err.stack : null)
 	}
 })
 
-export const ErrorHandle = async (ctx: Context, next: Function) => {
+export const ErrorHandle2 = async (ctx: Context, next: any) => {
 	try {
-		await next()
-	} catch (error: any) {
-		logger.error(error.message)
-		ctx.throw(error)
+		await next() // 尝试执行后续中间件
+	} catch (err: any) {
+		const reg = /^[\u4e00-\u9fa5][^%&',;=?$\x22]+$/
+		logger.error(`${err.message} : ${err.stack}`)
+		if (err.message === 'invalid signature') {
+			err.statusCode = 401
+		}
+		const message = process.env.NODE_ENV === 'dev' ? err.message : reg.test(err.message) ? err.message : '服务器内部错误！'
+		ctx.status = err.statusCode || err.status || 500 // 如果错误对象中有状态码则使用它，否则默认为 500
+		ctx.body = Result.fail(err.statusCode || err.status || 500, message, process.env.NODE_ENV === 'dev' ? err.stack : null)
 	}
 }
