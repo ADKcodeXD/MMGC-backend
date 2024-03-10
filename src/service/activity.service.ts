@@ -44,7 +44,7 @@ export default class ActivityService extends BaseService {
 		}
 		const res = await pageQuery(pageParams, this.activityModel, _filter)
 		return {
-			result: await this.copyToVoList(res.result, false),
+			result: await this.copyToVoList(res.result, true),
 			page: res.page,
 			total: res.total
 		}

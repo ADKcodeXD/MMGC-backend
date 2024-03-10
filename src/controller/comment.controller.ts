@@ -38,7 +38,6 @@ export default class CommentController {
 			return Result.fail(RESULT_CODE.NO_AUTHORIZION, RESULT_MSG.NO_AUTHORIZION, null)
 		}
 		if (!commentId) return Result.paramsError()
-
 		const res = await this.commentService.deleteMyselfComment(commentId, userInfo.memberId)
 		return res
 	}
