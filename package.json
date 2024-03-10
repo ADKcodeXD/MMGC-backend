@@ -16,7 +16,7 @@
 	"author": "ADKcode <790532173@qq.com>",
 	"license": "MIT",
 	"dependencies": {
-		"ajv": "^8.11.0",
+		"ajv": "8.11.0",
 		"ajv-errors": "^3.0.0",
 		"axios": "^1.2.6",
 		"backblaze-b2": "^1.7.0",
