@@ -1,0 +1,12 @@
+{
+  "semi": false,
+  "eslintIntegration": true,
+  "singleQuote": true,
+  "tabWidth": 2,
+  "useTabs": false,
+  "trailingComma": "none",
+  "bracketSpacing": true,
+  "arrowParens": "avoid",
+  "endOfLine": "auto",
+  "printWidth": 140
+}

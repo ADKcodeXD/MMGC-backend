@@ -3,7 +3,7 @@ import Ajv from 'ajv'
 import ajvErrors from 'ajv-errors'
 import { MemberParams } from 'Member'
 import { MovieParams, MovieUpdateParams } from 'Movie'
-import { activityParamsSchema, activityUpdateParamsSchema, DayParamsSchema } from './activity.validate'
+import { activityParamsSchema, activityUpdateParamsSchema, DayParamsSchema, SortParamsSchema } from './activity.validate'
 import { memberParamsSchema, memberUpdateParamsSchema } from './member.validate'
 import { movieParamsSchema, movieUpdateParamsSchema } from './movie.validate'
 import { sponsorUpdateParamsSchema, sponsorParamsSchema } from './sponsor.validate'
@@ -20,6 +20,8 @@ const activityParamsValidate = ajv.compile<ActivityParams>(activityParamsSchema)
 const activityUpdateParamsSchemaValidate = ajv.compile<ActivityUpdateParams>(activityUpdateParamsSchema)
 
 const DayParamsSchemaValidate = ajv.compile<DayParams>(DayParamsSchema)
+
+const sortParamsSchemaValidate = ajv.compile<SortParams>(SortParamsSchema)
 
 const memberParamsValidate = ajv.compile<MemberParams>(memberParamsSchema)
 
@@ -38,15 +40,16 @@ const sponsorUpdateParamsValidate = ajv.compile<SponsorUpdateParams>(sponsorUpda
 const commentParamsValidate = ajv.compile<CommentParams>(commentParamsSchema)
 
 export {
-	activityParamsValidate,
-	memberParamsValidate,
-	memberUpdateParamsValidate,
-	activityUpdateParamsSchemaValidate,
-	movieParamsValidate,
-	movieUpdateParamsValidate,
-	configUpdateParamsValidate,
-	DayParamsSchemaValidate,
-	sponsorUpdateParamsValidate,
-	sponsorParamsValidate,
-	commentParamsValidate
+  activityParamsValidate,
+  memberParamsValidate,
+  memberUpdateParamsValidate,
+  activityUpdateParamsSchemaValidate,
+  movieParamsValidate,
+  movieUpdateParamsValidate,
+  configUpdateParamsValidate,
+  DayParamsSchemaValidate,
+  sponsorUpdateParamsValidate,
+  sponsorParamsValidate,
+  commentParamsValidate,
+  sortParamsSchemaValidate
 }
