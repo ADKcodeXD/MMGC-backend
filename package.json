@@ -13,6 +13,10 @@
 		"start:dev": "cross-env NODE_ENV=dev pm2 start ecosystem.config.js",
 		"node:test": "tsc -p tsconfig.json && cross-env NODE_ENV=prod ts-node -r tsconfig-paths/register ./dist/index.js"
 	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ADKcodeXD/MMGC-backend.git"
+	},
 	"author": "ADKcode <790532173@qq.com>",
 	"license": "MIT",
 	"dependencies": {
