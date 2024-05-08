@@ -34,6 +34,7 @@ export default class DayService extends BaseService {
     update.themeCover = dayParams.themeCover || undefined
     update.themeName = dayParams.themeName || undefined
     update.themeDesc = dayParams.themeDesc || undefined
+    update.dayPollLink = dayParams.dayPollLink || undefined
     await this.dayModel.findOneAndUpdate({ day: dayParams.day, activityId: dayParams.activityId }, update)
     return null
   }

@@ -12,7 +12,7 @@ import {
 } from '~/common/decorator/decorator'
 import Result from '~/common/result'
 import { Activity, Day } from '~/model/index'
-import { ActivityModel, ActivityParams, ActivityUpdateParams, ActivityVo, DayModel, DayParams } from 'Activity'
+import { ActivityModel, ActivityParams, ActivityUpdateParams, ActivityVo, DayParams } from 'Activity'
 import { copyProperties } from '~/common/utils'
 import { Validtor } from '~/middleware/ajv.middleware'
 import {

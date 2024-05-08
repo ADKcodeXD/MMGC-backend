@@ -70,6 +70,7 @@ export class ActivityParamsEntity implements Required<ActivityParams> {
 }
 
 export class DayParamsEntity implements Required<DayParams> {
+  dayPollLink: Sns | null = null
   activityId: number | null = null
   day: number | null = 0
   themeCover: string | null = null
@@ -80,6 +81,7 @@ export class DayParamsEntity implements Required<DayParams> {
 }
 
 export class DayModelEntity implements Required<DayModel> {
+  dayPollLink: Sns | null = null
   _id: string | null = null
   activityId: number | null = null
   day: number | null = 0
@@ -91,6 +93,7 @@ export class DayModelEntity implements Required<DayModel> {
 }
 
 export class DayVoEntity implements Required<DayVo> {
+  dayPollLink: Sns | null = null
   day: number | null = null
   themeCover: string | null = null
   themeDesc: I18N | null = null

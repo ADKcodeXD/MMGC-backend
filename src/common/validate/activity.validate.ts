@@ -179,7 +179,8 @@ export const DayParamsSchema: JSONSchemaType<DayParams> = {
     isPublic: { type: 'boolean', nullable: true },
     themeCover: { type: 'string', nullable: true },
     sortIndex: { type: 'integer', nullable: true },
-    themeDesc: { $ref: '#i18nNull' }
+    themeDesc: { $ref: '#i18nNull' },
+    dayPollLink: { type: 'object', nullable: true }
   },
   required: ['activityId', 'day', 'themeName'],
   additionalProperties: true

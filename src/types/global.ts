@@ -64,21 +64,9 @@ declare global {
 
   type Sns = {
     bilibili?: string
-    /**
-     * niconico网站
-     */
     niconico?: string
-    /**
-     * 个人网站
-     */
     personalWebsite?: string
-    /**
-     * 推特网站
-     */
     twitter?: string
-    /**
-     * youtube频道
-     */
     youtube?: string
   }
 

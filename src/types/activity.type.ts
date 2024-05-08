@@ -88,6 +88,8 @@ declare module 'Activity' {
      */
     themeCover: null | string
 
+    dayPollLink: Sns | null
+
     /**
      * 主题描述 支持国际化
      */
