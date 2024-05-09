@@ -96,6 +96,7 @@ export const movieSchema = new mongoose.Schema<MovieModel>(
     expectPlayTime: { type: Date, default: null },
     activityId: { type: Number, default: null },
     day: { type: Number, default: null },
+    sortIndex: { type: Number, default: 0 },
     isOrigin: { type: Number, default: 0 },
     likeNums: { type: Number, default: 0 },
     viewNums: { type: Number, default: 0 },
