@@ -202,7 +202,8 @@ export const statisticsSchema = new mongoose.Schema<StatisticsModel>(
     authorName: { type: String, default: null },
     consecutiveParticipateTimes: { type: Number, default: 0 },
     participateTimes: { type: Number, default: 0 },
-    participateMacthes: { type: Array, default: [] }
+    participateMacthes: { type: Array, default: [] },
+    createTime: { type: Number, default: Date.now() }
   },
   { collection: 'statistics' }
 )
