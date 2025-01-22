@@ -38,7 +38,7 @@ export const Controller = (path = '') => {
  * 	// ...
  * }
  * // OR
- * \@Service('memberService',trues) // 注册为单例的Service 且容器名为memberService
+ * |@Service('memberService',trues) // 注册为单例的Service 且容器名为memberService
  * export default class UserService {
  * 	// ...
  * }

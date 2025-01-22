@@ -5,6 +5,7 @@ import { MovieModel } from 'Movie'
 import { SponsorModel } from 'Sponsor'
 import { OperType } from 'Oper'
 import { CommentModel } from 'Comment'
+import { StatisticsModel } from 'Statistics'
 export const activitySchema = new mongoose.Schema<ActivityModel>(
   {
     activityBackgroundImg: { type: String, default: null },
@@ -191,4 +192,17 @@ export const commentSchema = new mongoose.Schema<CommentModel>(
     parentId: { type: Number, default: null }
   },
   { collection: 'comments' }
+)
+
+export const statisticsSchema = new mongoose.Schema<StatisticsModel>(
+  {
+    _v: { type: Number },
+    authorAvatar: { type: String, default: null },
+    authorType: { type: String, default: 'normal' },
+    authorName: { type: String, default: null },
+    consecutiveParticipateTimes: { type: Number, default: 0 },
+    participateTimes: { type: Number, default: 0 },
+    participateMacthes: { type: Array, default: [] }
+  },
+  { collection: 'statistics' }
 )
