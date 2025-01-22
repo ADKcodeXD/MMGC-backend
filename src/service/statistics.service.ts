@@ -32,6 +32,9 @@ export default class StatisticsService extends BaseService {
   statisticsModel = Statistics
 
   async findAuthorList(pageParams: PageParams) {
+    if (!pageParams.sortRule) {
+      pageParams.sortRule = '_id'
+    }
     const res = await pageQuery(pageParams, this.statisticsModel)
 
     return {
