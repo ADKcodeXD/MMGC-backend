@@ -35,7 +35,13 @@ export default class StatisticsService extends BaseService {
     if (!pageParams.sortRule) {
       pageParams.sortRule = '_id'
     }
-    const res = await pageQuery(pageParams, this.statisticsModel)
+    let filter
+    if (pageParams.keyword) {
+      filter = {
+        authorName: { $regex: pageParams.keyword, $options: 'i' }
+      }
+    }
+    const res = await pageQuery(pageParams, this.statisticsModel, filter)
 
     return {
       result: await this.copyToVoList(res.result),
