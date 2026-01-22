@@ -2,7 +2,7 @@ node_modules
 dist
 public
 logs
-
+.turbo
 .env.*
 .env.development
 .env.production
