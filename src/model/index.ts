@@ -8,7 +8,8 @@ import {
 	daySchema,
 	sponsorSchema,
 	operSchema,
-	commentSchema
+	commentSchema,
+	statisticsSchema
 } from './schema'
 
 const Activity = mongoose.model('Activity', activitySchema)
@@ -29,4 +30,6 @@ const Oper = mongoose.model('Oper', operSchema)
 
 const Comment = mongoose.model('Comment', commentSchema)
 
-export { Activity, Member, Increment, Movie, Config, Day, Sponsor, Oper, Comment }
+const Statistics = mongoose.model('Statistics', statisticsSchema)
+
+export { Activity, Member, Increment, Movie, Config, Day, Sponsor, Oper, Comment, Statistics }

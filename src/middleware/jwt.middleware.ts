@@ -5,6 +5,7 @@ const whiteList = [
   '/email',
   '/user/register',
   '/user/login',
+  '/statistics/getAuthorRank',
   '/user/resetPassword',
   '/config/getConfig',
   '/activity/getActivityList',

@@ -3,6 +3,7 @@ dist
 public
 logs
 .turbo
-.env.*
+.env
 .env.development
+.env.local
 .env.production

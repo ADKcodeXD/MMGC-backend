@@ -15,6 +15,91 @@ import { formatTime } from '~/common/utils/moment'
 import { IpUtils } from '~/common/utils/ipUtils'
 import CommentService from './comment.service'
 
+const aggreFilter = (filter: any, additionFields?: any[]) => [
+  {
+    $lookup: {
+      from: 'opers',
+      localField: 'movieId',
+      foreignField: 'movieId',
+      as: 'operations'
+    }
+  },
+  {
+    $lookup: {
+      from: 'members',
+      localField: 'authorId',
+      foreignField: 'memberId',
+      as: 'author'
+    }
+  },
+  {
+    $lookup: {
+      from: 'members',
+      localField: 'uploader',
+      foreignField: 'memberId',
+      as: 'uploader'
+    }
+  },
+  {
+    $lookup: {
+      from: 'comments',
+      localField: 'movieId',
+      foreignField: 'movieId',
+      as: 'comments'
+    }
+  },
+  {
+    $unwind: {
+      path: '$author',
+      preserveNullAndEmptyArrays: true
+    }
+  },
+  {
+    $unwind: {
+      path: '$uploader',
+      preserveNullAndEmptyArrays: true
+    }
+  },
+  {
+    $addFields: {
+      likeNums: {
+        $size: {
+          $filter: {
+            input: '$operations',
+            as: 'operation',
+            cond: {
+              $eq: ['$$operation.operType', 'like']
+            }
+          }
+        }
+      },
+      pollNums: {
+        $size: {
+          $filter: {
+            input: '$operations',
+            as: 'operation',
+            cond: {
+              $eq: ['$$operation.operType', 'poll']
+            }
+          }
+        }
+      },
+      commentNums: {
+        $size: '$comments'
+      }
+    }
+  },
+  {
+    $project: {
+      operations: 0,
+      comments: 0
+    }
+  },
+  {
+    $match: filter ? { ...filter } : {}
+  },
+  ...(additionFields ? additionFields : [])
+]
 @Service(true)
 export default class MovieService extends BaseService {
   movieModel = Movie
@@ -55,10 +140,11 @@ export default class MovieService extends BaseService {
   }
 
   async getMovieByActivityId(params: { activityId: number; day?: number; ip?: string }): Promise<PageResult<MovieVo>> {
-    const movieList = (await this.movieModel.find({
-      activityId: params.activityId,
-      day: params.day
-    })) as MovieModel[]
+    const filters = aggreFilter({
+      activityId: parseInt(params.activityId.toString()),
+      day: params.day ? parseInt(params.day?.toString()) : undefined
+    })
+    const movieList = (await this.movieModel.aggregate(filters)) as MovieModel[]
 
     if (movieList) {
       const movieVoList = await this.copyToVoList<MovieModel, MovieVo>(movieList, params.ip, false, 'dynamic')
@@ -76,17 +162,17 @@ export default class MovieService extends BaseService {
   }
 
   async getMovieDetail(movieId: number, isAll?: boolean, ip?: string) {
-    const _filter: any = {
-      movieId: movieId
-    }
-    if (typeof isAll === 'boolean' && !isAll) {
-      _filter.expectPlayTime = { $lt: new Date() }
+    const _filter: any = aggreFilter({
+      movieId: parseInt(movieId.toString()),
+      expectPlayTime: typeof isAll === 'boolean' && !isAll ? { $lt: new Date() } : {}
+    })
+
+    const model = await this.movieModel.aggregate([..._filter, { $limit: 1 }])
+
+    if (model.length > 0) {
+      return await this.copyToVo(model[0], ip, true, isAll ? isAll : 'dynamic')
     }
 
-    const model = await this.movieModel.findOne(_filter)
-    if (model) {
-      return await this.copyToVo(model, ip, true, isAll ? isAll : 'dynamic')
-    }
     return null
   }
 
@@ -105,20 +191,23 @@ export default class MovieService extends BaseService {
 
   async getMovieList(movieParams: MoviePageParams) {
     let _filter: any = {}
+    let _additionFields: any[] = []
     if (movieParams.keyword) {
       const reg = new RegExp(movieParams.keyword, 'i')
-      _filter = {
-        $or: [
-          // 多字段同时匹配
-          { 'movieName.cn': { $regex: reg } },
-          { 'movieName.en': { $regex: reg } },
-          { 'movieName.jp': { $regex: reg } },
-          { authorName: { $regex: reg } },
-          { 'movieDesc.cn': { $regex: reg } },
-          { 'movieDesc.en': { $regex: reg } },
-          { 'movieDesc.jp': { $regex: reg } }
-        ]
-      }
+      _additionFields = [
+        {
+          $or: [
+            // 多字段同时匹配
+            { 'movieName.cn': { $regex: reg } },
+            { 'movieName.en': { $regex: reg } },
+            { 'movieName.jp': { $regex: reg } },
+            { authorName: { $regex: reg } },
+            { 'movieDesc.cn': { $regex: reg } },
+            { 'movieDesc.en': { $regex: reg } },
+            { 'movieDesc.jp': { $regex: reg } }
+          ]
+        }
+      ]
     }
 
     if (movieParams.isPublic) {
@@ -131,17 +220,18 @@ export default class MovieService extends BaseService {
     }
 
     if (movieParams.uploader) {
-      _filter.uploader = movieParams.uploader
+      _filter.uploader = parseInt(movieParams.uploader.toString())
     }
 
     if (movieParams.activityId) {
-      _filter.activityId = movieParams.activityId
+      _filter.activityId = parseInt(movieParams.activityId.toString())
     }
 
     if (movieParams.day) {
-      _filter.day = movieParams.day
+      _filter.day = parseInt(movieParams.day.toString())
     }
-    const res = await pageQuery(movieParams, this.movieModel, _filter)
+
+    const res = await pageQuery(movieParams, this.movieModel, aggreFilter(_filter, _additionFields))
 
     return {
       result: await this.copyToVoList(res.result, null, false, false),
@@ -226,7 +316,6 @@ export default class MovieService extends BaseService {
       vo.movieLink = null
     }
 
-    if (movieModel.authorId) vo.author = await this.memberService.findMemberVoByMemberId(movieModel.authorId)
     if (movieModel.expectPlayTime) {
       const time = new Date(movieModel.expectPlayTime).getTime()
       vo.expectPlayTime = formatTime(movieModel.expectPlayTime)
@@ -250,16 +339,8 @@ export default class MovieService extends BaseService {
       vo.loginVo = loginVo
     }
 
-    const likeNums = await this.operService.findLikeCoundByMovieId(movieModel.movieId)
-    const pollNums = await this.operService.findPollCountByMovieId(movieModel.movieId)
-    const commentNums = await this.commentService.countCommentByMovieId(movieModel.movieId)
-
-    vo.likeNums = likeNums
-    vo.pollNums = pollNums
-    vo.commentNums = commentNums
-
     if (vo.realPublishTime) vo.realPublishTime = formatTime(movieModel.realPublishTime)
-    vo.uploader = await this.memberService.findMemberVoByMemberId(movieModel.uploader)
+    vo.uploader = movieModel.uploader as any
 
     vo.createTime = formatTime(movieModel.createTime)
     return vo

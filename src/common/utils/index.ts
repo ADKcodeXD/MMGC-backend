@@ -9,12 +9,12 @@ import { PageParamsEntity } from '~/entity/global'
  * @returns 返回一个复制好的对象
  */
 export const copyProperties = <T>(sourceObj: NormalObject, targetObj: NormalObject): T => {
-	for (const key in sourceObj) {
-		if (Object.hasOwnProperty.call(targetObj, key)) {
-			targetObj[key] = sourceObj[key]
-		}
-	}
-	return targetObj as T
+  for (const key in sourceObj) {
+    if (Object.hasOwnProperty.call(targetObj, key)) {
+      targetObj[key] = sourceObj[key]
+    }
+  }
+  return targetObj as T
 }
 /**
  * 生成一个随机数 符合区间内 为整形
@@ -23,7 +23,7 @@ export const copyProperties = <T>(sourceObj: NormalObject, targetObj: NormalObje
  * @returns 随机数
  */
 export const randomNum = (min: number, max: number): number => {
-	return Math.floor(Math.random() * (max - min)) + min
+  return Math.floor(Math.random() * (max - min)) + min
 }
 
 /**
@@ -33,12 +33,12 @@ export const randomNum = (min: number, max: number): number => {
  * @returns string
  */
 export const aesEncrypt = (data: string, key: Buffer) => {
-	// Defininf iv
-	const iv = Buffer.alloc(16, 0)
-	const cipher = crypto.createCipheriv('aes-128-cbc', key, iv)
-	let crypted = cipher.update(data, 'utf8', 'hex')
-	crypted += cipher.final('hex')
-	return crypted
+  // Defininf iv
+  const iv = Buffer.alloc(16, 0)
+  const cipher = crypto.createCipheriv('aes-128-cbc', key, iv)
+  let crypted = cipher.update(data, 'utf8', 'hex')
+  crypted += cipher.final('hex')
+  return crypted
 }
 
 /**
@@ -49,11 +49,11 @@ export const aesEncrypt = (data: string, key: Buffer) => {
  * @returns
  */
 export const aesDecrypt = (encrypted: string, key: Buffer) => {
-	const iv = Buffer.alloc(16, 0)
-	const decipher = crypto.createDecipheriv('aes-128-cbc', key, iv)
-	let decrypted = decipher.update(encrypted, 'hex', 'utf8')
-	decrypted += decipher.final('utf8')
-	return decrypted
+  const iv = Buffer.alloc(16, 0)
+  const decipher = crypto.createDecipheriv('aes-128-cbc', key, iv)
+  let decrypted = decipher.update(encrypted, 'hex', 'utf8')
+  decrypted += decipher.final('utf8')
+  return decrypted
 }
 
 /**
@@ -63,34 +63,63 @@ export const aesDecrypt = (encrypted: string, key: Buffer) => {
  * @param filter 过滤条件
  * @returns 一个PageRes<T> 里面有着result result 装载着列表数据 你可以使用copyToVoList将其转换
  */
-export const pageQuery = async <T>(pageParams: PageParams, model: Model<T>, filter = {}): Promise<PageResult<T>> => {
-	const params = new PageParamsEntity()
-	copyProperties(pageParams, params)
-	params.page = parseInt(params.page.toString()) // 发现可能是字符串类型
-	let count = 0
-	count = await model.count(filter)
-	if ((params.page - 1) * params.pageSize > count) {
-		return {
-			result: [],
-			total: count,
-			page: params.page
-		}
-	}
-	const orderRule = params.orderRule ? 1 : -1
-	let sort = {}
-	if (params.sortRule) {
-		sort = { [params.sortRule]: orderRule }
-	} else {
-		sort = { createTime: orderRule }
-	}
-	const res = await model
-		.find(filter)
-		.sort(sort)
-		.skip((params.page - 1) * params.pageSize)
-		.limit(params.pageSize)
-	return {
-		result: res,
-		total: count,
-		page: params.page
-	}
+export const pageQuery = async <T>(pageParams: PageParams, model: Model<T>, filter: object | any[] = {}): Promise<PageResult<T>> => {
+  const params = new PageParamsEntity()
+  copyProperties(pageParams, params)
+  params.page = parseInt(params.page.toString())
+
+  let count = 0
+  let res
+
+  if (Array.isArray(filter)) {
+    // If filter is an aggregation pipeline
+    const countPipeline = [...filter, { $count: 'total' }]
+    const countResult = await model.aggregate(countPipeline).exec()
+    count = countResult.length > 0 ? countResult[0].total : 0
+
+    if ((params.page - 1) * params.pageSize > count) {
+      return {
+        result: [],
+        total: count,
+        page: params.page
+      }
+    }
+
+    const orderRule = params.orderRule ? 1 : -1
+    const sort = params.sortRule ? { [params.sortRule]: orderRule } : { createTime: orderRule }
+
+    const aggregatePipeline = [
+      ...filter,
+      { $sort: sort },
+      { $skip: (params.page - 1) * params.pageSize },
+      { $limit: parseInt(params.pageSize.toString()) }
+    ]
+
+    res = await model.aggregate(aggregatePipeline).exec()
+  } else {
+    count = await model.countDocuments(filter)
+    if ((params.page - 1) * params.pageSize > count) {
+      return {
+        result: [],
+        total: count,
+        page: params.page
+      }
+    }
+
+    const orderRule = params.orderRule ? 1 : -1
+    const sort = params.sortRule ? { [params.sortRule]: orderRule } : { createTime: orderRule }
+
+    res = await model
+      .find(filter)
+      .sort(sort as any)
+      .skip((params.page - 1) * params.pageSize)
+      .limit(params.pageSize)
+      .exec()
+  }
+
+  return {
+    result: res,
+    total: count,
+    page: params.page
+  }
 }

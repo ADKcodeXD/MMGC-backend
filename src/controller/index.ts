@@ -7,15 +7,17 @@ import ConfigController from './config.controller'
 import OperController from './oper.controller'
 import SponsorController from './sponsor.controller'
 import CommentController from './comment.controller'
+import StatisticsController from './statistics.controller'
 
 export {
-	ActivityController,
-	UploadController,
-	EmailController,
-	MemberController,
-	ConfigController,
-	OperController,
-	SponsorController,
-	MovieController,
-	CommentController
+  ActivityController,
+  UploadController,
+  EmailController,
+  MemberController,
+  ConfigController,
+  OperController,
+  SponsorController,
+  MovieController,
+  CommentController,
+  StatisticsController
 }
